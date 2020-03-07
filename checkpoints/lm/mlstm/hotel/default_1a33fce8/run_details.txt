@@ -1,0 +1,3 @@
+Command:
+pretrain_lm.py --dataset=hotel --gpus=0,1
+Start time: March03_21-53-34
