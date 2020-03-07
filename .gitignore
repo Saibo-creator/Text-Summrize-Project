@@ -1,4 +1,4 @@
 
-datasets/
-stable_checkpoints/
-checkpoints/
+*.json
+*.csv
+*.pt
