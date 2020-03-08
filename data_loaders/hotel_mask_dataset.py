@@ -92,7 +92,7 @@ class HotelPytorchDataset(Dataset):
         item_max_reviews = float('inf') if item_max_reviews is None else item_max_reviews
         self.item_max_reviews = item_max_reviews
 
-        self.ds_conf = DatasetConfig('hotel')  # used for paths
+        self.ds_conf = DatasetConfig('hotel_mask')  # used for paths
 
         # Set random seed so that choice is always the same across experiments
         # Especially necessary for test set (along with shuffle=False in the DataLoader)
@@ -290,8 +290,8 @@ class HotelDataset(SummReviewDataset):
     """
     def __init__(self):
         super(HotelDataset, self).__init__()
-        self.name = 'hotel'
-        self.conf = DatasetConfig('hotel')
+        self.name = 'hotel_mask'
+        self.conf = DatasetConfig('hotel_mask')
         self.n_ratings_labels = 5
         self.reviews = None
         self.subwordenc = load_file(self.conf.subwordenc_path)
@@ -492,7 +492,7 @@ if __name__ == '__main__':
     from data_loaders.summ_dataset_factory import SummDatasetFactory
 
     hp = HParams()
-    ds = SummDatasetFactory.get('hotel')
+    ds = SummDatasetFactory.get('hotel_mask')
     ds.save_processed_splits()
     # ds.print_original_data_stats()
     # ds.print_filtered_data_stats()
