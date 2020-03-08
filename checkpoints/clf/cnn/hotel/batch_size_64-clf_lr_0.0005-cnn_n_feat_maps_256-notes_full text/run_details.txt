@@ -1,0 +1,3 @@
+Command:
+pretrain_classifier.py --dataset=hotel --model_type=cnn --clf_lr=0.0005 --cnn_n_feat_maps=256 --batch_size=64 --gpus=1 --note=full text
+Start time: March07_21-21-37
