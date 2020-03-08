@@ -9,4 +9,7 @@ cd ..
 # PYTHONPATH=. python data_loaders/yelp_dataset.py
 
 #PYTHONPATH=. python3 data_loaders/hotel_dataset.py
-PYTHONPATH=. python3 data_loaders/hotel_mask_dataset.py
+#PYTHONPATH=. python3 data_loaders/hotel_mask_dataset.py
+path=$1
+PYTHONPATH=. python3 data_loaders/$path
+
