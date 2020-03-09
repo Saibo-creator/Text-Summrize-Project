@@ -9,5 +9,12 @@ cd ..
 # PYTHONPATH=. python data_loaders/yelp_dataset.py
 
 #PYTHONPATH=. python3 data_loaders/hotel_dataset.py
+<<<<<<< HEAD
 
 PYTHONPATH=. python3 data_loaders/hotel_mask_dataset.py
+=======
+#PYTHONPATH=. python3 data_loaders/hotel_mask_dataset.py
+path=$1
+PYTHONPATH=. python3 data_loaders/$path
+
+>>>>>>> 75171c3f274b965803467d7f4c3870e9734168c7
