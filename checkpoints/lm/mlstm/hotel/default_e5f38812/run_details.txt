@@ -1,3 +1,0 @@
-Command:
-pretrain_lm.py --dataset hotel
-Start time: February28_14-13-42

@@ -110,7 +110,7 @@ class Summarizer(object):
 
     def run_epoch(self, data_iter, nbatches, epoch, split,
                   sum_optimizer=None, discrim_optimizer=None, clf_optimizer=None,
-                  cpkt_every=float('inf'), save_intermediate=False, run_val_subset=False,
+                  cpkt_every=float('inf'), save_intermediate=True, run_val_subset=False,
                   store_all_rouges=False, store_all_summaries=False,
                   tb_writer=None, tb_start_step=0):
         """
