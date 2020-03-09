@@ -632,7 +632,7 @@ class Summarizer(object):
                                                 optim.Adam(discrim_params, lr=self.hp.discrim_lr))
             self.optimizers['discrim_optimizer'] = self.discrim_optimizer
 
-        '''#
+        #
         # Classifier
         #
         self.clf_model = None
@@ -658,7 +658,7 @@ class Summarizer(object):
                 self.optimizers['clf_optimizer'] = self.clf_optimizer
             else:
                 freeze(self.clf_model)
-        '''
+        
         #
         # Overall model
         #
