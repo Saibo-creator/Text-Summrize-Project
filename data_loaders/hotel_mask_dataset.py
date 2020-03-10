@@ -284,7 +284,7 @@ class VariableNDocsSampler(Sampler):
         return len(self.dataloader_idxs)
 
 
-class HotelDataset(SummReviewDataset):
+class Hotel_Mask_Dataset(SummReviewDataset):
     """
     Main class for using Hotel dataset
     """
