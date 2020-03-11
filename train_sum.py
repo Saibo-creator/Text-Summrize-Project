@@ -796,7 +796,7 @@ class Summarizer(object):
         #
 
         if self.opt.cpu:
-            ckpt = torch.load(opt.load_test_sum, map_location'cpu')
+            ckpt = torch.load(opt.load_test_sum, map_location='cpu')
 
         elif torch.cuda.is_available():
             ckpt = torch.load(opt.load_test_sum, map_location=lambda storage, loc: storage)
