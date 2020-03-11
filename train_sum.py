@@ -794,7 +794,13 @@ class Summarizer(object):
         #
         # Get model and loss
         #
-        ckpt = torch.load(opt.load_test_sum, map_location=lambda storage, loc: storage)
+
+        if self.opt.cpu:
+            ckpt = torch.load(opt.load_test_sum, map_location'cpu')
+
+        elif torch.cuda.is_available():
+            ckpt = torch.load(opt.load_test_sum, map_location=lambda storage, loc: storage)
+        
         self.sum_model = ckpt['sum_model']
         # We should always be loading from the checkpoint, but I wasn't saving it earlier
         # Tau may have been decayed over the course of training, so want to use the tau at the time of checkpointing
@@ -806,7 +812,15 @@ class Summarizer(object):
         self.sum_model.hp.n_docs = self.hp.n_docs
 
         # For tracking NLL of generated summaries
-        self.fixed_lm = torch.load(self.dataset.conf.lm_path)['model']  # StackedLSTMEncoder
+
+
+        if self.opt.cpu:
+            self.fixed_lm = torch.load(self.dataset.conf.lm_path,map_location='cpu')['model']  # StackedLSTMEncoder
+
+        elif torch.cuda.is_available():
+            self.fixed_lm = torch.load(self.dataset.conf.lm_path)['model']  # StackedLSTMEncoder
+
+        
         self.fixed_lm = self.fixed_lm.module if isinstance(self.fixed_lm, nn.DataParallel) \
             else self.fixed_lm
 
@@ -936,6 +950,7 @@ class Summarizer(object):
         evaluator.plot_rouge_distributions(show=self.opt.show_figs, out_fp=out_fp)
 
 
+
 if __name__ == '__main__':
     # Get hyperparams
     hp = HParams()
@@ -981,6 +996,11 @@ if __name__ == '__main__':
                         help="CUDA visible devices, e.g. 2,3")
     parser.add_argument('--no_bigstore', action='store_true',
                         help="Do not sync results to bigstore")
+
+    parser.add_argument('--cpu', default=False,
+                        help="if want to run on cpu, set --cpu=True")
+
+
     opt = parser.parse_args()
 
     # Hardcoded at the moment
