@@ -1,3 +1,0 @@
-Command:
-train_sum.py --dataset=hotel --batch_size=2 --gpus=0,1 --mode=train
-Start time: March09_21-27-57
