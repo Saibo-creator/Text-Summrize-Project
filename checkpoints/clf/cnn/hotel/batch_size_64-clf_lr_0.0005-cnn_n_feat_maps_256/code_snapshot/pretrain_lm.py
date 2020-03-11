@@ -224,9 +224,9 @@ class LanguageModel(object):
         # Get model and loss
         #
         if len(self.opt.load_model) > 0:
-            raise NotImplementedError('Need to save run to same directory, handle changes in hp, etc.')
-            # checkpoint = torch.load(opt.load_model)
-            # self.model = checkpoint['model']
+            #raise NotImplementedError('Need to save run to same directory, handle changes in hp, etc.')
+            checkpoint = torch.load(opt.load_model)
+            self.model = checkpoint['model']
         else:
             if self.hp.model_type == 'mlstm':
                 embed = nn.Embedding(subwordenc.vocab_size, self.hp.emb_size)

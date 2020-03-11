@@ -68,10 +68,14 @@ class Evaluations(object):
         batch_size = self.hp.batch_size if method == 'lm_autoenc' else 1
         dl = self.get_test_set_data_iter(batch_size=batch_size)
 
-        if torch.cuda.is_available():
+        if self.opt.cpu:
+            clf_model = torch.load(self.opt.load_clf,map_location='cpu')['model']
+
+        elif torch.cuda.is_available():
             clf_model = torch.load(self.opt.load_clf)['model']
+
         else:
-            raise Exception('You should run on a cuda machine to load and use the classifcation model')
+            raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
 
         print('\n', '=' * 50)
         print('Running {} baseline'.format(method))
@@ -88,7 +92,18 @@ class Evaluations(object):
             evaluator, summaries, acc, per_rating_acc = self.lm_autoenc_baseline(dl, clf_model)
 
         # Calculate NLL of summaries using fixed, pretrained LM
-        pretrained_lm = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+
+
+        if self.opt.cpu:
+            pretrained_lm = torch.load(self.opt.load_lm,map_location='cpu')['model']
+
+        elif torch.cuda.is_available():
+            pretrained_lm = torch.load(self.opt.load_lm)['model']
+            
+        else:
+            raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
+
         pretrained_lm = pretrained_lm.module if isinstance(pretrained_lm, nn.DataParallel) else pretrained_lm
         avg_nll = 0.0
         loop_idx = 0
@@ -317,7 +332,20 @@ class Evaluations(object):
         """
 
         # Load encoder decoder by initializing with languag emodel
-        docs_enc = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+
+
+        if self.opt.cpu:
+            docs_enc = torch.load(self.opt.load_lm,map_location='cpu')['model'] 
+
+        elif torch.cuda.is_available():
+            docs_enc = torch.load(self.opt.load_lm)['model'] 
+
+        else:
+            raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
+
+
+
         docs_enc = docs_enc.module if isinstance(docs_enc, nn.DataParallel) else docs_enc
         summ_dec = StackedLSTMDecoder(copy.deepcopy(docs_enc.embed), copy.deepcopy(docs_enc.rnn))
 
@@ -335,10 +363,22 @@ class Evaluations(object):
         summarizer.tb_val_sub_writer = None
         summarizer.tau = self.hp.tau
         summarizer.ngpus = 1 if len(self.opt.gpus) == 1 else len(self.opt.gpus.split(','))
-        summarizer.sum_model = torch.load(self.opt.load_lm)
-        summarizer.dataset = self.dataset
 
-        summarizer.fixed_lm =  torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+        if self.opt.cpu:
+            summarizer.sum_model = torch.load(self.opt.load_lm,map_location='cpu')
+            summarizer.fixed_lm =  torch.load(self.opt.load_lm,map_location='cpu')['model'] 
+
+        elif torch.cuda.is_available():
+            summarizer.sum_model = torch.load(self.opt.load_lm)
+                    summarizer.fixed_lm =  torch.load(self.opt.load_lm)['model'] 
+
+        else:
+            raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
+
+
+
+        summarizer.dataset = self.dataset
         summarizer.fixed_lm = summarizer.fixed_lm.module if isinstance(summarizer.fixed_lm, nn.DataParallel) \
             else summarizer.fixed_lm
 
@@ -409,7 +449,19 @@ class Evaluations(object):
         print('Running classifier baseline')
 
         # Load classifier
-        clf_model = torch.load(self.opt.load_clf)['model']
+
+
+        if self.opt.cpu:
+            clf_model = torch.load(self.opt.load_clf,map_location='cpu')['model']
+
+        elif torch.cuda.is_available():
+            clf_model = torch.load(self.opt.load_clf)['model']
+
+        else:
+            raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
+
+
+
         clf_model = clf_model.module if isinstance(clf_model, nn.DataParallel) else clf_model
         if torch.cuda.is_available():
             clf_model.cuda()
@@ -447,7 +499,22 @@ class Evaluations(object):
 
 
         # Calculate NLL of summaries using fixed, pretrained LM
-        pretrained_lm = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+
+        if self.opt.cpu:
+            pretrained_lm = torch.load(self.opt.load_lm,map_location='cpu')['model'] 
+
+        elif torch.cuda.is_available():
+            pretrained_lm = torch.load(self.opt.load_lm)['model'] 
+
+        else:
+            raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
+
+
+
+
+
+        #pretrained_lm = torch.load(self.opt.load_lm,,map_location='cpu')['model']  # StackedLSTMEncoder
         pretrained_lm = pretrained_lm.module if isinstance(pretrained_lm, nn.DataParallel) else pretrained_lm
         avg_nll = 0.0
         batch_size = self.hp.batch_size
@@ -548,6 +615,9 @@ if __name__ == '__main__':
     parser.add_argument('--collect_results', action='store_true')
     parser.add_argument('--gpus', default='0',
                         help="CUDA visible devices, e.g. 2,3")
+
+    parser.add_argument('--cpu', default=False,
+                        help="if want to run on cpu, set --cpu=True")
 
     opt = parser.parse_args()
     setup_gpus(opt.gpus, hp.seed)
