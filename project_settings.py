@@ -89,10 +89,9 @@ class DatasetConfig(object):
 
             # Trained models
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt'
-            self.lm_path = 'stable_checkpoints/lm/mlstm/yelp/batch_size_512-lm_lr_0.001-notes_data260_fixed/' \
-                           'lm_e24_2.88.pt'
+            self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e3_l0.7940_a0.6464_d0.0000.pt'
-            self.sum_path = ''
+            self.sum_path = 'checkpoints/sum/train/hotel/batch_size_8/sum_e2_sub1.pt'
             #self.sum_path = 'checkpoints/sum/mlstm/hotel/batch_size_8-notes_test/sum_e12_tot28.10_r1f0.14.pt'
             self.autoenc_path = None
             
