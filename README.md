@@ -42,7 +42,7 @@ python update_tensorboard.py
 1. Download Yelp data: https://www.yelp.com/dataset and place files in ```datasets/yelp_dataset/```
 2. Run script to pre-process script and create train, val, test splits:
     ```
-    bash scripts/preprocess_data.sh
+    bash scripts/preprocess_data.sh <path> hotel_mask_dataset.py/hotel_dataset.py/yelp_dataset.py
     ```
 3. Download subword tokenizer built on Yelp and place in 
 ```datasets/yelp_dataset/processed/```: 
