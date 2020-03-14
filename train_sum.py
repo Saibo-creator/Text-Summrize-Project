@@ -96,13 +96,13 @@ class Summarizer(object):
         Returns: [batch, n_docs, max_len (across all reviews)]
         """
         batch_size = len(texts)
-        docs_ids = [SummDataset.split_docs(text) for text in texts]  # list of lists of strs
-        docs_ids = [rev for batch_item in docs_ids for rev in batch_item]  # flatten
-        dummy_ratings = [torch.LongTensor([0]) for _ in range(len(docs_ids))]
+        docs_tokens = [SummDataset.split_docs(text) for text in texts]  # list of lists of strs batch_size* ndoc*review
+        docs_tokenized = [rev for batch_item in docs_tokens for rev in batch_item]  # flatten
+        dummy_ratings = [torch.LongTensor([0]) for _ in range(len(docs_tokenized))]
         # We do this so that max_len is across all reviews
         if append_edoc:
             # Can use global_append_id because docs_ids is a flat [batch * n_docs]
-            docs_ids, _, _ = self.dataset.prepare_batch(docs_ids, dummy_ratings, global_append_id=EDOC_ID)
+            docs_ids, _, _ = self.dataset.prepare_batch(docs_tokenized, dummy_ratings, global_append_id=EDOC_ID)
         else:
             docs_ids, _, _ = self.dataset.prepare_batch(docs_ids, dummy_ratings)  # [batch * n_docs, max_len]
         docs_ids = docs_ids.view(batch_size, -1, docs_ids.size(1))  # [batch, n_docs, max_len]
@@ -855,7 +855,7 @@ class Summarizer(object):
         #
         # Run on test set
         #
-        self.sum_model.eval()
+        self.sum_model.eval().  # like a switch, turn off some specific layers used for training to accelerate
 
         # Note: in order to run a model trained on the Yelp dataset on the Amazon dataset,
         # you have to uncomment the following line. This is because the two models
@@ -865,7 +865,7 @@ class Summarizer(object):
         # lower or higher than 32000).
         # self.dataset = SummDatasetFactory.get('yelp')
         # TODO: handle this better
-        with torch.no_grad():
+        with torch.no_grad():    
             stats_avgs, evaluator, summaries = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,
                                                               store_all_rouges=True, store_all_summaries=True)
@@ -884,9 +884,11 @@ class Summarizer(object):
         true_rating_dist = defaultdict(int)  # used to track distribution of mean ratings
         per_rating_counts = defaultdict(int)  # these are predicted ratnigs
         per_rating_acc = defaultdict(int)
+
         clf_model = self.sum_model.module.clf_model if self.ngpus > 1 else self.sum_model.clf_model
         if self.opt.test_group_ratings:
             test_iter  = grouped_reviews_iter(self.hp.n_docs)
+
         for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
             summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
             acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \

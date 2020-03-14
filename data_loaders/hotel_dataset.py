@@ -140,7 +140,7 @@ class HotelPytorchDataset(Dataset):
                 else:
                     n_per_item = np.mean([n for n in item_to_nreviews.values() if n <= item_max_reviews])
                     n_per_item = math.ceil(n_per_item / n_reviews)
-                # print('Each item will appear {} times'.format(n_per_item))
+                print('Each item will appear {} times'.format(n_per_item))
 
                 idx = 0
                 for item, n_reviews in item_to_nreviews.items():
@@ -235,7 +235,7 @@ class VariableNDocsSampler(Sampler):
     """
     Produce indices for variable n_docs at a time. Used in conjunction with
     n_docs_min and n_docs_max, which creates the dictionaries needed in
-    YelpPytorchDataset.
+    HotelPytorchDataset.
 
     Arguments:
         data_source (Dataset): dataset to sample from
@@ -494,14 +494,4 @@ if __name__ == '__main__':
     hp = HParams()
     ds = SummDatasetFactory.get('hotel')
     ds.save_processed_splits()
-    # ds.print_original_data_stats()
-    # ds.print_filtered_data_stats()
 
-    # Variable batch size and n_docs
-    # test_dl = ds.get_data_loader(split='test', n_docs_min=4, n_docs_max=16, sample_reviews=True,
-    #                              batch_size=1, shuffle=False)
-    # test_dl = ds.get_data_loader(split='test', n_docs=8, sample_reviews=False,
-    #                              batch_size=1, shuffle=False)
-    # for texts, ratings, metadata in test_dl:
-    #     x, lengths, labels = ds.prepare_batch(texts, ratings)
-    #     pdb.set_trace()
