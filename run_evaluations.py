@@ -35,7 +35,7 @@ from models.mlstm import StackedLSTMDecoder
 from models.nn_utils import classify_summ_batch, setup_gpus, calc_lm_nll
 from models.summarization import SummarizationModel
 from pretrain_classifier import TextClassifier
-from train_sum import Summarizer
+from models.summarizer import Summarizer
 
 from evaluation.eval_utils import EvalMetrics
 
@@ -371,7 +371,7 @@ class Evaluations(object):
 
         elif torch.cuda.is_available():
             summarizer.sum_model = torch.load(self.opt.load_lm)
-                    summarizer.fixed_lm =  torch.load(self.opt.load_lm)['model'] 
+            summarizer.fixed_lm =  torch.load(self.opt.load_lm)['model'] 
 
         else:
             raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')

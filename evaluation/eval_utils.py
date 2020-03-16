@@ -117,7 +117,7 @@ class EvalMetrics(object):
     # Main methods
     #
     #########################################
-    def calc_rouges(self, source, summary):
+    def calc_rouges(self, source, summary):   #def score(self, target, prediction):
         """
         Wrapper around the rouge_scorer. Removes stop words potentially,
 
