@@ -494,14 +494,4 @@ if __name__ == '__main__':
     hp = HParams()
     ds = SummDatasetFactory.get('hotel_mask')
     ds.save_processed_splits()
-    # ds.print_original_data_stats()
-    # ds.print_filtered_data_stats()
-
-    # Variable batch size and n_docs
-    # test_dl = ds.get_data_loader(split='test', n_docs_min=4, n_docs_max=16, sample_reviews=True,
-    #                              batch_size=1, shuffle=False)
-    # test_dl = ds.get_data_loader(split='test', n_docs=8, sample_reviews=False,
-    #                              batch_size=1, shuffle=False)
-    # for texts, ratings, metadata in test_dl:
-    #     x, lengths, labels = ds.prepare_batch(texts, ratings)
-    #     pdb.set_trace()
+   

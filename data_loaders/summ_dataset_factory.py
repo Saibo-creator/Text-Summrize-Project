@@ -24,5 +24,5 @@ class SummDatasetFactory(object):
             return YelpDataset()
         elif name == 'hotel':
             return HotelDataset()
-        elif name == 'mask_hotel':
+        elif name == 'hotel_mask':
             return Hotel_Mask_Dataset()
