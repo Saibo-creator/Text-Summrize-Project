@@ -14,7 +14,7 @@ dev=pd.read_csv('./dev.csv')
 
 tot=pd.concat([dev,test,train])
 tot_filtered=tot.copy()
-tot_filtered['text_filtered_per_sentence']=tot_filtered['text_filtered_per_sentence'].apply(ast.literal_eval).apply(set).apply(lambda x:"".join(x) )
+tot_filtered['text_filtered_per_sentence']=tot_filtered['text_filtered_per_sentence'].apply(ast.literal_eval).apply(lambda x:"".join(x) )
 
 
 df=tot_filtered.sort_values('hotel_url')[['hotel_url','text_filtered_per_sentence','rating']]
