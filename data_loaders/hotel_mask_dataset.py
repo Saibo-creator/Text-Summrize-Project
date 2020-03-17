@@ -21,7 +21,7 @@ from project_settings import HParams, DatasetConfig
 from utils import load_file, save_file
 
 
-class HotelPytorchDataset(Dataset):
+class Hotel_Mask_PytorchDataset(Dataset):
     """
     Implements Pytorch Dataset
 
@@ -289,7 +289,7 @@ class Hotel_Mask_Dataset(SummReviewDataset):
     Main class for using Hotel dataset
     """
     def __init__(self):
-        super(HotelDataset, self).__init__()
+        super(Hotel_Mask_Dataset, self).__init__()
         self.name = 'hotel_mask'
         self.conf = DatasetConfig('hotel_mask')
         self.n_ratings_labels = 5
@@ -325,7 +325,7 @@ class Hotel_Mask_Dataset(SummReviewDataset):
         """
         Return iterator over specific split in dataset
         """
-        ds = HotelPytorchDataset(split=split,
+        ds = Hotel_Mask_PytorchDataset(split=split,
                                 n_reviews=n_docs, n_reviews_min=n_docs_min, n_reviews_max=n_docs_max,
                                 subset=subset, seed=seed, sample_reviews=sample_reviews,
                                 item_max_reviews=self.conf.item_max_reviews)
