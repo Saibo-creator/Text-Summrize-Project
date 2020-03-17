@@ -25,7 +25,7 @@ import tensorflow_datasets as tfds
 
 # Build
 encoder = tfds.features.text.SubwordTextEncoder.build_from_corpus(
-    df['text'].to_list(), target_vocab_size=32000)
+    df['text_filtered_per_sentence'].to_list(), target_vocab_size=32000)
 
 
 
