@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 
 
-df=pd.read_json('../hotel_dataset/review_complete_no_rating.json',orient='records')
+df=pd.read_json('../hotel_mask_dataset/review_mask.json',orient='records')
 
 # ## subword encoder
 
@@ -31,7 +31,7 @@ encoder = tfds.features.text.SubwordTextEncoder.build_from_corpus(
 
 
 import pickle
-with open('../hotel_dataset/processed/subwordenc_32000_secondpass.pkl', 'wb') as file:
+with open('../hotel_mask_dataset/processed/subwordenc_32000_secondpass.pkl', 'wb') as file:
     pickle.dump(encoder, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 
