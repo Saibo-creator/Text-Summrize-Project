@@ -204,7 +204,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        texts, ratings = zip(*[(s['text_filtered_per_relation_grouped'], s['rating']) for s in reviews])
+        texts, ratings = zip(*[(s['text_filtered_per_sentence'], s['rating']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
 
@@ -361,7 +361,7 @@ class Hotel_Mask_Dataset(SummReviewDataset):
         item_to_reviews = defaultdict(list)
         
         for r in self.reviews[0]:
-            if len(self.subwordenc.encode(r['text_filtered_per_relation_grouped'])) < review_max_len:
+            if len(self.subwordenc.encode(r['text_filtered_per_sentence'])) < review_max_len:
                 item_to_reviews[r['hotel_url']].append(r)
 
         # Calculate target amount of reviews per item
