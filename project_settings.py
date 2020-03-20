@@ -183,7 +183,7 @@ class HParams(object):
         self.discrim_model = 'cnn'
         self.discrim_onehot = True
 
-        self.sum_clf = True  # calculate classification loss and accuracy
+        self.sum_clf = False # calculate classification loss and accuracy
         self.sum_clf_lr = 0.0  # when 0, don't backwards() etc
 
         self.sum_lr = 0.0001
