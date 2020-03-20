@@ -21,7 +21,7 @@ from project_settings import HParams, SAVED_MODELS_DIR, \
     EDOC_ID, RESERVED_TOKENS, WORD2VEC_PATH, EDOC_TOK, DatasetConfig, OUTPUTS_EVAL_DIR
     
 from utils import create_argparse_and_update_hp, save_run_data, update_moving_avg, sync_run_data_to_bigstore, save_file
-
+from models.nn_utils import setup_gpus
 
 
 

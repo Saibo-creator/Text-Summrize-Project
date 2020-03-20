@@ -133,7 +133,7 @@ class LanguageModel(object):
                     else:
                         for t in range(len(outputs)):
                             loss += self.loss_fn(outputs[t], batch_trg[t])
-                    loss_value = loss.item() / self.hp.lm_seq_len
+                    loss_value = loss.item() / self.hp.lm_seq_len    # normalize by number of non-pad tokens
 
                     # We only do bptt until lm_seq_len. Copy the hidden states so that we can continue the sequence
                     if self.ngpus > 1:
@@ -217,6 +217,11 @@ class LanguageModel(object):
         os.mkdir(tb_path)
         os.mkdir(tb_path + 'train/')
         os.mkdir(tb_path + 'val/')
+
+        with open(tb_path+'training_info.txt',mode='w') as ftraining_info:
+            ftraining_info.write("number of batch for training={0}\n".format(train_nbatches))
+        ftraining_info.close()
+
         self.tb_tr_writer = SummaryWriter(tb_path + 'train/')
         self.tb_val_writer = SummaryWriter(tb_path + 'val/')
 
@@ -254,6 +259,10 @@ class LanguageModel(object):
         n_params = sum([p.nelement() for p in self.model.parameters()])
         print('Number of parameters: {}'.format(n_params))
 
+        with open(tb_path+'traning_info.txt',mode='a') as ftraining_info:
+            ftraining_info.write("Number of parameters to optimize:={0}\n".format(n_params))
+        ftraining_info.close()
+
         #
         # Get optimizer
         #
@@ -265,6 +274,11 @@ class LanguageModel(object):
                 self.model.tgt_embed[0].d_model
             self.optimizer = NoamOpt(d_model, 2, self.hp.noam_warmup,
                                      torch.optim.Adam(self.model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9))
+
+
+        with open(tb_path+'traning_info.txt',mode='a') as ftraining_info:
+            ftraining_info.write("optimizer used :={0}\n".format(self.hp.optim))
+        ftraining_info.close()
 
         #
         # Train epochs
