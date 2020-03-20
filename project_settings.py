@@ -67,7 +67,7 @@ class DatasetConfig(object):
             self.clf_path = 'stable_checkpoints/clf/cnn/amazon/batch_size_256-clf_lr_0.0001/' \
                             'clf_e15_l0.7415_a0.7115_d0.0000.pt'
             self.sum_path = 'stable_checkpoints/sum/mlstm/amazon/batch_size_16-notes_both-sum_lr_0.0005-tau_2.0/' \
-                            'sum_e1_tot4.14_r1f0.26.pt'
+                            'sum_e1_tot4.14_r1f0.26.pt' 
             self.autoenc_path = None
             
         elif name == 'hotel':
@@ -91,8 +91,7 @@ class DatasetConfig(object):
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt'
             self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e3_l0.7940_a0.6464_d0.0000.pt'
-            self.sum_path = 'checkpoints/sum/train/hotel/batch_size_8/sum_e2_sub1.pt'
-            #self.sum_path = 'checkpoints/sum/mlstm/hotel/batch_size_8-notes_test/sum_e12_tot28.10_r1f0.14.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel/batch_size_8/sum_e2_sub1.pt'   #tot=3.317
             self.autoenc_path = None
             
             
@@ -115,8 +114,7 @@ class DatasetConfig(object):
 
             # Trained models
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt'
-            self.lm_path = 'stable_checkpoints/lm/mlstm/yelp/batch_size_512-lm_lr_0.001-notes_data260_fixed/' \
-                           'lm_e24_2.88.pt'
+            self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/default_f6c25511/lm_e6_3.08.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e49_l2.9461_a0.5646_d0.0000.pt'
             self.sum_path = '../MeanSum_origin/MeanSum/stable_checkpoints/sum/mlstm/yelp/batch_size_16-notes_cycloss_honly-sum_lr_0.0005-tau_2.0/sum_e0_tot3.32_r1f0.27.pt'
             #self.sum_path = 'checkpoints/sum/mlstm/hotel/batch_size_8-notes_test/sum_e12_tot28.10_r1f0.14.pt'
