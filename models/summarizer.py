@@ -744,6 +744,16 @@ class Summarizer(object):
                         'tot{:.2f}_r1f{:.2f}'.format(stats_avgs['total_loss'],
                                                      evaluator.avg_avg_rouges['rouge1']['f']))
 
+
+
+
+
+
+
+
+
+
+
     def test(self):
         """
         Run trained model on test set
