@@ -628,7 +628,8 @@ class Summarizer(object):
         if self.hp.sum_clf:
             if len(self.opt.load_clf) > 0:
                 print('Loading pretrained classifier from: {}'.format(self.opt.load_clf))
-                self.clf_model = torch.load(self.opt.load_clf)['model']
+                #self.clf_model = torch.load(self.opt.load_clf)['model']
+                self.clf_model = None
             else:
                 print('Path to pretrained classifer not given: training from scratch')
                 cnn_output_size = self.hp.cnn_n_feat_maps * len(self.hp.cnn_filter_sizes)
@@ -640,7 +641,7 @@ class Summarizer(object):
                 ]))
             clf_params = [p for p in self.clf_model.parameters() if p.requires_grad]
 
-            if self.hp.sum_clf_lr > 0:
+            if self.hp.sum_clf_lr > 0: #hp.sum_clf_lr=0.0 by default cf project_settings.py
                 self.clf_optimizer = OptWrapper(self.clf_model, self.hp.sum_clip,
                                                 optim.Adam(clf_params, lr=self.hp.sum_clf_lr))
                 self.optimizers['clf_optimizer'] = self.clf_optimizer

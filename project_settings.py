@@ -113,8 +113,9 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_dataset/processed/subwordenc_32000_maxrevs260_fixed.pkl'
 
             # Trained models
-            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt'
-            self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt'
+            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask/lm_e24_2.88yelp.pt'
             self.clf_path = ''
             self.sum_path = ''
             #self.sum_path = 'checkpoints/sum/mlstm/hotel/batch_size_8-notes_test/sum_e12_tot28.10_r1f0.14.pt'
