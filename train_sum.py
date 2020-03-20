@@ -65,7 +65,7 @@ if __name__ == '__main__':
                              'This is so we can show examples of summaries on the same store'
                              'when given different reviews.')
 
-    parser.add_argument('--print_every_nbatches', default=20,
+    parser.add_argument('--print_every_nbatches', default=1,
                         help="Print stats every n batches")
     parser.add_argument('--gpus', default='0',
                         help="CUDA visible devices, e.g. 2,3")
