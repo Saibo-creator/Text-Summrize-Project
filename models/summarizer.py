@@ -916,16 +916,18 @@ class Summarizer(object):
                         dic[k] = values[j]
                     results.append(dic)
         else:
+            for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
+                summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
-            for j in range(len(summaries_batch)):
-                dic = {'docs': texts[j],
-                       'summary': summaries_batch[j],
-                       'rating': ratings_batch[j].item(),
-                       'pred_rating': None,    #changed
-                       'pred_prob': None}      #changed
-                for k, values in metadata.items():
-                    dic[k] = values[j]
-                results.append(dic)
+                for j in range(len(summaries_batch)):
+                    dic = {'docs': texts[j],
+                           'summary': summaries_batch[j],
+                           'rating': ratings_batch[j].item(),
+                           'pred_rating': None,    #changed
+                           'pred_prob': None}      #changed
+                    for k, values in metadata.items():
+                        dic[k] = values[j]
+                    results.append(dic)
 
 
         # Save summaries, rouge scores, and rouge distributions figures
