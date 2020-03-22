@@ -795,10 +795,10 @@ class Summarizer(object):
         #
 
         if self.opt.cpu:
-            ckpt = torch.load(opt.load_test_sum, map_location='cpu')
+            ckpt = torch.load(self.opt.load_test_sum, map_location='cpu')
 
         elif torch.cuda.is_available():
-            ckpt = torch.load(opt.load_test_sum, map_location=lambda storage, loc: storage)
+            ckpt = torch.load(self.opt.load_test_sum, map_location=lambda storage, loc: storage)
         
         self.sum_model = ckpt['sum_model']
         # We should always be loading from the checkpoint, but I wasn't saving it earlier
