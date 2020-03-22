@@ -5,7 +5,14 @@ import os
 from shutil import copyfile
 import ast
 
+dataset_path='../hotel_mask_dataset/'
 
+if not os.path.exists(dataset_path):
+	os.mkdir(dataset_path)
+
+processd_path=os.path.join(dataset_path,'processed')
+if not os.path.exists(processd_path):
+	os.mkdir(processd_path)
 
 test=pd.read_csv('./test.csv')
 train=pd.read_csv('./train.csv')
@@ -18,10 +25,10 @@ tot_filtered['text_filtered_per_sentence']=tot_filtered['text_filtered_per_sente
 
 
 df=tot_filtered.sort_values('hotel_url')[['hotel_url','text_filtered_per_sentence','rating']]
-df.to_json('../hotel_mask_dataset/review_mask.json',orient='records')
+df.to_json(os.path.join(dataset_path,'review_mask.json'),orient='records')
 
-src='../hotel_mask_dataset/review_mask.json'
-dst='../hotel_mask_dataset/business_mask.json'
+src=os.path.join(dataset_path,'review_mask.json')
+dst=os.path.join(dataset_path,'business_mask.json')
 copyfile(src, dst)
 
 

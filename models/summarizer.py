@@ -878,8 +878,9 @@ class Summarizer(object):
         # it's just one pass through the test set -- which I'll run infrequently to evaluate a trained model.
         # I think that it takes more time is fine.
         #
+        results = []
         if self.hp.sum_clf:
-            results = []
+            
             accuracy = 0.0
             true_rating_dist = defaultdict(int)  # used to track distribution of mean ratings
             per_rating_counts = defaultdict(int)  # these are predicted ratnigs
@@ -914,17 +915,17 @@ class Summarizer(object):
                     for k, values in metadata.items():
                         dic[k] = values[j]
                     results.append(dic)
-            else:
+        else:
 
-                for j in range(len(summaries_batch)):
-                    dic = {'docs': texts[j],
-                           'summary': summaries_batch[j],
-                           'rating': ratings_batch[j].item(),
-                           'pred_rating': None,    #changed
-                           'pred_prob': None}      #changed
-                    for k, values in metadata.items():
-                        dic[k] = values[j]
-                    results.append(dic)
+            for j in range(len(summaries_batch)):
+                dic = {'docs': texts[j],
+                       'summary': summaries_batch[j],
+                       'rating': ratings_batch[j].item(),
+                       'pred_rating': None,    #changed
+                       'pred_prob': None}      #changed
+                for k, values in metadata.items():
+                    dic[k] = values[j]
+                results.append(dic)
 
 
         # Save summaries, rouge scores, and rouge distributions figures
