@@ -32,7 +32,7 @@ if __name__ == '__main__':
     hp, run_name, parser = create_argparse_and_update_hp(hp)
 
     parser.add_argument('--dataset', default='hotel',
-                        help='yelp,amazon,hotel')
+                        help='yelp,amazon,hotel,hote_musk')
     parser.add_argument('--az_cat', default=None,
                         help='"Movies_and_TV" or "Electronics"'
                              'Only train on one category')
@@ -65,7 +65,7 @@ if __name__ == '__main__':
                              'This is so we can show examples of summaries on the same store'
                              'when given different reviews.')
 
-    parser.add_argument('--print_every_nbatches', default=20,
+    parser.add_argument('--print_every_nbatches', default=1,
                         help="Print stats every n batches")
     parser.add_argument('--gpus', default='0',
                         help="CUDA visible devices, e.g. 2,3")
