@@ -878,41 +878,54 @@ class Summarizer(object):
         # it's just one pass through the test set -- which I'll run infrequently to evaluate a trained model.
         # I think that it takes more time is fine.
         #
-        results = []
-        accuracy = 0.0
-        true_rating_dist = defaultdict(int)  # used to track distribution of mean ratings
-        per_rating_counts = defaultdict(int)  # these are predicted ratnigs
-        per_rating_acc = defaultdict(int)
+        if self.hp.sum_clf:
+            results = []
+            accuracy = 0.0
+            true_rating_dist = defaultdict(int)  # used to track distribution of mean ratings
+            per_rating_counts = defaultdict(int)  # these are predicted ratnigs
+            per_rating_acc = defaultdict(int)
 
-        clf_model = self.sum_model.module.clf_model if self.ngpus > 1 else self.sum_model.clf_model
-        if self.opt.test_group_ratings:
-            test_iter  = grouped_reviews_iter(self.hp.n_docs)
+            clf_model = self.sum_model.module.clf_model if self.ngpus > 1 else self.sum_model.clf_model
+            if self.opt.test_group_ratings:
+                test_iter  = grouped_reviews_iter(self.hp.n_docs)
 
-        for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
-            summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
-            acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
-                classify_summ_batch(clf_model, summaries_batch, ratings_batch, self.dataset,
-                                    per_rating_counts, per_rating_acc)
+            for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
+                summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
+                acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
+                    classify_summ_batch(clf_model, summaries_batch, ratings_batch, self.dataset,
+                                        per_rating_counts, per_rating_acc)
 
-            for rating in ratings_batch:
-                true_rating_dist[rating.item()] += 1
+                for rating in ratings_batch:
+                    true_rating_dist[rating.item()] += 1
 
-            if acc is None:
-                print('Summary was too short to classify')
-                pred_ratings = [None for _ in range(len(summaries_batch))]
-                pred_probs = [None for _ in range(len(summaries_batch))]
+                if acc is None:
+                    print('Summary was too short to classify')
+                    pred_ratings = [None for _ in range(len(summaries_batch))]
+                    pred_probs = [None for _ in range(len(summaries_batch))]
+                else:
+                    accuracy = update_moving_avg(accuracy, acc.item(), i + 1)
+
+                for j in range(len(summaries_batch)):
+                    dic = {'docs': texts[j],
+                           'summary': summaries_batch[j],
+                           'rating': ratings_batch[j].item(),
+                           'pred_rating': pred_ratings[j].item(),
+                           'pred_prob': pred_probs[j].item()}
+                    for k, values in metadata.items():
+                        dic[k] = values[j]
+                    results.append(dic)
             else:
-                accuracy = update_moving_avg(accuracy, acc.item(), i + 1)
 
-            for j in range(len(summaries_batch)):
-                dic = {'docs': texts[j],
-                       'summary': summaries_batch[j],
-                       'rating': ratings_batch[j].item(),
-                       'pred_rating': pred_ratings[j].item(),
-                       'pred_prob': pred_probs[j].item()}
-                for k, values in metadata.items():
-                    dic[k] = values[j]
-                results.append(dic)
+                for j in range(len(summaries_batch)):
+                    dic = {'docs': texts[j],
+                           'summary': summaries_batch[j],
+                           'rating': ratings_batch[j].item(),
+                           'pred_rating': None,    #changed
+                           'pred_prob': None}      #changed
+                    for k, values in metadata.items():
+                        dic[k] = values[j]
+                    results.append(dic)
+
 
         # Save summaries, rouge scores, and rouge distributions figures
         dataset_dir = self.opt.dataset if self.opt.az_cat is None else 'amazon_{}'.format(self.opt.az_cat)
@@ -924,14 +937,18 @@ class Summarizer(object):
         summs_out_fp = os.path.join(out_dir, 'summaries.json')
         save_file(results, summs_out_fp)
 
-        true_rating_dist = {k: v / float(sum(true_rating_dist.values())) for k, v in true_rating_dist.items()}
-        out_fp = os.path.join(out_dir, 'classificaton_acc.json')
-        save_file({'acc': accuracy, 'per_rating_acc': per_rating_acc, 'true_rating_dist': true_rating_dist}, out_fp)
 
-        print('-' * 50)
-        print('Stats:')
-        print('Rating accuracy: ', accuracy)
-        print('Per rating accuracy: ', dict(per_rating_acc))
+        if self.hp.sum_clf:
+            true_rating_dist = {k: v / float(sum(true_rating_dist.values())) for k, v in true_rating_dist.items()}
+            out_fp = os.path.join(out_dir, 'classificaton_acc.json')
+            save_file({'acc': accuracy, 'per_rating_acc': per_rating_acc, 'true_rating_dist': true_rating_dist}, out_fp)
+
+            print('-' * 50)
+            print('Stats:')
+            print('Rating accuracy: ', accuracy)
+            print('Per rating accuracy: ', dict(per_rating_acc))
+
+        
         out_fp = os.path.join(out_dir, 'stats.json')
         save_file(stats_avgs, out_fp)
 

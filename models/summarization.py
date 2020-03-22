@@ -114,7 +114,7 @@ class SummarizationModel(nn.Module):
         docs_enc_h, docs_enc_c = hiddens[-1], cells[-1]  # [_, n_layers, hidden]
 
         ##########################################################
-        # DECODE INTO SUMMARIES AND / OR ORIGINAL REVIEWS
+        # Demonstrate autoencoder behavior
         ##########################################################
 
         # Autoencoder - decode into original reviews
@@ -150,6 +150,11 @@ class SummarizationModel(nn.Module):
             if self.hp.autoenc_only:
                 dummy_summ_texts = ['a dummy review' for _ in range(batch_size)]
                 return self.stats, dummy_summ_texts
+
+
+        ##########################################################
+        # Meansum 
+        ##########################################################
 
         # Decode into summary
         if not self.hp.concat_docs:
@@ -289,34 +294,34 @@ class SummarizationModel(nn.Module):
                         if tb_writer:
                             tb_writer.add_text('auto_or_rec/rec_review', texts[0], tb_step)
 
-        ##########################################################
-        # DISCRIMINATOR
-        ##########################################################
-        # TODO: Remove this -- discriminator is not used
+        # ##########################################################
+        # # DISCRIMINATOR
+        # ##########################################################
+        # # TODO: Remove this -- discriminator is not used
 
-        # Goal: self.discrim_model should be good at distinguishing between generated canonical review and
-        # original reviews. The adv_loss returns difference between gen and real (plus the gradient penalty)
-        # To train the discriminator, we want to minimize this value (gen is small, real is large)
-        # To train the rest, want to maximize gen (or minimize -gen)
-        if adv_step == 'discrim':
-            if (self.hp.discrim_model == 'cnn') and (summ_probs.size(1) < 5):  # conv filters are 3,4,5
-                print('Summary length is less than 5... skipping Discriminator model because it uses a CNN '
-                      'with a convolution kernel of size 5')
-            else:
-                real_ids_onehot = convert_to_onehot(real_ids, self.dataset.subwordenc.vocab_size)
-                result = self.discrim_model(real_ids_onehot.float().detach().requires_grad_(),
-                                            summ_probs.detach().requires_grad_())
-                gen_mean, real_mean, grad_pen = result[0], result[1], result[2]
-                wass_loss = gen_mean - real_mean
-                grad_pen_loss = self.hp.wgan_lam * grad_pen
+        # # Goal: self.discrim_model should be good at distinguishing between generated canonical review and
+        # # original reviews. The adv_loss returns difference between gen and real (plus the gradient penalty)
+        # # To train the discriminator, we want to minimize this value (gen is small, real is large)
+        # # To train the rest, want to maximize gen (or minimize -gen)
+        # if adv_step == 'discrim':
+        #     if (self.hp.discrim_model == 'cnn') and (summ_probs.size(1) < 5):  # conv filters are 3,4,5
+        #         print('Summary length is less than 5... skipping Discriminator model because it uses a CNN '
+        #               'with a convolution kernel of size 5')
+        #     else:
+        #         real_ids_onehot = convert_to_onehot(real_ids, self.dataset.subwordenc.vocab_size)
+        #         result = self.discrim_model(real_ids_onehot.float().detach().requires_grad_(),
+        #                                     summ_probs.detach().requires_grad_())
+        #         gen_mean, real_mean, grad_pen = result[0], result[1], result[2]
+        #         wass_loss = gen_mean - real_mean
+        #         grad_pen_loss = self.hp.wgan_lam * grad_pen
 
-            adv_loss = wass_loss + grad_pen_loss
-            self.stats.update({'wass_loss': wass_loss, 'grad_pen_loss': grad_pen_loss, 'adv_loss': adv_loss})
-        elif adv_step == 'gen':
-            dummy_real = torch.zeros_like(summ_probs).long()
-            result = self.discrim_model(dummy_real, summ_probs)
-            gen_mean = result[0]
-            self.stats['adv_gen_loss'] = -1 * gen_mean
+        #     adv_loss = wass_loss + grad_pen_loss
+        #     self.stats.update({'wass_loss': wass_loss, 'grad_pen_loss': grad_pen_loss, 'adv_loss': adv_loss})
+        # elif adv_step == 'gen':
+        #     dummy_real = torch.zeros_like(summ_probs).long()
+        #     result = self.discrim_model(dummy_real, summ_probs)
+        #     gen_mean = result[0]
+        #     self.stats['adv_gen_loss'] = -1 * gen_mean
 
         ##########################################################
         # CLASSIFIER
