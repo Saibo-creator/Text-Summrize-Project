@@ -6,6 +6,8 @@ SAVED_MODELS_DIR = 'checkpoints/'
 
 OUTPUTS_DIR = 'outputs/'
 OUTPUTS_EVAL_DIR = os.path.join(OUTPUTS_DIR, 'eval/')
+OUTPUTS_COMPAR_DIR = os.path.join(OUTPUTS_DIR, 'compar/')
+
 
 WORD2VEC_PATH = 'datasets/GoogleNews-vectors-negative300.bin'  # for extractive method
 
@@ -89,7 +91,8 @@ class DatasetConfig(object):
 
             # Trained models
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt'
-            self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt'
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt'
+            self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e24_2.88yelp.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e3_l0.7940_a0.6464_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel/batch_size_8/sum_e2_sub1.pt'   #tot=3.317
             self.autoenc_path = None

@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 25 20:44:16 2020
+
+@author: saibo
+"""
 # run_evaluations.py
 
 """
@@ -8,6 +15,7 @@ Usage:
 worst_review,best_review --tau=2.0 --gpus=0 --n_docs=8 --batch_size=16
 2. python run_evaluations.py --summ_baselines=lm_autoenc,extractive --tau=2.0 \
 --gpus=1 --n_docs=8 --batch_size=4
+
 3. python run_evaluations.py --clf_baseline --tau=2.0 \
 --gpus=2 --n_docs=8 --batch_size=4
 
@@ -68,14 +76,16 @@ class Evaluations(object):
         batch_size = self.hp.batch_size if method == 'lm_autoenc' else 1
         dl = self.get_test_set_data_iter(batch_size=batch_size)
 
-        if self.opt.cpu:
-            clf_model = torch.load(self.opt.load_clf,map_location='cpu')['model']
+        clf_model=None
+        # remove clf 
+        # if self.opt.cpu:
+        #     clf_model = torch.load(self.opt.load_clf,map_location='cpu')['model']
 
-        elif torch.cuda.is_available():
-            clf_model = torch.load(self.opt.load_clf)['model']
+        # elif torch.cuda.is_available():
+        #     clf_model = torch.load(self.opt.load_clf)['model']
 
-        else:
-            raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
+        # else:
+        #     raise Exception('You should run on a cuda machine to load and use the classifcation model or turn on the cpu mode')
 
         print('\n', '=' * 50)
         print('Running {} baseline'.format(method))
@@ -140,7 +150,7 @@ class Evaluations(object):
         print('-' * 50)
         print('Rating accuracy: ', acc)
         print('NLL: ', avg_nll)
-        print('Per rating accuracy: ', dict(per_rating_acc))
+        print('Per rating accuracy: ', per_rating_acc)
         for stat, rouge_dict in evaluator.get_avg_stats_dicts().items():
             print('-' * 50)
             print(stat.upper())
@@ -181,6 +191,10 @@ class Evaluations(object):
                 summary = summarizer.summarize(SummDataset.concat_docs(src_docs, edok_token=False),
                                                limit=self.dataset.conf.extractive_max_len)
                 evaluator.batch_update_avg_rouge([summary], [src_docs])
+
+
+                acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs =None,None,None,None,None
+                '''
                 acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
                     classify_summ_batch(clf_model, [summary], [ratings[j]], self.dataset,
                                         per_rating_counts, per_rating_acc)
@@ -191,14 +205,17 @@ class Evaluations(object):
                 else:
                     pred_rating, pred_prob = pred_ratings[j].item(), pred_probs[j].item()
                     accuracy = update_moving_avg(accuracy, acc, i * len(texts) + j + 1)
+                '''
 
+                pred_rating, pred_prob = None, None
                 dic = {'docs': text, 'summary': summary, 'rating': ratings[j].item(),
                        'pred_rating': pred_rating, 'pred_prob': pred_prob}
                 for k, values in metadata.items():
                     dic[k] = values[j]
                 summaries.append(dic)
 
-        return evaluator, summaries, accuracy.item(), per_rating_acc
+        # return evaluator, summaries, accuracy.item(), per_rating_acc
+        return evaluator, summaries, accuracy, per_rating_acc
 
     def ledes_baseline(self, data_iter, n=1, clf_model=None):
         """
@@ -242,6 +259,9 @@ class Evaluations(object):
 
                 summary = ' '.join(summary)
                 evaluator.batch_update_avg_rouge([summary], [src_docs])
+
+                acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs =None,None,None,None,None
+                '''
                 acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
                     classify_summ_batch(clf_model, [summary], [ratings[j]], self.dataset,
                                         per_rating_counts, per_rating_acc)
@@ -252,14 +272,16 @@ class Evaluations(object):
                 else:
                     pred_rating, pred_prob = pred_ratings[j].item(), pred_probs[j].item()
                     accuracy = update_moving_avg(accuracy, acc, i * len(texts) + j + 1)
-
+                '''
+                pred_rating, pred_prob = None, None
                 dic = {'docs': text, 'summary': summary, 'rating': ratings[j].item(),
                        'pred_rating': pred_rating, 'pred_prob': pred_prob}
                 for k, values in metadata.items():
                     dic[k] = values[j]
                 summaries.append(dic)
 
-        return evaluator, summaries, accuracy.item(), per_rating_acc
+        # return evaluator, summaries, accuracy.item(), per_rating_acc
+        return evaluator, summaries, accuracy, per_rating_acc
 
     def best_or_worst_review_baseline(self, data_iter, method='best', clf_model=None):
         """
@@ -299,7 +321,8 @@ class Evaluations(object):
                         bw_doc = doc
 
                 evaluator.update_with_evaluator(bw_evaluator)
-
+                acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs =None,None,None,None,None
+                '''
                 try:
                     acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
                         classify_summ_batch(clf_model, [bw_doc], [ratings[j]], self.dataset,
@@ -316,14 +339,16 @@ class Evaluations(object):
                 else:
                     pred_rating, pred_prob = pred_ratings[j].item(), pred_probs[j].item()
                     accuracy = update_moving_avg(accuracy, acc, i * len(texts) + j + 1)
-
+                '''
+                pred_rating, pred_prob = None, None
                 dic = {'docs': text, 'summary': bw_doc, 'rating': ratings[j].item(),
                        'pred_rating': pred_rating, 'pred_prob': pred_prob}
                 for k, values in metadata.items():
                     dic[k] = values[j]
                 summaries.append(dic)
 
-        return evaluator, summaries, accuracy.item(), per_rating_acc
+        # return evaluator, summaries, accuracy.item(), per_rating_acc
+        return evaluator, summaries, accuracy, per_rating_acc
 
     def lm_autoenc_baseline(self, data_iter, clf_model=None):
         """
@@ -412,10 +437,13 @@ class Evaluations(object):
         #
         results = []
         accuracy = 0.0
-        per_rating_counts = defaultdict(int)
+        #per_rating_counts = defaultdict(int)
         per_rating_acc = defaultdict(int)
         for i, (texts, ratings_batch, metadata) in enumerate(data_iter):
             summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
+            
+            #acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs =None,None,None,None,None
+            '''
             acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
                 classify_summ_batch(clf_model, summaries_batch, ratings_batch, self.dataset,
                                     per_rating_counts, per_rating_acc)
@@ -426,18 +454,20 @@ class Evaluations(object):
                 pred_probs = [None for _ in range(len(summaries_batch))]
             else:
                 accuracy = update_moving_avg(accuracy, acc, i + 1)
+            '''
 
             for j in range(len(summaries_batch)):
                 dic = {'docs': texts[j],
                        'summary': summaries_batch[j],
-                       'rating': ratings_batch[j].item(),
-                       'pred_rating': pred_ratings[j].item(),
-                       'pred_prob': pred_probs[j].item()}
+                       'rating': None,#ratings_batch[j].item(),
+                       'pred_rating': None,#pred_ratings[j].item(),
+                       'pred_prob': None,} #pred_probs[j].item()}
                 for k, values in metadata.items():
                     dic[k] = values[j]
                 results.append(dic)
 
-        return evaluator, results, accuracy.item(), per_rating_acc
+        # return evaluator, results, accuracy.item(), per_rating_acc
+        return evaluator, summaries, accuracy, per_rating_acc
 
     def run_clf_baseline(self):
         """

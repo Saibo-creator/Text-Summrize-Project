@@ -30,7 +30,7 @@ from models.summarization import SummarizationModel
 from models.text_cnn import BasicTextCNN
 from pretrain_classifier import TextClassifier
 from project_settings import HParams, SAVED_MODELS_DIR, \
-    EDOC_ID, RESERVED_TOKENS, WORD2VEC_PATH, EDOC_TOK, DatasetConfig, OUTPUTS_EVAL_DIR
+    EDOC_ID, RESERVED_TOKENS, WORD2VEC_PATH, EDOC_TOK, DatasetConfig, OUTPUTS_EVAL_DIR, OUTPUTS_COMPAR_DIR
 from utils import create_argparse_and_update_hp, save_run_data, update_moving_avg, sync_run_data_to_bigstore, save_file
 
 
@@ -192,72 +192,27 @@ class Summarizer(object):
 
             # Adversarial
             discrim_gn = -1.0
-            if self.hp.sum_discrim:
-                # Get batch of real reviews (but not for the original reviews) by rotating original batch
-                # Note: these don't have any special tokens
-                texts_rotated = [SummDataset.split_docs(text)[0] for text in texts]  # first review
-                texts_rotated = texts_rotated[1:] + [texts_rotated[0]]  # rotate
-                docs_ids_rot, _, _ = self.dataset.prepare_batch(texts_rotated, ratings)  # [batch, max_len]
-
-                # Train discriminator
-                output = self.sum_model(docs_ids, labels,
-                                        cycle_tgt_ids=cycle_tgt_ids,
-                                        extract_summ_ids=extract_summ_ids,
-                                        tau=cur_tau,
-                                        adv_step='discrim', real_ids=docs_ids_rot,
-                                        minibatch_idx=s, print_every_nbatches=self.opt.print_every_nbatches,
-                                        tb_writer=tb_writer, tb_step=step,
-                                        wass_loss=stats_avgs['wass_loss'],
-                                        grad_pen_loss=stats_avgs['grad_pen_loss'],
-                                        adv_gen_loss=stats_avgs['adv_gen_loss'],
-                                        clf_loss=stats_avgs['clf_loss'],
-                                        clf_acc=stats_avgs['clf_acc'],
-                                        clf_avg_diff=stats_avgs['clf_avg_diff'])
-                fwd_stats, summ_texts = self.unpack_sum_model_output(output)
-                stats = self.update_dict(stats, fwd_stats)
-                if discrim_optimizer:
-                    (stats['adv_loss']).backward(retain_graph=True)
-                    discrim_gn = calc_grad_norm(self.discrim_model)
-                    discrim_optimizer.step()
-
-                # Train generator
-                output = self.sum_model(docs_ids, labels,
-                                        cycle_tgt_ids=cycle_tgt_ids,
-                                        extract_summ_ids=extract_summ_ids,
-                                        tau=cur_tau,
-                                        adv_step='gen',
-                                        minibatch_idx=s, print_every_nbatches=self.opt.print_every_nbatches,
-                                        tb_writer=tb_writer, tb_step=step,
-                                        wass_loss=stats_avgs['wass_loss'],
-                                        grad_pen_loss=stats_avgs['grad_pen_loss'],
-                                        adv_gen_loss=stats_avgs['adv_gen_loss'],
-                                        clf_loss=stats_avgs['clf_loss'],
-                                        clf_acc=stats_avgs['clf_acc'],
-                                        clf_avg_diff=stats_avgs['clf_avg_diff'])
-                stats, summ_texts = self.unpack_sum_model_output(output)
-                stats = self.update_dict(stats, fwd_stats)
-                if sum_optimizer:
-                    retain_graph = (clf_optimizer is not None) or (sum_optimizer is not None)
-                    (stats['adv_gen_loss']).backward(retain_graph=retain_graph)
-            else:
-                output = self.sum_model(docs_ids, labels,
-                                        cycle_tgt_ids=cycle_tgt_ids,
-                                        extract_summ_ids=extract_summ_ids,
-                                        tau=cur_tau,
-                                        adv_step=None,
-                                        minibatch_idx=s, print_every_nbatches=self.opt.print_every_nbatches,
-                                        tb_writer=tb_writer, tb_step=step,
-                                        wass_loss=stats_avgs['wass_loss'],
-                                        grad_pen_loss=stats_avgs['grad_pen_loss'],
-                                        adv_gen_loss=stats_avgs['adv_gen_loss'],
-                                        clf_loss=stats_avgs['clf_loss'],
-                                        clf_acc=stats_avgs['clf_acc'],
-                                        clf_avg_diff=stats_avgs['clf_avg_diff'])
-                fwd_stats, summ_texts = self.unpack_sum_model_output(output)
-                stats = self.update_dict(stats, fwd_stats)
+            
+            output = self.sum_model(docs_ids, labels,
+                                    cycle_tgt_ids=cycle_tgt_ids,
+                                    extract_summ_ids=extract_summ_ids,
+                                    tau=cur_tau,
+                                    adv_step=None,
+                                    minibatch_idx=s, print_every_nbatches=self.opt.print_every_nbatches,
+                                    tb_writer=tb_writer, tb_step=step,
+                                    wass_loss=stats_avgs['wass_loss'],
+                                    grad_pen_loss=stats_avgs['grad_pen_loss'],
+                                    adv_gen_loss=stats_avgs['adv_gen_loss'],
+                                    clf_loss=stats_avgs['clf_loss'],
+                                    clf_acc=stats_avgs['clf_acc'],
+                                    clf_avg_diff=stats_avgs['clf_avg_diff'])
+            fwd_stats, summ_texts = self.unpack_sum_model_output(output)
+            stats = self.update_dict(stats, fwd_stats)
 
             if self.hp.decay_tau:
                 self.tau.step()
+
+
 
             # Classifier loss
             clf_gn = -1.0
@@ -361,6 +316,35 @@ class Summarizer(object):
 
 
                 print('\n', '#' * 100, '\n')
+
+
+
+            dataset_dir = self.opt.dataset if self.opt.az_cat is None else 'amazon_{}'.format(self.opt.az_cat)
+            if self.opt.test_on_another_dataset:
+                out_dir = os.path.join(OUTPUTS_COMPAR_DIR, '{} test_on_another_dataset:{}'.format(dataset_dir,self.opt.test_on_another_dataset))
+            else:
+                out_dir = os.path.join(OUTPUTS_EVAL_DIR, dataset_dir, 'n_docs_{}'.format(self.hp.n_docs),
+                               'unsup_{}'.format(self.opt.notes))
+
+
+            if not os.path.exists(out_dir):
+                os.mkdir(out_dir)
+
+            self.opt.write_every_nbatches = 5
+            if s % self.opt.write_every_nbatches == 0:   
+
+                output_per_epoch_fp = os.path.join(out_dir, 'output_per_epoch.txt')
+                with open(output_per_epoch_fp,'w') as file:
+                    file.write(print_str)
+
+                results=[]
+
+                dic = {'docs': texts[0],
+                        'summary': summ_texts[0]}      
+                results.append(dic)
+
+                per_epoch_summs_out_fp = os.path.join(out_dir, 'per_epoch_summaries.json')
+                save_file(results, per_epoch_summs_out_fp)
 
                 # Write to tensorboard
                 if tb_writer:
@@ -760,6 +744,11 @@ class Summarizer(object):
         Run trained model on test set
         """
         self.dataset = SummDatasetFactory.get(self.opt.dataset)
+        if self.opt.test_on_another_dataset:
+            self.second_dataset = SummDatasetFactory.get(self.opt.test_on_another_dataset)
+        else:
+            self.second_dataset = SummDatasetFactory.get(self.opt.dataset)
+
         if self.opt.test_group_ratings:
             def grouped_reviews_iter(n_docs):
                 store_path = os.path.join(self.dataset.conf.processed_path, 'test',
@@ -782,7 +771,7 @@ class Summarizer(object):
             test_iter  = grouped_reviews_iter(self.hp.n_docs)
             test_iter_len = 3
         else:
-            test_iter = self.dataset.get_data_loader(split='test', sample_reviews=False, n_docs=self.hp.n_docs,
+            test_iter = self.second_dataset.get_data_loader(split='test', sample_reviews=False, n_docs=self.hp.n_docs,
                                                      category=self.opt.az_cat,
                                                      batch_size=self.hp.batch_size, shuffle=False)
             test_iter_len = test_iter.__len__()
@@ -847,6 +836,9 @@ class Summarizer(object):
 
         n_params = sum([p.nelement() for p in self.sum_model.parameters()])
         print('Number of parameters: {}'.format(n_params))
+        
+        
+
 
         # Note: starting from here, this code is similar to lm_autoenc_baseline() and the
         # end of run_summarization_baseline()
@@ -932,13 +924,27 @@ class Summarizer(object):
 
         # Save summaries, rouge scores, and rouge distributions figures
         dataset_dir = self.opt.dataset if self.opt.az_cat is None else 'amazon_{}'.format(self.opt.az_cat)
-        out_dir = os.path.join(OUTPUTS_EVAL_DIR, dataset_dir, 'n_docs_{}'.format(self.hp.n_docs),
-                               'unsup_{}'.format(self.opt.notes))
+        
+        dataset_dir = self.opt.dataset if self.opt.az_cat is None else 'amazon_{}'.format(self.opt.az_cat)
+        if self.opt.test_on_another_dataset:
+            out_dir = os.path.join(OUTPUTS_COMPAR_DIR, '{}_test_on_another_dataset:{}'.format(dataset_dir,self.opt.test_on_another_dataset))
+        else:
+            out_dir = os.path.join(OUTPUTS_EVAL_DIR, dataset_dir, 'n_docs_{}'.format(self.hp.n_docs),
+                           'unsup_{}'.format(self.opt.notes))
+
+        if not os.path.exists(OUTPUTS_COMPAR_DIR):
+            os.mkdir(OUTPUTS_COMPAR_DIR)
+
         if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
+            os.mkdir(out_dir)
 
         summs_out_fp = os.path.join(out_dir, 'summaries.json')
         save_file(results, summs_out_fp)
+
+
+        param_out_fp = os.path.join(out_dir, 'num_param.txt')
+        with open(param_out_fp,'w') as file:
+            file.write('Number of parameters: {}'.format(n_params))
 
 
         if self.hp.sum_clf:

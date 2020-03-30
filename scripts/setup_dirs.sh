@@ -7,6 +7,7 @@ cd ..
 
 mkdir -p outputs/eval/yelp/n_docs_8
 mkdir -p outputs/eval/amazon/n_docs_8
+mkdir -p outputs/compar
 
 mkdir -p datasets/yelp_dataset/processed
 mkdir -p datasets/amazon_dataset/processed

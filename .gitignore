@@ -4,4 +4,3 @@
 *.pt
 !outputs/*.csv
 !outputs/*.json
-!outputs/eval/hotel/n_docs_8/unsup_test_with_sum_e12_pt/*.csv

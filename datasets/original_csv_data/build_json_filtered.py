@@ -25,10 +25,10 @@ tot_filtered['text_filtered_per_sentence']=tot_filtered['text_filtered_per_sente
 
 
 df=tot_filtered.sort_values('hotel_url')[['hotel_url','text_filtered_per_sentence','rating']]
-df.to_json(os.path.join(dataset_path,'review_mask.json'),orient='records')
+df.to_json(os.path.join(dataset_path,'review.json'),orient='records')
 
-src=os.path.join(dataset_path,'review_mask.json')
-dst=os.path.join(dataset_path,'business_mask.json')
+src=os.path.join(dataset_path,'review.json')
+dst=os.path.join(dataset_path,'business.json')
 copyfile(src, dst)
 
 

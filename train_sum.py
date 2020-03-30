@@ -32,7 +32,12 @@ if __name__ == '__main__':
     hp, run_name, parser = create_argparse_and_update_hp(hp)
 
     parser.add_argument('--dataset', default='hotel',
-                        help='yelp,amazon,hotel,hote_musk')
+                        help='yelp,amazon,hotel,hote_mask')
+
+    parser.add_argument('--test_on_another_dataset', default='hotel',
+                        help='yelp,amazon,hotel,hote_mask')
+
+
     parser.add_argument('--az_cat', default=None,
                         help='"Movies_and_TV" or "Electronics"'
                              'Only train on one category')
