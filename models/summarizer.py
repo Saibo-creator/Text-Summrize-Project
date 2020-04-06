@@ -840,9 +840,6 @@ class Summarizer(object):
 
         n_params = sum([p.nelement() for p in self.sum_model.parameters()])
 
-        import time
-        time.sleep(15)
-
         print('Number of parameters: {}'.format(n_params))
         
 
@@ -855,8 +852,7 @@ class Summarizer(object):
         # Run on test set
         #
         self.sum_model.eval()  # like a switch, turn off some specific layers used for training to accelerate
-        print("after eval")
-        time.sleep(15)
+
         # Note: in order to run a model trained on the Yelp dataset on the Amazon dataset,
         # you have to uncomment the following line. This is because the two models
         # have slightly different vocab_size's, and vocab_size is used inside run_epoch.
@@ -869,7 +865,7 @@ class Summarizer(object):
             stats_avgs, evaluator, summaries = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,
                                                               store_all_rouges=True, store_all_summaries=True)
-        raise ValueError('A very specific bad thing happened after print')
+        # raise ValueError('A very specific bad thing happened after print')
 
         #
         # Pass summaries through classifier
@@ -883,7 +879,6 @@ class Summarizer(object):
         #
         results = []
         if self.hp.sum_clf:
-            raise ValueError('A very specific bad thing happened')
             accuracy = 0.0
             true_rating_dist = defaultdict(int)  # used to track distribution of mean ratings
             per_rating_counts = defaultdict(int)  # these are predicted ratnigs
@@ -922,7 +917,6 @@ class Summarizer(object):
 
                 print(dic)
         else:
-            raise ValueError('A very very specific bad thing happened')
             for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
