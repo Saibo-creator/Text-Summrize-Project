@@ -92,12 +92,8 @@ if __name__ == '__main__':
     setup_gpus(opt.gpus, hp.seed)
 
     if opt.skip_clf:
-        raise ValueError('A very very very specific bad thing happened')
-
         hp.sum_clf=False
 
-    if hp.sum_clf==False:
-        raise ValueError('A very very specific bad thing happened')
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
     # command line argument
