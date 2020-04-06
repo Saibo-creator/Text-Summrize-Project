@@ -745,7 +745,7 @@ class Summarizer(object):
         """
         Run trained model on test set
         """
-
+        raise ValueError('A very specific bad thing happened at begining of test')
 
 
         self.dataset = SummDatasetFactory.get(self.opt.dataset)
