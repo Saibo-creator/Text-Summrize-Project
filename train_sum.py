@@ -81,7 +81,7 @@ if __name__ == '__main__':
                         help="if want to run on cpu, set --cpu=True")
 
     parser.add_argument('--skip_clf', default=False,
-                        help="set True if want to skip test/train clf")
+                        help="set 1 if want to skip test/train clf")
 
 
     opt = parser.parse_args()

@@ -877,7 +877,7 @@ class Summarizer(object):
         #
         results = []
         if self.hp.sum_clf:
-            
+            raise ValueError('A very specific bad thing happened')
             accuracy = 0.0
             true_rating_dist = defaultdict(int)  # used to track distribution of mean ratings
             per_rating_counts = defaultdict(int)  # these are predicted ratnigs
@@ -914,8 +914,9 @@ class Summarizer(object):
                     results.append(dic)
 
 
-                    print(dic)
+                print(dic)
         else:
+            raise ValueError('A very very specific bad thing happened')
             for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
