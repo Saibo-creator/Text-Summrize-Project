@@ -34,7 +34,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', default='hotel',
                         help='yelp,amazon,hotel,hote_mask')
 
-    parser.add_argument('--test_on_another_dataset', default='hotel',
+    parser.add_argument('--test_on_another_dataset', default=None,
                         help='yelp,amazon,hotel,hote_mask')
 
 
