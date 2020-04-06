@@ -745,7 +745,6 @@ class Summarizer(object):
         """
         Run trained model on test set
         """
-        raise ValueError('A very specific bad thing happened at begining of test')
 
 
         self.dataset = SummDatasetFactory.get(self.opt.dataset)
@@ -843,6 +842,7 @@ class Summarizer(object):
         print('Number of parameters: {}'.format(n_params))
         
         
+        
 
 
         # Note: starting from here, this code is similar to lm_autoenc_baseline() and the
@@ -865,6 +865,8 @@ class Summarizer(object):
             stats_avgs, evaluator, summaries = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,
                                                               store_all_rouges=True, store_all_summaries=True)
+        raise ValueError('A very specific bad thing happened after print')
+
         #
         # Pass summaries through classifier
         #
