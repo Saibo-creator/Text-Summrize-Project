@@ -839,10 +839,13 @@ class Summarizer(object):
             self.sum_model = DataParallelModel(self.sum_model)
 
         n_params = sum([p.nelement() for p in self.sum_model.parameters()])
+
+        import time
+        time.sleep(15)
+
         print('Number of parameters: {}'.format(n_params))
         
-        
-        
+
 
 
         # Note: starting from here, this code is similar to lm_autoenc_baseline() and the
@@ -852,7 +855,8 @@ class Summarizer(object):
         # Run on test set
         #
         self.sum_model.eval()  # like a switch, turn off some specific layers used for training to accelerate
-
+        print("after eval")
+        time.sleep(15)
         # Note: in order to run a model trained on the Yelp dataset on the Amazon dataset,
         # you have to uncomment the following line. This is because the two models
         # have slightly different vocab_size's, and vocab_size is used inside run_epoch.
