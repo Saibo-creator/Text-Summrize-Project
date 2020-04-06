@@ -94,6 +94,9 @@ if __name__ == '__main__':
     if opt.skip_clf:
         hp.sum_clf=False
 
+    if hp.sum_clf==False:
+        raise ValueError('A very very specific bad thing happened')
+
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
     # command line argument
     ds_conf = DatasetConfig(opt.dataset)
