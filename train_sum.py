@@ -92,6 +92,8 @@ if __name__ == '__main__':
     setup_gpus(opt.gpus, hp.seed)
 
     if opt.skip_clf:
+        raise ValueError('A very very very specific bad thing happened')
+
         hp.sum_clf=False
 
     if hp.sum_clf==False:
