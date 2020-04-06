@@ -2,5 +2,4 @@
 *.json
 *.csv
 *.pt
-!outputs/*.csv
-!outputs/*.json
+!outputs/
