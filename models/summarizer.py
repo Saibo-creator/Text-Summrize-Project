@@ -745,6 +745,10 @@ class Summarizer(object):
         """
         Run trained model on test set
         """
+        if not self.hp.sum_clf:
+            raise ValueError('A very specific bad thing happened')
+
+
         self.dataset = SummDatasetFactory.get(self.opt.dataset)
         if self.opt.test_on_another_dataset:
             self.second_dataset = SummDatasetFactory.get(self.opt.test_on_another_dataset)
@@ -909,8 +913,11 @@ class Summarizer(object):
                     for k, values in metadata.items():
                         dic[k] = values[j]
                     results.append(dic)
+
+
+                    print(dic)
         else:
-            raise ValueError('You should not be here')
+            raise ValueError('Oh, warning! clf was not included!')
             for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
