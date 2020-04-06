@@ -910,6 +910,7 @@ class Summarizer(object):
                         dic[k] = values[j]
                     results.append(dic)
         else:
+            raise ValueError('You should not be here')
             for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
