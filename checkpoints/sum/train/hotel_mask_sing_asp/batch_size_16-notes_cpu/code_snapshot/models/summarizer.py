@@ -450,9 +450,6 @@ class Summarizer(object):
         self.fixed_lm = None
         if len(self.opt.load_lm) > 1:
             print('Loading pretrained language model from: {}'.format(self.opt.load_lm))
-
-
-            
             self.docs_enc = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
             self.docs_enc = self.docs_enc.module if isinstance(self.docs_enc, nn.DataParallel) \
                 else self.docs_enc

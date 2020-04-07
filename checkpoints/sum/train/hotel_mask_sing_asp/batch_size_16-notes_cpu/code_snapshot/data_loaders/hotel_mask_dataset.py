@@ -21,7 +21,7 @@ from project_settings import HParams, DatasetConfig
 from utils import load_file, save_file
 
 
-class Hotel_PytorchDataset(Dataset):
+class Hotel_Mask_PytorchDataset(Dataset):
     """
     Implements Pytorch Dataset
 
@@ -92,7 +92,7 @@ class Hotel_PytorchDataset(Dataset):
         item_max_reviews = float('inf') if item_max_reviews is None else item_max_reviews
         self.item_max_reviews = item_max_reviews
 
-        self.ds_conf = DatasetConfig('hotel_mask_sing_asp')  # used for paths
+        self.ds_conf = DatasetConfig('hotel_mask')  # used for paths
 
         # Set random seed so that choice is always the same across experiments
         # Especially necessary for test set (along with shuffle=False in the DataLoader)
@@ -204,7 +204,7 @@ class Hotel_PytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        texts, ratings = zip(*[(s['text'], s['rating']) for s in reviews])
+        texts, ratings = zip(*[(s['text_filtered_per_sentence'], s['rating']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
 
@@ -284,14 +284,14 @@ class VariableNDocsSampler(Sampler):
         return len(self.dataloader_idxs)
 
 
-class Hotel_Mask_Sing_Asp_Dataset(SummReviewDataset):
+class Hotel_Mask_Dataset(SummReviewDataset):
     """
     Main class for using Hotel dataset
     """
     def __init__(self):
-        super(Hotel_Mask_Sing_Asp_Dataset, self).__init__()
-        self.name = 'hotel_mask_sing_asp'
-        self.conf = DatasetConfig('hotel_mask_sing_asp')
+        super(Hotel_Mask_Dataset, self).__init__()
+        self.name = 'hotel_mask'
+        self.conf = DatasetConfig('hotel_mask')
         self.n_ratings_labels = 5
         self.reviews = None
         self.subwordenc = load_file(self.conf.subwordenc_path)
@@ -325,7 +325,7 @@ class Hotel_Mask_Sing_Asp_Dataset(SummReviewDataset):
         """
         Return iterator over specific split in dataset
         """
-        ds = Hotel_PytorchDataset(split=split,
+        ds = Hotel_Mask_PytorchDataset(split=split,
                                 n_reviews=n_docs, n_reviews_min=n_docs_min, n_reviews_max=n_docs_max,
                                 subset=subset, seed=seed, sample_reviews=sample_reviews,
                                 item_max_reviews=self.conf.item_max_reviews)
@@ -361,7 +361,7 @@ class Hotel_Mask_Sing_Asp_Dataset(SummReviewDataset):
         item_to_reviews = defaultdict(list)
         
         for r in self.reviews[0]:
-            if len(self.subwordenc.encode(r['text'])) < review_max_len:
+            if len(self.subwordenc.encode(r['text_filtered_per_sentence'])) < review_max_len:
                 item_to_reviews[r['hotel_url']].append(r)
 
         # Calculate target amount of reviews per item
@@ -419,6 +419,6 @@ if __name__ == '__main__':
     from data_loaders.summ_dataset_factory import SummDatasetFactory
 
     hp = HParams()
-    ds = SummDatasetFactory.get('hotel_mask_sing_asp')
+    ds = SummDatasetFactory.get('hotel_mask')
     ds.save_processed_splits()
    
