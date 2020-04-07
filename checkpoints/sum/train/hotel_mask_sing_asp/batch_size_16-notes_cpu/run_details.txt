@@ -1,3 +1,3 @@
 Command:
-train_sum.py --mode=train --batch_size=16 --dataset=hotel_mask_sing_asp --cpu=True --notes=cpu
-Start time: April07_18-42-13
+train_sum.py --mode=train --batch_size=16 --dataset=hotel_mask_sing_asp --cpu=True --notes=cpu --skip_clf=1
+Start time: April07_22-49-41

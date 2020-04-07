@@ -19,3 +19,5 @@ To add a new dataset
 6.bash scripts/preprocess_data.sh hotel_mask_sing_asp_dataset.py
 
 7.在checkpoints/下面的三个sum,clf,lm中各建立一个同名dataset文件夹
+
+8. 在output/eval/下面建立一个文件夹

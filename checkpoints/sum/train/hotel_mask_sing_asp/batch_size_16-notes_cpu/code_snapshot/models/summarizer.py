@@ -327,8 +327,9 @@ class Summarizer(object):
                                'unsup_{}'.format(self.opt.notes))
 
 
+
             if not os.path.exists(out_dir):
-                os.mkdir(out_dir)
+                os.makedirs(out_dir)
 
             self.opt.write_every_nbatches = 5
             if s % self.opt.write_every_nbatches == 0:   
@@ -450,7 +451,16 @@ class Summarizer(object):
         self.fixed_lm = None
         if len(self.opt.load_lm) > 1:
             print('Loading pretrained language model from: {}'.format(self.opt.load_lm))
-            self.docs_enc = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+
+            if self.opt.cpu:
+                self.docs_enc = torch.load(self.opt.load_lm, map_location='cpu')['model'] 
+
+            elif torch.cuda.is_available():
+                self.docs_enc = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+
+            
             self.docs_enc = self.docs_enc.module if isinstance(self.docs_enc, nn.DataParallel) \
                 else self.docs_enc
         else:
@@ -469,7 +479,15 @@ class Summarizer(object):
             else:
                 # didn't pass in pretrained language model as we're training from scratch
                 # load it from the default
-                self.fixed_lm = torch.load(self.dataset.conf.lm_path)['model']  # StackedLSTMEncoder
+                if self.opt.cpu:
+                    self.fixed_lm = torch.load(self.dataset.conf.lm_path,map_location='cpu')['model']  # StackedLSTMEncoder
+
+                elif torch.cuda.is_available():
+                    self.fixed_lm = torch.load(self.dataset.conf.lm_path)['model']  # StackedLSTMEncoder
+
+
+
+
                 self.fixed_lm = self.fixed_lm.module if isinstance(self.fixed_lm, nn.DataParallel) \
                     else self.fixed_lm
 
@@ -543,7 +561,13 @@ class Summarizer(object):
         # 2. Thus, we freeze everything except for the FF / GRU model
         if self.hp.load_ae_freeze:  # load autoencoder and freeze
             # SummarizationModel
-            trained = torch.load(self.opt.load_autoenc, map_location=lambda storage, loc: storage)['sum_model']
+            if self.opt.cpu:
+                trained = torch.load(self.opt.load_autoenc, map_location='cpu')['sum_model']
+
+            elif torch.cuda.is_available():
+                trained = torch.load(self.opt.load_autoenc, map_location=lambda storage, loc: storage)['sum_model']
+
+            
             trained = trained.module if isinstance(trained, nn.DataParallel) else trained
             # self.docs_enc = trained.docs_enc
             self.docs_enc = StackedLSTMEncoder(trained.docs_enc.embed, trained.docs_enc.rnn)
@@ -612,7 +636,14 @@ class Summarizer(object):
         if self.hp.sum_clf:
             if len(self.opt.load_clf) > 0:
                 print('Loading pretrained classifier from: {}'.format(self.opt.load_clf))
-                self.clf_model = torch.load(self.opt.load_clf)['model']
+                if self.opt.cpu:
+                    self.clf_model = torch.load(self.opt.load_clf,map_location='cpu')['model']
+
+                elif torch.cuda.is_available():
+                    self.clf_model = torch.load(self.opt.load_clf)['model']
+
+
+                
                 #self.clf_model = None
             else:
                 print('Path to pretrained classifer not given: training from scratch')
