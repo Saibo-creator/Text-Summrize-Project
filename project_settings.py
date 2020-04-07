@@ -92,7 +92,7 @@ class DatasetConfig(object):
             # Trained models
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt'
             #self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt'
-            self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e24_2.88yelp.pt'
+            self.lm_path = 'checkpoints/lm/mlstm/hotel/lm_e24_2.88yelp.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e3_l0.7940_a0.6464_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel/batch_size_8/sum_e2_sub1.pt'   #tot=3.317
             self.autoenc_path = None
@@ -121,6 +121,31 @@ class DatasetConfig(object):
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask/lm_e24_2.88yelp.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask/batch_size_8-notes_batch_size_8_gpu_0_1/sum_e1_sub2.pt'
+            self.autoenc_path = None
+
+        elif name == 'hotel_mask_sing_asp':
+            # Params
+            self.review_max_len = 180
+            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.item_min_reviews = 20
+            self.item_max_reviews = 260  # 90th percentile
+            self.vocab_size = 32000  # target vocab size when building subwordenc
+
+            # Paths
+            self.dir_path = 'datasets/hotel_mask_sing_asp_dataset/'
+            ######
+            self.reviews_path = 'datasets/hotel_mask_sing_asp_dataset/review.json'
+            self.businesses_path = 'datasets/hotel_mask_sing_asp_dataset/business.json'
+            ######
+            self.processed_path = 'datasets/hotel_mask_sing_asp_dataset/processed/'
+            self.subwordenc_path = 'datasets/hotel_mask_sing_asp_dataset/processed/subwordenc_32000_maxrevs260_fixed.pkl'
+
+            # Trained models
+            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_sing_asp/lm_e24_2.88yelp.pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_sing_asp/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_8-notes_batch_size_8_gpu_0_1/sum_e1_sub2.pt'
             self.autoenc_path = None
 
 

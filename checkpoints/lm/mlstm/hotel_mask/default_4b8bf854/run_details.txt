@@ -1,3 +1,0 @@
-Command:
-pretrain_lm.py --dataset hotel_mask
-Start time: March19_00-27-33
