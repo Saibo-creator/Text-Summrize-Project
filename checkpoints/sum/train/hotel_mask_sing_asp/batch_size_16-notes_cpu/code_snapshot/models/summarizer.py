@@ -930,8 +930,8 @@ class Summarizer(object):
 
                 if acc is None:
                     print('Summary was too short to classify')
-                    pred_ratings = [None for _ in range(len(summaries_batch))]
-                    pred_probs = [None for _ in range(len(summaries_batch))]
+                    # pred_ratings = [None for _ in range(len(summaries_batch))]
+                    # pred_probs = [None for _ in range(len(summaries_batch))]
                 else:
                     accuracy = update_moving_avg(accuracy, acc.item(), i + 1)
 

@@ -14,6 +14,9 @@ from models.nn_utils import move_to_cuda, calc_clf_acc, convert_to_onehot, Label
 from project_settings import PAD_ID, EDOC_ID
 
 
+
+
+
 class SummarizationModel(nn.Module):
 
     def __init__(self, docs_enc, docs_autodec,
