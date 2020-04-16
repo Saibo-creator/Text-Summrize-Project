@@ -75,9 +75,9 @@ class DatasetConfig(object):
         elif name == 'hotel':
             # Params
             self.review_max_len = 180
-            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.extractive_max_len = 38  
             self.item_min_reviews = 20
-            self.item_max_reviews = 260  # 90th percentile
+            self.item_max_reviews = 260  
             self.vocab_size = 32000  # target vocab size when building subwordenc
 
             # Paths
