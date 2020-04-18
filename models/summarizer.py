@@ -921,7 +921,7 @@ class Summarizer(object):
 
             for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
-                acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
+                acc, per_rating_counts, per_rating_acc, pred_ratings_batch, pred_probs_batch = \
                     classify_summ_batch(clf_model, summaries_batch, ratings_batch, self.dataset,
                                         per_rating_counts, per_rating_acc)
 
@@ -930,21 +930,23 @@ class Summarizer(object):
 
                 if acc is None:
                     print('Summary was too short to classify')
-                    # pred_ratings = [None for _ in range(len(summaries_batch))]
-                    # pred_probs = [None for _ in range(len(summaries_batch))]
+                    pred_ratings_batch = [torch.LongTensor([-1]) for _ in range(len(summaries_batch))]
+                    pred_probs_batch = [torch.LongTensor([-1]) for _ in range(len(summaries_batch))]
                 else:
                     accuracy = update_moving_avg(accuracy, acc.item(), i + 1)
 
                 for j in range(len(summaries_batch)):
-                    dic = {'docs': texts[j],
-                           'summary': summaries_batch[j],
-                           'rating': ratings_batch[j].item(),
-                           'pred_rating': pred_ratings[j].item(),
-                           'pred_prob': pred_probs[j].item()}
-                    for k, values in metadata.items():
-                        dic[k] = values[j]
-                    results.append(dic)
-
+                    try:
+                        dic = {'docs': texts[j],
+                               'summary': summaries_batch[j],
+                               'rating': ratings_batch[j].item(),
+                               'pred_rating': pred_ratings_batch[j].item(),
+                               'pred_prob': pred_probs_batch[j].item()}
+                        for k, values in metadata.items():
+                            dic[k] = values[j]
+                        results.append(dic)
+                    except Exception as e:
+                        pass
 
                 print(dic)
         else:
