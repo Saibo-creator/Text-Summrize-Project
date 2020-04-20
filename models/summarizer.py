@@ -133,7 +133,7 @@ class Summarizer(object):
                                 use_stemmer=self.hp.use_stemmer,
                                 store_all=store_all_rouges)
         summaries = []  # this is only added to if store_all_summaries is True
-
+        ids = []
 
         
         for s, (texts, ratings, metadata) in enumerate(data_iter):
@@ -193,6 +193,11 @@ class Summarizer(object):
             # Adversarial
             discrim_gn = -1.0
             
+
+
+
+
+            #do summerization on the batch of texts
             output = self.sum_model(docs_ids, labels,
                                     cycle_tgt_ids=cycle_tgt_ids,
                                     extract_summ_ids=extract_summ_ids,
@@ -244,11 +249,14 @@ class Summarizer(object):
             clean_summs = []
             for idx in range(len(summ_texts)):
                 summ = summ_texts[idx]
+                doc_id = docs_ids[idx]
                 for tok in RESERVED_TOKENS:  # should just be <pad> I think
                     summ = summ.replace(tok, '')
                 clean_summs.append(summ)
                 if store_all_summaries:
                     summaries.append(summ)
+                    ids.append(doc_id)
+
 
             # Calculate log likelihood of summaries using fixed language model (the one that was used to
             # initialize the models)
@@ -399,7 +407,7 @@ class Summarizer(object):
                                        tb_writer=self.tb_val_sub_writer, tb_start_step=start_step)
                     tb_writer.add_scalar('stats/sec_per_val_subset', time.time() - start, start_step)
 
-        return stats_avgs, evaluator, summaries
+        return stats_avgs, evaluator, summaries, ids
 
     def train(self):
         """
@@ -893,7 +901,7 @@ class Summarizer(object):
         # self.dataset = SummDatasetFactory.get('yelp')
         # TODO: handle this better
         with torch.no_grad():    
-            stats_avgs, evaluator, summaries = self.run_epoch(test_iter, test_iter_len, 0, 'test',
+            stats_avgs, evaluator, summaries,ids  = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,
                                                               store_all_rouges=True, store_all_summaries=True)
         # raise ValueError('A very specific bad thing happened after print')
@@ -921,6 +929,7 @@ class Summarizer(object):
 
             for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
+                ids_batch = ids[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
                 acc, per_rating_counts, per_rating_acc, pred_ratings_batch, pred_probs_batch = \
                     classify_summ_batch(clf_model, summaries_batch, ratings_batch, self.dataset,
                                         per_rating_counts, per_rating_acc)
@@ -937,7 +946,8 @@ class Summarizer(object):
 
                 for j in range(len(summaries_batch)):
                     try:
-                        dic = {'docs': texts[j],
+                        dic = {'id':ids[j],
+                               'docs': texts[j],
                                'summary': summaries_batch[j],
                                'rating': ratings_batch[j].item(),
                                'pred_rating': pred_ratings_batch[j].item(),
@@ -954,7 +964,8 @@ class Summarizer(object):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
                 for j in range(len(summaries_batch)):
-                    dic = {'docs': texts[j],
+                    dic = {'id':ids[j],
+                           'docs': texts[j],
                            'summary': summaries_batch[j],
                            'rating': ratings_batch[j].item(),
                            'pred_rating': None,    #changed
