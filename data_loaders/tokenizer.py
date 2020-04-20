@@ -117,10 +117,10 @@ def _read_filepattern(filepattern, max_lines=None, split_on_newlines=True):
       The contents of the files as lines, if split_on_newlines is True, or
       the entire contents of each file if False.
     """
-    filenames = sorted(tf.gfile.Glob(filepattern))
+    filenames = sorted(tf.io.gfile.glob(filepattern))
     lines_read = 0
     for filename in filenames:
-        with tf.gfile.Open(filename) as f:
+        with tf.io.gfile.GFile(filename) as f:
             if split_on_newlines:
                 for line in f:
                     yield line.strip()

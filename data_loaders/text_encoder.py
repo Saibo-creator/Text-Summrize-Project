@@ -213,7 +213,7 @@ class ClassLabelEncoder(TextEncoder):
         assert not (class_labels and class_labels_fname)
 
         if class_labels_fname:
-            with tf.gfile.Open(class_labels_fname) as f:
+            with tf.io.gfile.Open(class_labels_fname) as f:
                 class_labels = [label.strip() for label in f.readlines()]
 
         self._class_labels = class_labels
@@ -249,7 +249,7 @@ class OneHotClassLabelEncoder(TextEncoder):
         assert not (class_labels and class_labels_fname)
 
         if class_labels_fname:
-            with tf.gfile.Open(class_labels_fname) as f:
+            with tf.io.gfile.Open(class_labels_fname) as f:
                 class_labels = [label.strip() for label in f.readlines()]
 
         self._class_labels = class_labels
@@ -341,7 +341,7 @@ class TokenTextEncoder(TextEncoder):
         Args:
           filename: The file to load vocabulary from.
         """
-        with tf.gfile.Open(filename) as f:
+        with tf.io.gfile.Open(filename) as f:
             tokens = [token.strip() for token in f.readlines()]
 
         def token_gen():
@@ -393,7 +393,7 @@ class TokenTextEncoder(TextEncoder):
         Args:
           filename: Full path of the file to store the vocab to.
         """
-        with tf.gfile.Open(filename, "w") as f:
+        with tf.io.gfile.Open(filename, "w") as f:
             for i in range(len(self._id_to_token)):
                 f.write(self._id_to_token[i] + "\n")
 
@@ -926,13 +926,13 @@ class SubwordTextEncoder(TextEncoder):
 
     def _load_from_file(self, filename):
         """Load from a vocab file."""
-        if not tf.gfile.Exists(filename):
+        if not tf.io.gfile.Exists(filename):
             raise ValueError("File %s not found" % filename)
-        with tf.gfile.Open(filename) as f:
+        with tf.io.gfile.Open(filename) as f:
             self._load_from_file_object(f)
 
     def store_to_file(self, filename, add_single_quotes=True):
-        with tf.gfile.Open(filename, "w") as f:
+        with tf.io.gfile.Open(filename, "w") as f:
             for subtoken_string in self._all_subtoken_strings:
                 if add_single_quotes:
                     f.write("'" + unicode_to_native(subtoken_string) + "'\n")
