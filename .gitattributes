@@ -1,1 +1,2 @@
 checkpoints/sum/train/hotel_mask_sing_asp/batch_size_8-notes_./tensorboard/train/events.out.tfevents.1586332674.iccluster038 filter=lfs diff=lfs merge=lfs -text
+checkpoints/sum/train/hotel_mask_sing_asp/batch_size_8-notes_./tensorboard/train/** filter=lfs diff=lfs merge=lfs -text
