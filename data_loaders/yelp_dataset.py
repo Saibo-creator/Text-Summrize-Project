@@ -115,6 +115,7 @@ class YelpPytorchDataset(Dataset):
                 for item, n_reviews in item_to_nreviews.items():
                     item_n = 0
                     selected_idxs = set()
+
                     while item_n < n_reviews:
                         # Keep selecting batches of reviews from this store (without replacement)
                         cur_n = random.choice(ns)
@@ -147,6 +148,27 @@ class YelpPytorchDataset(Dataset):
                         for _ in range(n_per_item):
                             self.idx_to_item[idx] = item
                             idx += 1
+
+            # import pandas as pd
+
+            # (pd.DataFrame.from_dict(data=self.idx_to_item, orient='index')\
+            #     .to_csv('idx_to_item.csv', header=False))         
+
+            # (pd.DataFrame.from_dict(data=self.idx_to_nreviews, orient='index')\
+            #     .to_csv('idx_to_nreviews.csv', header=False))  
+
+            # (pd.DataFrame.from_dict(data=self.idx_to_item_idxs, orient='index')\
+            #     .to_csv('idx_to_item_idxs.csv', header=False))    
+
+            
+            
+
+            
+            
+            
+            
+            
+
         else:
             # __getitem__ will not sample
             idx = 0
@@ -203,9 +225,10 @@ class YelpPytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        texts, ratings = zip(*[(s['text'], s['stars']) for s in reviews])
+        business_ids,texts, ratings = zip(*[(s['business_id'],s['text'], s['stars']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
+        business_id=business_ids[0]
 
         try:
             categories = '---'.join(self.items[item]['categories'])
@@ -224,7 +247,7 @@ class YelpPytorchDataset(Dataset):
         #     print(e)
         #     pdb.set_trace()
 
-        return texts, avg_rating, metadata
+        return business_id, texts, avg_rating, metadata
 
     def __len__(self):
         return self.n

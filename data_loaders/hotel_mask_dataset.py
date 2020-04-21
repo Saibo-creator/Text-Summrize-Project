@@ -204,9 +204,10 @@ class Hotel_Mask_PytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        texts, ratings = zip(*[(s['text_filtered_per_sentence'], s['rating']) for s in reviews])
+        hotel_ids,texts, ratings = zip(*[(s['hotel_url'],s['text'], s['rating']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
+        hotel_id=hotel_ids[0]
 
         try:
             categories = '---'.join(self.items[item]['categories'])
@@ -226,7 +227,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
         #     print(e)
         #     pdb.set_trace()
 
-        return texts, avg_rating, metadata
+        return hotel_url, texts, avg_rating, metadata
 
     def __len__(self):
         return self.n
