@@ -113,7 +113,7 @@ class DatasetConfig(object):
             self.businesses_path = 'datasets/hotel_mask_dataset/business.json'
             ######
             self.processed_path = 'datasets/hotel_mask_dataset/processed/'
-            self.subwordenc_path = 'datasets/hotel_mask_dataset/processed/subwordenc_32000_maxrevs260_fixed.pkl'
+            self.subwordenc_path = 'datasets/hotel_mask_dataset/processed/subwordenc/subwordenc.pkl'
 
             # Trained models
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
@@ -214,7 +214,7 @@ class HParams(object):
         self.sum_clf = True # calculate classification loss and accuracy
         self.sum_clf_lr = 0.0  # when 0, don't backwards() etc
 
-        self.sum_lr = 0.0001
+        self.sum_lr = 0.0001  #可调节
         self.sum_clip = 5.0  # clip gradients
         self.train_subset = 1.0  # train on this ratio of the training set (speed up experimentation, try to overfit)
         self.freeze_embed = True  # don't further train embedding layers
@@ -251,8 +251,8 @@ class HParams(object):
         ###############################################
         # CLASSIFIER SPECIFIC
         ###############################################
-        self.clf_lr = 0.0001
-        self.clf_clip = 5.0
+        self.clf_lr = 0.0001 #可调节 
+        self.clf_clip = 5.0 
         self.clf_onehot = True
         self.clf_mse = False  # treat as regression problem and use MSE instead of cross entropy
 
@@ -260,7 +260,7 @@ class HParams(object):
         # TRAINING AND DATA REPRESENTATION
         ###############################################
         self.seed = 1234
-        self.batch_size = 64
+        self.batch_size = 48 # 32 需要 4.8G显存 用于训练lm 
         self.n_docs = 8
         self.n_docs_min = -1
         self.n_docs_max = -1
