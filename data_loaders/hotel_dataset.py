@@ -110,7 +110,7 @@ class HotelPytorchDataset(Dataset):
                 self.idx_to_nreviews = {}
                 self.idx_to_item_idxs = {}  # indices of reviews
 
-                ns = [4, 8, 16]
+                ns = [8]#[4, 8, 16]
                 # ns = range(n_reviews_min, n_reviews_max+1, 4)  # e.g. [4,8,12,16]
                 idx = 0
                 for item, n_reviews in item_to_nreviews.items():
@@ -204,17 +204,17 @@ class HotelPytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        hotel_ids,texts, ratings = zip(*[(s['hotel_url'],s['text'], s['rating']) for s in reviews])
+        hotel_url,texts, ratings = zip(*[(s['hotel_url'],s['text'], s['rating']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
-        hotel_id=hotel_ids[0]
+        hotel_url=hotel_url[0]
 
         try:
             categories = '---'.join(self.items[item]['categories'])
         except Exception as e:
             print(e)
             categories = '---'
-        metadata={}
+        metadata={'item': item,}
 #        metadata = {'item': item,
 #                    'city': self.items[item]['city'],
 #                    'categories': categories}
@@ -413,81 +413,6 @@ class HotelDataset(SummReviewDataset):
         for split, item_to_nreviews in split_to_item_to_nreviews.items():
             out_fp = os.path.join(self.conf.processed_path, '{}/store-to-nreviews.json'.format(split))
             save_file(item_to_nreviews, out_fp)
-
-''' The following part is not necessary
-
-        def print_original_data_stats(self):
-        """
-        Calculate and print some statistics on the original dataset
-        """
-        businesses = set()
-        users = set()
-        rating_to_count = defaultdict(int)
-        n_useful, n_funny, n_cool = 0, 0, 0  # reviews marked as useful, funny, or cool
-        review_lens = []
-        tokens = set()
-
-        if self.reviews is None:
-            self.reviews = self.load_all_reviews()
-
-        for r in self.reviews:
-            businesses.add(r['review_id'])
-            users.add(r['user_id'])
-            rating_to_count[r['stars']] += 1
-            n_useful += int(r['useful'] != 0)
-            n_funny += int(r['funny'] != 0)
-            n_cool += int(r['cool'] != 0)
-
-            tokenized = self.subwordenc.encode(r['text'])
-            review_lens.append(len(tokenized))
-            # tokenized = nltk.word_tokenize(r['text'].lower())
-            # review_lens.append(len(r['text']))
-            tokens.update(tokenized)
-            print(len(tokenized))
-
-        print('Total number of reviews: {}'.format(len(self.reviews)))
-        print('Number of unique businesses: {}'.format(len(businesses)))
-        print('Number of unique users: {}'.format(len(users)))
-        print('Number of reviews per star rating:')
-        for stars, count in sorted(rating_to_count.items()):
-            print('-- {} stars: {:.2f} reviews; {} of dataset'.format(stars, count, float(count) / len(self.reviews)))
-        print('Number of reviews marked as:')
-        print('-- useful: {}'.format(n_useful))
-        print('-- funny: {}'.format(n_funny))
-        print('-- cool: {}'.format(n_cool))
-        print('Length of review:')
-        print('-- mean: {}'.format(np.mean(review_lens)))
-        print('-- median: {}'.format(np.median(review_lens)))
-        print('-- 75th percentile: {}'.format(np.percentile(review_lens, 75)))
-        print('-- 90th percentile: {}'.format(np.percentile(review_lens, 90)))
-        print('Number of unique tokens: {}'.format(len(tokens)))
-        pdb.set_trace()
-
-    def print_filtered_data_stats(self):
-        """
-        Calculate and print some statistics on the filtered dataset. This is what we use for
-        training, validation, and testing.
-        """
-
-        all_rev_lens = []
-        rating_to_count = defaultdict(int)
-        for split in ['train', 'val', 'test']:
-            dl = self.get_data_loader(split=split, n_reviews=1, sample_reviews=False,
-                                      batch_size=1, num_workers=0, shuffle=False)
-            for texts, ratings in dl:
-                for i, text in enumerate(texts):
-                    all_rev_lens.append(len(self.subwordenc.encode(text)))
-                    rating_to_count[ratings[i].item()] += 1
-
-        print('Number of reviews per star rating:')
-        for rating, count in sorted(rating_to_count.items()):
-            print('-- {} stars: {:.2f} reviews; {} of dataset'.format(rating, count,
-                                                                      float(count) / len(all_rev_lens)))
-        print('Length of review:')
-        print('-- mean: {}'.format(np.mean(all_rev_lens)))
-        print('-- 75th percentile: {}'.format(np.percentile(all_rev_lens, 75)))
-        print('-- 90th percentile: {}'.format(np.percentile(all_rev_lens, 90)))
-'''
 
 if __name__ == '__main__':
     from data_loaders.summ_dataset_factory import SummDatasetFactory

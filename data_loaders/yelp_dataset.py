@@ -109,7 +109,7 @@ class YelpPytorchDataset(Dataset):
                 self.idx_to_nreviews = {}
                 self.idx_to_item_idxs = {}  # indices of reviews
 
-                ns = [4, 8, 16]
+                ns = [8]
                 # ns = range(n_reviews_min, n_reviews_max+1, 4)  # e.g. [4,8,12,16]
                 idx = 0
                 for item, n_reviews in item_to_nreviews.items():
@@ -149,16 +149,16 @@ class YelpPytorchDataset(Dataset):
                             self.idx_to_item[idx] = item
                             idx += 1
 
-            # import pandas as pd
+            import pandas as pd
 
-            # (pd.DataFrame.from_dict(data=self.idx_to_item, orient='index')\
-            #     .to_csv('idx_to_item.csv', header=False))         
+            (pd.DataFrame.from_dict(data=self.idx_to_item, orient='index')\
+                .to_csv('idx_to_item.csv', header=False))         
 
-            # (pd.DataFrame.from_dict(data=self.idx_to_nreviews, orient='index')\
-            #     .to_csv('idx_to_nreviews.csv', header=False))  
+            (pd.DataFrame.from_dict(data=self.idx_to_nreviews, orient='index')\
+                .to_csv('idx_to_nreviews.csv', header=False))  
 
-            # (pd.DataFrame.from_dict(data=self.idx_to_item_idxs, orient='index')\
-            #     .to_csv('idx_to_item_idxs.csv', header=False))    
+            (pd.DataFrame.from_dict(data=self.idx_to_item_idxs, orient='index')\
+                .to_csv('idx_to_item_idxs.csv', header=False))    
 
             
             
