@@ -105,12 +105,42 @@ class Hotel_PytorchDataset(Dataset):
             os.path.join(self.ds_conf.processed_path, '{}/store-to-nreviews.json'.format(split)))
         self.idx_to_item = {}
 
+        ''' item_to_nreviews=store-to-nreviews.json
+          id : number of review on this hotel/store
+          "z8XIldYr65CKOz8yOI5R8A": 217,
+          "zCmwErM82hdKl4L2UixDJw": 309,
+          "zDKH2ua2DauqiWOAP9yz7g": 205,
+          "zE7pCmT1P9-tFLHcoJ7jQw": 50,
+          "zEaGcSVPDQipnRdEZp-F6g": 413,
+          "zHYjts6JqKBiKM5ZbO8eHA": 78,
+          "zINKP9rtvo2IUKTZoYJUvQ": 151,
+          "zJGtD3y-pAIGNId4codEEg": 539,
+          "zTNFyAXMEkgVP-o_HTC2xw": 143,
+          "zcZn9_qCLqRU8qsxYXtOBQ": 78,
+          "zdE82PiD6wquvjYLyhOJNA": 867,
+          "zfMA___zTTBGzZPsKZFWxw": 51,
+          "zjwdU1OdlbKTGjm-IfD4TQ": 118,
+          "zkhBU5qW_zCy0q4OEtIrsA": 217,
+          "zm-nB9xWL0RWZ-zoL7JNuQ": 76,
+          "znWHLW1pt19HzW1VY6KfCA": 468,
+          "zr42_UsWfaIF-rcp37OpwA": 144,
+          "zrTGcb83AsfyVTMrsCa65A": 352,
+          "zsYYAnHEs5qzsfazSsGkBw": 94,
+          "zwvshlu1bE2na9sXYrP0TQ": 81
+
+
+
+
+
+
+
+        '''
         if sample_reviews:
             if n_reviews_min and n_reviews_max:
                 self.idx_to_nreviews = {}
                 self.idx_to_item_idxs = {}  # indices of reviews
 
-                ns = [4, 8, 16]
+                ns = [8]#[4, 8, 16]
                 # ns = range(n_reviews_min, n_reviews_max+1, 4)  # e.g. [4,8,12,16]
                 idx = 0
                 for item, n_reviews in item_to_nreviews.items():
@@ -122,6 +152,7 @@ class Hotel_PytorchDataset(Dataset):
                         if item_n + cur_n > n_reviews:
                             break
                         available_idxs = set(range(n_reviews)).difference(selected_idxs)
+                        
                         cur_idxs = np.random.choice(list(available_idxs), cur_n, replace=False)
                         selected_idxs.update(cur_idxs)
 
@@ -180,7 +211,14 @@ class Hotel_PytorchDataset(Dataset):
         with open(self.ds_conf.businesses_path, 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 line = json.loads(line)[0]
-                items[line['hotel_url']] = line
+                items[line['hotel_url']] = line # key = hotel_url , value=  "name": "Bloom",
+                                                                  # "address": "8877 N Scottsdale Rd, Ste 402",
+                                                                  # "city": "Scottsdale",
+                                                                  # "state": "AZ",
+                                                                  # "postal_code": "85253",
+                                                                  # "latitude": 33.5663822,
+                                                                  # "longitude": -111.925581,
+
         return items
 
     def __getitem__(self, idx):
@@ -204,29 +242,20 @@ class Hotel_PytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        texts, ratings = zip(*[(s['text'], s['rating']) for s in reviews])
+        hotel_ids,texts, ratings = zip(*[(s['hotel_url'],s['text'], s['rating']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
+        hotel_id=hotel_ids[0]
 
         try:
             categories = '---'.join(self.items[item]['categories'])
         except Exception as e:
             print(e)
             categories = '---'
-        metadata={}
-#        metadata = {'item': item,
-#                    'city': self.items[item]['city'],
-#                    'categories': categories}
+        metadata={'item': item,}
 
-        # try:
-        #     metadata = {'item': item,
-        #                 'city': self.items[item]['city'],
-        #                 'categories': '---'.join(self.items[item]['categories'])}
-        # except Exception as e:
-        #     print(e)
-        #     pdb.set_trace()
 
-        return texts, avg_rating, metadata
+        return hotel_id, texts, avg_rating, metadata
 
     def __len__(self):
         return self.n

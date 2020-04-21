@@ -136,7 +136,7 @@ class Summarizer(object):
         ids = []
 
         
-        for s, (texts, ratings, metadata) in enumerate(data_iter):
+        for s, (hotel_url ,texts, ratings, metadata) in enumerate(data_iter):
             # texts: list of strs, each str is n_docs concatenated together with EDOC_TOK delimiter
             if s > nbatches:
                 break
@@ -249,13 +249,12 @@ class Summarizer(object):
             clean_summs = []
             for idx in range(len(summ_texts)):
                 summ = summ_texts[idx]
-                doc_id = docs_ids[idx]
                 for tok in RESERVED_TOKENS:  # should just be <pad> I think
                     summ = summ.replace(tok, '')
                 clean_summs.append(summ)
                 if store_all_summaries:
                     summaries.append(summ)
-                    ids.append(doc_id)
+                    ids.append(hotel_url)
 
 
             # Calculate log likelihood of summaries using fixed language model (the one that was used to
@@ -350,7 +349,7 @@ class Summarizer(object):
 
                 dic = {'docs': texts[0],
                         'summary': summ_texts[0],
-                        'id': ids[0] }      
+                        'id': ids[0] }  
                 results.append(dic)
 
                 per_batch_summs_out_fp = os.path.join(out_dir, 'per_batch_summaries.json')
