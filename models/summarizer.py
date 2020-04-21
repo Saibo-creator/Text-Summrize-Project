@@ -733,7 +733,7 @@ class Summarizer(object):
                                                               category=self.opt.az_cat)
 
                 nbatches = train_iter.__len__()
-                stats_avgs, evaluator, _ = self.run_epoch(
+                stats_avgs, evaluator, _,_ = self.run_epoch(
                     train_iter, nbatches, epoch, 'train',
                     sum_optimizer=self.sum_optimizer,
                     discrim_optimizer=self.discrim_optimizer,
@@ -755,7 +755,7 @@ class Summarizer(object):
             # Run on validation
             self.sum_model.eval()
             if self.hp.train_subset == 1.0:
-                stats_avgs, evaluator, _ = self.run_epoch(val_iter, val_iter.__len__(), epoch, 'val',
+                stats_avgs, evaluator, _ ,_= self.run_epoch(val_iter, val_iter.__len__(), epoch, 'val',
                                                           save_intermediate=False, run_val_subset=False,
                                                           tb_writer=self.tb_val_writer)
                 for k, v in stats_avgs.items():
@@ -927,7 +927,7 @@ class Summarizer(object):
             if self.opt.test_group_ratings:
                 test_iter  = grouped_reviews_iter(self.hp.n_docs)
 
-            for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
+            for i, (hotel_url, texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
                 ids_batch = ids[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
                 acc, per_rating_counts, per_rating_acc, pred_ratings_batch, pred_probs_batch = \
@@ -946,7 +946,7 @@ class Summarizer(object):
 
                 for j in range(len(summaries_batch)):
                     try:
-                        dic = {'id':ids[j],
+                        dic = {'id':ids_batch[j],
                                'docs': texts[j],
                                'summary': summaries_batch[j],
                                'rating': ratings_batch[j].item(),
@@ -960,11 +960,11 @@ class Summarizer(object):
 
                 print(dic)
         else:
-            for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
+            for i, (hotel_url, texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
                 for j in range(len(summaries_batch)):
-                    dic = {'id':ids[j],
+                    dic = {'id':ids_batch[j],
                            'docs': texts[j],
                            'summary': summaries_batch[j],
                            'rating': ratings_batch[j].item(),
