@@ -342,18 +342,19 @@ class Summarizer(object):
             self.opt.write_every_nbatches = 5
             if s % self.opt.write_every_nbatches == 0:   
 
-                output_per_epoch_fp = os.path.join(out_dir, 'output_per_epoch.txt')
-                with open(output_per_epoch_fp,'w') as file:
+                output_per_batch_fp = os.path.join(out_dir, 'output_per_batch.txt')
+                with open(output_per_batch_fp,'w') as file:
                     file.write(print_str)
 
                 results=[]
 
                 dic = {'docs': texts[0],
-                        'summary': summ_texts[0]}      
+                        'summary': summ_texts[0]
+                        'id':ids[0] }      
                 results.append(dic)
 
-                per_epoch_summs_out_fp = os.path.join(out_dir, 'per_epoch_summaries.json')
-                save_file(results, per_epoch_summs_out_fp)
+                per_batch_summs_out_fp = os.path.join(out_dir, 'per_batch_summaries.json')
+                save_file(results, per_batch_summs_out_fp)
 
                 # Write to tensorboard
                 if tb_writer:
