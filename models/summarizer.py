@@ -349,8 +349,8 @@ class Summarizer(object):
                 results=[]
 
                 dic = {'docs': texts[0],
-                        'summary': summ_texts[0]
-                        'id':ids[0] }      
+                        'summary': summ_texts[0],
+                        'id': ids[0] }      
                 results.append(dic)
 
                 per_batch_summs_out_fp = os.path.join(out_dir, 'per_batch_summaries.json')
