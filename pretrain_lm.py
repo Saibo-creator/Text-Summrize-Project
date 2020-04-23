@@ -90,7 +90,7 @@ class LanguageModel(object):
 
         loss_avg = 0
         n_fwds = 0
-        for s_idx, (texts, ratings, metadata) in enumerate(data_iter):
+        for s_idx, (hotel_ids,texts, ratings, metadata) in enumerate(data_iter):
             start = time.time()
 
             # Add special tokens to texts

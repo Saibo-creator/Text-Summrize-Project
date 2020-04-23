@@ -138,8 +138,8 @@ class DatasetConfig(object):
             self.businesses_path = 'datasets/hotel_mask_sing_asp_dataset/business.json'
             ######
             self.processed_path = 'datasets/hotel_mask_sing_asp_dataset/processed/'
-            self.subwordenc_path = 'datasets/hotel_mask_sing_asp_dataset/processed/subwordenc_32000_maxrevs260_fixed.pkl'
-
+            self.subwordenc_path = 'datasets/hotel_mask_sing_asp_dataset/processed/subwordenc/subwordenc.pkl'
+            
             # Trained models
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
             #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working

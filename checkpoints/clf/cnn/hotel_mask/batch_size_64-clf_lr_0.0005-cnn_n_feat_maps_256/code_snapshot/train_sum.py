@@ -34,7 +34,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', default='hotel',
                         help='yelp,amazon,hotel,hote_mask')
 
-    parser.add_argument('--test_on_another_dataset', default='hotel',
+    parser.add_argument('--test_on_another_dataset', default=None,
                         help='yelp,amazon,hotel,hote_mask')
 
 
@@ -80,6 +80,9 @@ if __name__ == '__main__':
     parser.add_argument('--cpu', default=False,
                         help="if want to run on cpu, set --cpu=True")
 
+    parser.add_argument('--skip_clf', default=False,
+                        help="set 1 if want to skip test/train clf")
+
 
     opt = parser.parse_args()
 
@@ -87,6 +90,10 @@ if __name__ == '__main__':
     opt.no_bigstore = True
 
     setup_gpus(opt.gpus, hp.seed)
+
+    if opt.skip_clf:
+        hp.sum_clf=False
+
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
     # command line argument

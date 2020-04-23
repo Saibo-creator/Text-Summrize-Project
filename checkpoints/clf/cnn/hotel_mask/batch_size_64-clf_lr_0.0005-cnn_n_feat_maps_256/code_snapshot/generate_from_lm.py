@@ -6,8 +6,9 @@ Load a trained language model and generate text
 Example usage:
 PYTHONPATH=. python generate_from_lm.py \
 --init="Although the food" --tau=0.5 \
---sample_method=gumbel --g_eps=1e-5
---load_model=<path/model.pt>
+--sample_method=gumbel --g_eps=1e-5 \
+--load_model='checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt' \
+--dataset='hotel' --cpu=1 --sample_method=greedy
 """
 import pdb
 
@@ -53,6 +54,9 @@ parser.add_argument('--len_norm_const', type=float, default=5.0,
 
 parser.add_argument('--gpus', default='0',
                     help="CUDA visible devices, e.g. 2,3")
+
+parser.add_argument('--cpu', default=False,
+                    help="if want to run on cpu, set --cpu=True")
 
 opt = parser.parse_args()
 
@@ -106,7 +110,14 @@ batch_size = init_tensor.size(0)
 #
 # Load and set up model
 #
-checkpoint = torch.load(opt.load_model)
+
+
+if opt.cpu:
+    checkpoint = torch.load(opt.load_model, map_location='cpu')
+
+elif torch.cuda.is_available():
+    checkpoint = torch.load(opt.load_model)  # StackedLSTMEncoder
+
 model = checkpoint['model']
 if isinstance(model, nn.DataParallel):
     model = model.module

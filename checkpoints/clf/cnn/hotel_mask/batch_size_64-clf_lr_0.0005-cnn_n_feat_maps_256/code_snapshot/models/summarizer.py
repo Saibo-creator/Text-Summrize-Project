@@ -133,10 +133,10 @@ class Summarizer(object):
                                 use_stemmer=self.hp.use_stemmer,
                                 store_all=store_all_rouges)
         summaries = []  # this is only added to if store_all_summaries is True
-
+        ids = []
 
         
-        for s, (texts, ratings, metadata) in enumerate(data_iter):
+        for s, (hotel_url ,texts, ratings, metadata) in enumerate(data_iter):
             # texts: list of strs, each str is n_docs concatenated together with EDOC_TOK delimiter
             if s > nbatches:
                 break
@@ -193,6 +193,11 @@ class Summarizer(object):
             # Adversarial
             discrim_gn = -1.0
             
+
+
+
+
+            #do summerization on the batch of texts
             output = self.sum_model(docs_ids, labels,
                                     cycle_tgt_ids=cycle_tgt_ids,
                                     extract_summ_ids=extract_summ_ids,
@@ -249,6 +254,8 @@ class Summarizer(object):
                 clean_summs.append(summ)
                 if store_all_summaries:
                     summaries.append(summ)
+                    ids.append(hotel_url)
+
 
             # Calculate log likelihood of summaries using fixed language model (the one that was used to
             # initialize the models)
@@ -327,24 +334,26 @@ class Summarizer(object):
                                'unsup_{}'.format(self.opt.notes))
 
 
+
             if not os.path.exists(out_dir):
-                os.mkdir(out_dir)
+                os.makedirs(out_dir)
 
             self.opt.write_every_nbatches = 5
             if s % self.opt.write_every_nbatches == 0:   
 
-                output_per_epoch_fp = os.path.join(out_dir, 'output_per_epoch.txt')
-                with open(output_per_epoch_fp,'w') as file:
+                output_per_batch_fp = os.path.join(out_dir, 'output_per_batch.txt')
+                with open(output_per_batch_fp,'w') as file:
                     file.write(print_str)
 
                 results=[]
 
                 dic = {'docs': texts[0],
-                        'summary': summ_texts[0]}      
+                        'summary': summ_texts[0],
+                        'id': ids[0] }  
                 results.append(dic)
 
-                per_epoch_summs_out_fp = os.path.join(out_dir, 'per_epoch_summaries.json')
-                save_file(results, per_epoch_summs_out_fp)
+                per_batch_summs_out_fp = os.path.join(out_dir, 'per_batch_summaries.json')
+                save_file(results, per_batch_summs_out_fp)
 
                 # Write to tensorboard
                 if tb_writer:
@@ -398,7 +407,7 @@ class Summarizer(object):
                                        tb_writer=self.tb_val_sub_writer, tb_start_step=start_step)
                     tb_writer.add_scalar('stats/sec_per_val_subset', time.time() - start, start_step)
 
-        return stats_avgs, evaluator, summaries
+        return stats_avgs, evaluator, summaries, ids
 
     def train(self):
         """
@@ -450,7 +459,16 @@ class Summarizer(object):
         self.fixed_lm = None
         if len(self.opt.load_lm) > 1:
             print('Loading pretrained language model from: {}'.format(self.opt.load_lm))
-            self.docs_enc = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+
+            if self.opt.cpu:
+                self.docs_enc = torch.load(self.opt.load_lm, map_location='cpu')['model'] 
+
+            elif torch.cuda.is_available():
+                self.docs_enc = torch.load(self.opt.load_lm)['model']  # StackedLSTMEncoder
+
+
+            
             self.docs_enc = self.docs_enc.module if isinstance(self.docs_enc, nn.DataParallel) \
                 else self.docs_enc
         else:
@@ -469,7 +487,15 @@ class Summarizer(object):
             else:
                 # didn't pass in pretrained language model as we're training from scratch
                 # load it from the default
-                self.fixed_lm = torch.load(self.dataset.conf.lm_path)['model']  # StackedLSTMEncoder
+                if self.opt.cpu:
+                    self.fixed_lm = torch.load(self.dataset.conf.lm_path,map_location='cpu')['model']  # StackedLSTMEncoder
+
+                elif torch.cuda.is_available():
+                    self.fixed_lm = torch.load(self.dataset.conf.lm_path)['model']  # StackedLSTMEncoder
+
+
+
+
                 self.fixed_lm = self.fixed_lm.module if isinstance(self.fixed_lm, nn.DataParallel) \
                     else self.fixed_lm
 
@@ -543,7 +569,13 @@ class Summarizer(object):
         # 2. Thus, we freeze everything except for the FF / GRU model
         if self.hp.load_ae_freeze:  # load autoencoder and freeze
             # SummarizationModel
-            trained = torch.load(self.opt.load_autoenc, map_location=lambda storage, loc: storage)['sum_model']
+            if self.opt.cpu:
+                trained = torch.load(self.opt.load_autoenc, map_location='cpu')['sum_model']
+
+            elif torch.cuda.is_available():
+                trained = torch.load(self.opt.load_autoenc, map_location=lambda storage, loc: storage)['sum_model']
+
+            
             trained = trained.module if isinstance(trained, nn.DataParallel) else trained
             # self.docs_enc = trained.docs_enc
             self.docs_enc = StackedLSTMEncoder(trained.docs_enc.embed, trained.docs_enc.rnn)
@@ -607,13 +639,20 @@ class Summarizer(object):
         #
         # Classifier
         #
-        self.clf_model = None
-        self.clf_optimizer = None
+
+
         if self.hp.sum_clf:
             if len(self.opt.load_clf) > 0:
                 print('Loading pretrained classifier from: {}'.format(self.opt.load_clf))
-                #self.clf_model = torch.load(self.opt.load_clf)['model']
-                self.clf_model = None
+                if self.opt.cpu:
+                    self.clf_model = torch.load(self.opt.load_clf,map_location='cpu')['model']
+
+                elif torch.cuda.is_available():
+                    self.clf_model = torch.load(self.opt.load_clf)['model']
+
+
+                
+                #self.clf_model = None
             else:
                 print('Path to pretrained classifer not given: training from scratch')
                 cnn_output_size = self.hp.cnn_n_feat_maps * len(self.hp.cnn_filter_sizes)
@@ -631,7 +670,9 @@ class Summarizer(object):
                 self.optimizers['clf_optimizer'] = self.clf_optimizer
             else:
                 freeze(self.clf_model)
-        
+        else:
+            self.clf_model = None
+            self.clf_optimizer = None
         #
         # Overall model
         #
@@ -692,7 +733,7 @@ class Summarizer(object):
                                                               category=self.opt.az_cat)
 
                 nbatches = train_iter.__len__()
-                stats_avgs, evaluator, _ = self.run_epoch(
+                stats_avgs, evaluator, _,_ = self.run_epoch(
                     train_iter, nbatches, epoch, 'train',
                     sum_optimizer=self.sum_optimizer,
                     discrim_optimizer=self.discrim_optimizer,
@@ -714,7 +755,7 @@ class Summarizer(object):
             # Run on validation
             self.sum_model.eval()
             if self.hp.train_subset == 1.0:
-                stats_avgs, evaluator, _ = self.run_epoch(val_iter, val_iter.__len__(), epoch, 'val',
+                stats_avgs, evaluator, _ ,_= self.run_epoch(val_iter, val_iter.__len__(), epoch, 'val',
                                                           save_intermediate=False, run_val_subset=False,
                                                           tb_writer=self.tb_val_writer)
                 for k, v in stats_avgs.items():
@@ -743,6 +784,8 @@ class Summarizer(object):
         """
         Run trained model on test set
         """
+
+
         self.dataset = SummDatasetFactory.get(self.opt.dataset)
         if self.opt.test_on_another_dataset:
             self.second_dataset = SummDatasetFactory.get(self.opt.test_on_another_dataset)
@@ -835,9 +878,10 @@ class Summarizer(object):
             self.sum_model = DataParallelModel(self.sum_model)
 
         n_params = sum([p.nelement() for p in self.sum_model.parameters()])
+
         print('Number of parameters: {}'.format(n_params))
         
-        
+
 
 
         # Note: starting from here, this code is similar to lm_autoenc_baseline() and the
@@ -857,9 +901,11 @@ class Summarizer(object):
         # self.dataset = SummDatasetFactory.get('yelp')
         # TODO: handle this better
         with torch.no_grad():    
-            stats_avgs, evaluator, summaries = self.run_epoch(test_iter, test_iter_len, 0, 'test',
+            stats_avgs, evaluator, summaries,ids  = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,
                                                               store_all_rouges=True, store_all_summaries=True)
+        # raise ValueError('A very specific bad thing happened after print')
+
         #
         # Pass summaries through classifier
         #
@@ -872,7 +918,6 @@ class Summarizer(object):
         #
         results = []
         if self.hp.sum_clf:
-            
             accuracy = 0.0
             true_rating_dist = defaultdict(int)  # used to track distribution of mean ratings
             per_rating_counts = defaultdict(int)  # these are predicted ratnigs
@@ -882,9 +927,10 @@ class Summarizer(object):
             if self.opt.test_group_ratings:
                 test_iter  = grouped_reviews_iter(self.hp.n_docs)
 
-            for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
+            for i, (hotel_url, texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
-                acc, per_rating_counts, per_rating_acc, pred_ratings, pred_probs = \
+                ids_batch = ids[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
+                acc, per_rating_counts, per_rating_acc, pred_ratings_batch, pred_probs_batch = \
                     classify_summ_batch(clf_model, summaries_batch, ratings_batch, self.dataset,
                                         per_rating_counts, per_rating_acc)
 
@@ -893,26 +939,33 @@ class Summarizer(object):
 
                 if acc is None:
                     print('Summary was too short to classify')
-                    pred_ratings = [None for _ in range(len(summaries_batch))]
-                    pred_probs = [None for _ in range(len(summaries_batch))]
+                    pred_ratings_batch = [torch.LongTensor([-1]) for _ in range(len(summaries_batch))]
+                    pred_probs_batch = [torch.LongTensor([-1]) for _ in range(len(summaries_batch))]
                 else:
                     accuracy = update_moving_avg(accuracy, acc.item(), i + 1)
 
                 for j in range(len(summaries_batch)):
-                    dic = {'docs': texts[j],
-                           'summary': summaries_batch[j],
-                           'rating': ratings_batch[j].item(),
-                           'pred_rating': pred_ratings[j].item(),
-                           'pred_prob': pred_probs[j].item()}
-                    for k, values in metadata.items():
-                        dic[k] = values[j]
-                    results.append(dic)
+                    try:
+                        dic = {#'id':ids_batch[j],
+                               'docs': texts[j],
+                               'summary': summaries_batch[j],
+                               'rating': ratings_batch[j].item(),
+                               'pred_rating': pred_ratings_batch[j].item(),
+                               'pred_prob': pred_probs_batch[j].item()}
+                        for k, values in metadata.items():
+                            dic[k] = values[j]
+                        results.append(dic)
+                    except Exception as e:
+                        pass
+
+                print(dic)
         else:
-            for i, (texts, ratings_batch, metadata) in enumerate(test_iter):
+            for i, (hotel_url, texts, ratings_batch, metadata) in enumerate(test_iter):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
                 for j in range(len(summaries_batch)):
-                    dic = {'docs': texts[j],
+                    dic = {#'id':ids_batch[j],
+                           'docs': texts[j],
                            'summary': summaries_batch[j],
                            'rating': ratings_batch[j].item(),
                            'pred_rating': None,    #changed

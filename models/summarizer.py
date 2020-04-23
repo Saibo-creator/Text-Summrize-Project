@@ -946,7 +946,7 @@ class Summarizer(object):
 
                 for j in range(len(summaries_batch)):
                     try:
-                        dic = {'id':ids_batch[j],
+                        dic = {#'id':ids_batch[j],
                                'docs': texts[j],
                                'summary': summaries_batch[j],
                                'rating': ratings_batch[j].item(),
@@ -964,7 +964,7 @@ class Summarizer(object):
                 summaries_batch = summaries[i * self.hp.batch_size: i * self.hp.batch_size + len(texts)]
 
                 for j in range(len(summaries_batch)):
-                    dic = {'id':ids_batch[j],
+                    dic = {#'id':ids_batch[j],
                            'docs': texts[j],
                            'summary': summaries_batch[j],
                            'rating': ratings_batch[j].item(),

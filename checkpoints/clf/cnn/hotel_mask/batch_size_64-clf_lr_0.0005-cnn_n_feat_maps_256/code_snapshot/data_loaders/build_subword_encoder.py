@@ -25,6 +25,14 @@ PYTHONPATH=. python data_loaders/build_subword_encoder.py \
 --corpus_filepattern=datasets/yelp_dataset/processed/reviews_texts_train.txt \
 --output_dir=./ \
 --output_fn=tmp_enc
+
+
+PYTHONPATH=. python data_loaders/build_subword_encoder.py \
+--dataset=hotel_mask \
+--output_dir=./ \
+--output_fn=subwordenc
+
+
 """
 
 import os

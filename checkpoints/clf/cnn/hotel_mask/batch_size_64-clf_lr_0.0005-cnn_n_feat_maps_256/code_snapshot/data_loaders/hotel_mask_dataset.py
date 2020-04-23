@@ -110,7 +110,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
                 self.idx_to_nreviews = {}
                 self.idx_to_item_idxs = {}  # indices of reviews
 
-                ns = [4, 8, 16]
+                ns = [8] #[4, 8, 16]
                 # ns = range(n_reviews_min, n_reviews_max+1, 4)  # e.g. [4,8,12,16]
                 idx = 0
                 for item, n_reviews in item_to_nreviews.items():
@@ -204,16 +204,17 @@ class Hotel_Mask_PytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        texts, ratings = zip(*[(s['text_filtered_per_sentence'], s['rating']) for s in reviews])
+        hotel_ids,texts, ratings = zip(*[(s['hotel_url'],s['text_filtered_per_sentence'], s['rating']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
+        hotel_id=hotel_ids[0]
 
         try:
             categories = '---'.join(self.items[item]['categories'])
         except Exception as e:
             print(e)
             categories = '---'
-        metadata={}
+        metadata={'item': item,}
 #        metadata = {'item': item,
 #                    'city': self.items[item]['city'],
 #                    'categories': categories}
@@ -224,9 +225,8 @@ class Hotel_Mask_PytorchDataset(Dataset):
         #                 'categories': '---'.join(self.items[item]['categories'])}
         # except Exception as e:
         #     print(e)
-        #     pdb.set_trace()
-
-        return texts, avg_rating, metadata
+        #     pdb.set_trace(
+        return hotel_id, texts, avg_rating, metadata
 
     def __len__(self):
         return self.n
