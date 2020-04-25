@@ -669,10 +669,13 @@ class Summarizer(object):
                                                 optim.Adam(clf_params, lr=self.hp.sum_clf_lr))
                 self.optimizers['clf_optimizer'] = self.clf_optimizer
             else:
-                freeze(self.clf_model)
+                freeze(self.clf_model)   
+
         else:
             self.clf_model = None
             self.clf_optimizer = None
+
+ 
         #
         # Overall model
         #
