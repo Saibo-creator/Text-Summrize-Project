@@ -38,6 +38,7 @@ parser.add_argument('--load_model', default=None,
                     help="Path to model to load")
 parser.add_argument('--seq_len', type=int, default=50,
                     help="Maximum sequence length")
+
 parser.add_argument('--softmax_method', type=str, default='softmax',
                     help="softmax or gumbel")
 parser.add_argument('--sample_method', type=str, default='sample',
