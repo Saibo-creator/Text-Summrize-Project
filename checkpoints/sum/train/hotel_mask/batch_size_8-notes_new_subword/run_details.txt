@@ -1,3 +1,0 @@
-Command:
-train_sum.py --mode=train --batch_size=8 --dataset=hotel_mask --notes=new_subword --cpu=1
-Start time: April25_22-09-18
