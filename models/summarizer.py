@@ -639,6 +639,8 @@ class Summarizer(object):
         #
         # Classifier
         #
+        self.clf_model = None
+        self.clf_optimizer = None
 
 
         if self.hp.sum_clf:
@@ -670,10 +672,6 @@ class Summarizer(object):
                 self.optimizers['clf_optimizer'] = self.clf_optimizer
             else:
                 freeze(self.clf_model)   
-
-        else:
-            self.clf_model = None
-            self.clf_optimizer = None
 
  
         #
