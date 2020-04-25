@@ -101,7 +101,7 @@ class TextClassifierTrainer(object):
             if optimizer:
                 optimizer.optimizer.zero_grad()
 
-            texts, ratings, metadata = batch
+            hotel_ids, texts, ratings, metadata = batch
             batch_size = len(texts)
             x, lengths, labels = self.dataset.prepare_batch(texts, ratings)
 
