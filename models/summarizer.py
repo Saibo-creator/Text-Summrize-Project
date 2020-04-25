@@ -211,7 +211,7 @@ class Summarizer(object):
                                     clf_loss=stats_avgs['clf_loss'],
                                     clf_acc=stats_avgs['clf_acc'],
                                     clf_avg_diff=stats_avgs['clf_avg_diff'])
-            fwd_stats, summ_texts = self.unpack_sum_model_output(output)
+            fwd_stats, summ_texts = self.unpack_sum_model_output(output)# sum_texts is of lenth = batch size 
             stats = self.update_dict(stats, fwd_stats)
 
             if self.hp.decay_tau:
@@ -234,12 +234,12 @@ class Summarizer(object):
                         (not self.hp.load_ae_freeze):  # don't backward() if loaded pretrained autoenc (it's frozen)
                     retain_graph = self.hp.early_cycle or self.hp.sum_cycle or self.hp.extract_loss
                     stats['autoenc_loss'].backward(retain_graph=retain_graph)
-                if self.hp.early_cycle and (not self.hp.autoenc_only):
+                if self.hp.early_cycle and (not self.hp.autoenc_only):# False
                     stats['early_cycle_loss'].backward()
-                if self.hp.sum_cycle and (not self.hp.autoenc_only):
+                if self.hp.sum_cycle and (not self.hp.autoenc_only):#True
                     retain_graph = self.hp.extract_loss
                     stats['cycle_loss'].backward(retain_graph=retain_graph)
-                if self.hp.extract_loss and (not self.hp.autoenc_only):
+                if self.hp.extract_loss and (not self.hp.autoenc_only):  #False
                     retain_graph = clf_optimizer is not None
                     stats['extract_loss'].backward(retain_graph=retain_graph)
                 sum_gn = calc_grad_norm(self.docs_enc)
@@ -535,6 +535,14 @@ class Summarizer(object):
                                            attn_hidden_size=self.hp.docs_attn_hidden_size,
                                            attn_learn_alpha=self.hp.docs_attn_learn_alpha)
 
+
+
+
+        # -------------------------------- Autoencoder for documents-----------------------------------
+
+
+
+
         # Autoencoder for documents
         self.docs_autodec = None
         if self.hp.autoenc_docs:
@@ -559,6 +567,9 @@ class Summarizer(object):
                                                        copy.deepcopy(self.docs_enc.rnn))
         if self.hp.sum_cycle and self.hp.cycle_loss == 'rec':
             self.docs_dec = StackedLSTMDecoder(self.summ_dec.embed, self.summ_dec.rnn)
+
+
+        # -------------------------------- Load a pretrained model and freeze----------------------------------
 
         # Load a pretrained model and freeze
         # 1. We may want this so that we have fixed, good representations for the documents.
@@ -636,6 +647,8 @@ class Summarizer(object):
                                                 optim.Adam(discrim_params, lr=self.hp.discrim_lr))
             self.optimizers['discrim_optimizer'] = self.discrim_optimizer
 
+        # -------------------------------- Load a clf model  ----------------------------------
+
         #
         # Classifier
         #
@@ -673,7 +686,7 @@ class Summarizer(object):
             else:
                 freeze(self.clf_model)   
 
- 
+  # -------------------------------- Init a summarization Model  ----------------------------------
         #
         # Overall model
         #
@@ -709,6 +722,12 @@ class Summarizer(object):
                                                      bow_param=0, length_param=0, position_param=0,
                                                      debug=False)
 
+
+
+
+  # -------------------------------- Move to cuda and parallelize ----------------------------------
+
+
         #
         # Move to cuda and parallelize
         #
@@ -716,6 +735,18 @@ class Summarizer(object):
             self.sum_model.cuda()
         if self.ngpus > 1:
             self.sum_model = DataParallelModel(self.sum_model)
+
+
+
+        ########################################################
+        ########################################################
+        #
+        # Train (Below)
+        #
+        ########################################################
+        ########################################################
+
+
 
         #
         # Train
@@ -734,6 +765,9 @@ class Summarizer(object):
                                                               category=self.opt.az_cat)
 
                 nbatches = train_iter.__len__()
+
+  # -------------------------------- run epoch----------------------------------
+
                 stats_avgs, evaluator, _,_ = self.run_epoch(
                     train_iter, nbatches, epoch, 'train',
                     sum_optimizer=self.sum_optimizer,
@@ -753,6 +787,8 @@ class Summarizer(object):
             except KeyboardInterrupt:
                 print('Exiting from training early')
 
+
+  # -------------------------------- Run on validation ------------------------------------------
             # Run on validation
             self.sum_model.eval()
             if self.hp.train_subset == 1.0:
@@ -785,7 +821,7 @@ class Summarizer(object):
         """
         Run trained model on test set
         """
-
+  # -------------------------------- Load data ------------------------------------------
 
         self.dataset = SummDatasetFactory.get(self.opt.dataset)
         if self.opt.test_on_another_dataset:
@@ -822,7 +858,7 @@ class Summarizer(object):
 
 
         self.tb_val_sub_writer = None
-
+  # -------------------------------- get model and loss ------------------------------------------
         #
         # Get model and loss
         #
@@ -887,7 +923,7 @@ class Summarizer(object):
 
         # Note: starting from here, this code is similar to lm_autoenc_baseline() and the
         # end of run_summarization_baseline()
-
+  # -------------------------------- Run on test set(only one epoch precisely) ------------------------------------------
         #
         # Run on test set
         #
@@ -917,6 +953,8 @@ class Summarizer(object):
         # it's just one pass through the test set -- which I'll run infrequently to evaluate a trained model.
         # I think that it takes more time is fine.
         #
+ # -------------------------------- collect output data ------------------------------------------
+
         results = []
         if self.hp.sum_clf:
             accuracy = 0.0
@@ -925,6 +963,7 @@ class Summarizer(object):
             per_rating_acc = defaultdict(int)
 
             clf_model = self.sum_model.module.clf_model if self.ngpus > 1 else self.sum_model.clf_model
+
             if self.opt.test_group_ratings:
                 test_iter  = grouped_reviews_iter(self.hp.n_docs)
 
@@ -974,7 +1013,8 @@ class Summarizer(object):
                     for k, values in metadata.items():
                         dic[k] = values[j]
                     results.append(dic)
-
+                    
+ # -------------------------------- save output data ------------------------------------------
 
         # Save summaries, rouge scores, and rouge distributions figures
         dataset_dir = self.opt.dataset if self.opt.az_cat is None else 'amazon_{}'.format(self.opt.az_cat)

@@ -58,7 +58,7 @@ class TextClassifier(nn.Module):
         if self.onehot_inputs:
             if x.dim() == 2:
                 x = convert_to_onehot(x, self.vocab_size)  # [batch, seq_len] -> [batch, seq_len, vocab]
-            inp_emb = torch.matmul(x.float(), self.model.embed.weight)  # [batch, seq_len, emb_size]
+            inp_emb = torch.matmul(x.float(), self.model.embed.weight)  # [batch, seq_len, emb_size]  self.model.embed.weight:[vocab,emb_size]
             cnn_emb = self.model.cnn(inp_emb)
             logits = self.model.fc_out(cnn_emb)
         else:
