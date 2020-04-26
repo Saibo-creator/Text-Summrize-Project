@@ -2,5 +2,6 @@
 *.json
 *.csv
 *.pt
+*.DS_Store
 !outputs/**/*.json
 !outputs/**/*.csv

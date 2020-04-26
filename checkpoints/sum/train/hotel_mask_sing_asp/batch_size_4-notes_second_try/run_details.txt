@@ -1,3 +1,0 @@
-Command:
-train_sum.py --mode=train --batch_size=4 --dataset=hotel_mask_sing_asp --notes=second_try --skip_clf=1
-Start time: April20_09-41-16
