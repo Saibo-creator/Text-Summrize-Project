@@ -70,7 +70,7 @@ if __name__ == '__main__':
 	dev=groupByAspect(dev)
 
 	#merge rating dataframe with RSAR review dataframe
-	test==pd.merge(test,test_asp_rating,left_on='hotel_url',right_on='hotel_url',how='left')
+	test=pd.merge(test,test_asp_rating,left_on='hotel_url',right_on='hotel_url',how='left')
 	train=pd.merge(train,train_asp_rating,left_on='hotel_url',right_on='hotel_url',how='left')
 	dev=pd.merge(dev,dev_asp_rating,left_on='hotel_url',right_on='hotel_url',how='left')
 

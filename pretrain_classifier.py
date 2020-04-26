@@ -46,7 +46,7 @@ class TextClassifier(nn.Module):
 
         layers = [
             ('embed', nn.Embedding(vocab_size, emb_size)),
-            ('cnn', BasicTextCNN(cnn_filter_sizes, cnn_n_feat_maps, emb_size, cnn_dropout))
+            ('cnn', BasicTextCNN(can_filter_sizes, cnn_n_feat_maps, emb_size, cnn_dropout))
         ]
         if mse:
             layers.append(('fc_out', nn.Linear(cnn_output_size, 1)))
