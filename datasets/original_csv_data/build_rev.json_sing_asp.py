@@ -24,7 +24,7 @@ def build_asp_rating(split):
     aspect_rating=aspect_rating[['hotel_url_new','value']].rename(columns={'hotel_url_new':'hotel_url'})
 
     aspect_rating=aspect_rating.replace(np.nan,-1)
-    aspect_rating.rename(columns={'value':'rating'})
+    aspect_rating.rename(columns={'value':'rating'},inplace=True)
     return aspect_rating
     
 
