@@ -5,3 +5,10 @@
 *.DS_Store
 !outputs/**/*.json
 !outputs/**/*.csv
+
+
+# Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
