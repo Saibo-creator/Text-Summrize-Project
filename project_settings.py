@@ -119,7 +119,7 @@ class DatasetConfig(object):
             #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
             #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask/default_cc6b2c36/lm_e8_3.04.pt'
-            self.clf_path = 'checkpoints/clf/cnn/hotel_mask/batch_size_32-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e1_l0.8227_a0.6288_d0.0000.pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask/batch_size_128-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e1_l0.7989_a0.6368_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask/batch_size_16-notes_new_subword/sub_e1_sub5_tot2.92_r1f0.31.pt'
             self.autoenc_path = None
 
