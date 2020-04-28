@@ -1,9 +1,9 @@
 {
     "adv_gen_loss": 0,
     "autoenc_loss": 3.3911075506454846,
-    "clf_acc": 0,
+    "clf_acc": 0.6386,
     "clf_avg_diff": 0,
-    "clf_loss": 0,
+    "clf_loss": 0.7968,
     "cycle_loss": -0.9003273303692163,
     "grad_pen_loss": 0,
     "nll": 1.0146856920841427,

@@ -148,6 +148,130 @@ class DatasetConfig(object):
             self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None
 
+        elif name == 'hotel_mask_asp_0':
+            # Params
+            self.review_max_len = 180
+            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.item_min_reviews = 20
+            self.item_max_reviews = 260  # 90th percentile
+            self.vocab_size = 32000  # target vocab size when building subwordenc
+
+            # Paths
+            self.dir_path = 'datasets/hotel_mask_asp_0_dataset/'
+            ######
+            self.reviews_path = 'datasets/hotel_mask_asp_0_dataset/review.json'
+            self.businesses_path = 'datasets/hotel_mask_asp_0_dataset/business.json'
+            ######
+            self.processed_path = 'datasets/hotel_mask_asp_0_dataset/processed/'
+            self.subwordenc_path = 'datasets/hotel_mask_asp_0_dataset/processed/subwordenc/subwordenc.pkl'
+            
+            # Trained models
+            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_0/default_8d1b9abf/lm_e14_2.99pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_0/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_0_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
+            self.autoenc_path = None
+
+        elif name == 'hotel_mask_asp_1':
+            # Params
+            self.review_max_len = 180
+            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.item_min_reviews = 20
+            self.item_max_reviews = 260  # 90th percentile
+            self.vocab_size = 32000  # target vocab size when building subwordenc
+
+            # Paths
+            self.dir_path = 'datasets/hotel_mask_asp_1_dataset/'
+            ######
+            self.reviews_path = 'datasets/hotel_mask_asp_1_dataset/review.json'
+            self.businesses_path = 'datasets/hotel_mask_asp_1_dataset/business.json'
+            ######
+            self.processed_path = 'datasets/hotel_mask_asp_1_dataset/processed/'
+            self.subwordenc_path = 'datasets/hotel_mask_asp_1_dataset/processed/subwordenc/subwordenc.pkl'
+            
+            # Trained models
+            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_1/default_8d1b9abf/lm_e14_2.99pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_1/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_1_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
+            self.autoenc_path = None
+
+        elif name == 'hotel_mask_asp_2':
+            # Params
+            self.review_max_len = 180
+            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.item_min_reviews = 20
+            self.item_max_reviews = 260  # 90th percentile
+            self.vocab_size = 32000  # target vocab size when building subwordenc
+
+            # Paths
+            self.dir_path = 'datasets/hotel_mask_asp_2_dataset/'
+            ######
+            self.reviews_path = 'datasets/hotel_mask_asp_2_dataset/review.json'
+            self.businesses_path = 'datasets/hotel_mask_asp_2_dataset/business.json'
+            ######
+            self.processed_path = 'datasets/hotel_mask_asp_2_dataset/processed/'
+            self.subwordenc_path = 'datasets/hotel_mask_asp_2_dataset/processed/subwordenc/subwordenc.pkl'
+            
+            # Trained models
+            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_8d1b9abf/lm_e14_2.99pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_2/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_2_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
+            self.autoenc_path = None
+
+        elif name == 'hotel_mask_asp_3':
+            # Params
+            self.review_max_len = 180
+            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.item_min_reviews = 20
+            self.item_max_reviews = 260  # 90th percentile
+            self.vocab_size = 32000  # target vocab size when building subwordenc
+
+            # Paths
+            self.dir_path = 'datasets/hotel_mask_asp_3_dataset/'
+            ######
+            self.reviews_path = 'datasets/hotel_mask_asp_3_dataset/review.json'
+            self.businesses_path = 'datasets/hotel_mask_asp_3_dataset/business.json'
+            ######
+            self.processed_path = 'datasets/hotel_mask_asp_3_dataset/processed/'
+            self.subwordenc_path = 'datasets/hotel_mask_asp_3_dataset/processed/subwordenc/subwordenc.pkl'
+            
+            # Trained models
+            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_3/default_8d1b9abf/lm_e14_2.99pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_3/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_3_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
+            self.autoenc_path = None
+
+        elif name == 'hotel_mask_asp_4':
+            # Params
+            self.review_max_len = 180
+            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.item_min_reviews = 20
+            self.item_max_reviews = 260  # 90th percentile
+            self.vocab_size = 32000  # target vocab size when building subwordenc
+
+            # Paths
+            self.dir_path = 'datasets/hotel_mask_asp_4_dataset/'
+            ######
+            self.reviews_path = 'datasets/hotel_mask_asp_4_dataset/review.json'
+            self.businesses_path = 'datasets/hotel_mask_asp_4_dataset/business.json'
+            ######
+            self.processed_path = 'datasets/hotel_mask_asp_4_dataset/processed/'
+            self.subwordenc_path = 'datasets/hotel_mask_asp_4_dataset/processed/subwordenc/subwordenc.pkl'
+            
+            # Trained models
+            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt' not working
+            #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_4/default_8d1b9abf/lm_e14_2.99pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_4/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_4_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
+            self.autoenc_path = None
 
 class HParams(object):
     def __init__(self):
