@@ -90,6 +90,10 @@ if __name__ == '__main__':
 
     
     # round float to 1-5 integers
+    test=test[test['rating']!=-1]
+    train=train[train['rating']!=-1]
+    dev=dev[dev['rating']!=-1]
+
     test['rating']=test['rating'].apply(np.round)
     train['rating']=train['rating'].apply(np.round)
     dev['rating']=dev['rating'].apply(np.round)
