@@ -501,7 +501,7 @@ class Summarizer(object):
 
             freeze(self.fixed_lm)
 
-        # --------------------------------Combining document representations-----------------------------------
+        # --------------------------------Define document combination model-----------------------------------
         self.combine_encs_h_net = None
         self.combine_encs_c_net = None
         if self.hp.combine_encs == 'ff':
@@ -734,7 +734,7 @@ class Summarizer(object):
         if torch.cuda.is_available():
             self.sum_model.cuda()
         if self.ngpus > 1:
-            self.sum_model = DataParallelModel(self.sum_model)
+            self.sum_model = DataParallelModel(self.sum_model) #Paralize Summarization model
 
 
 
@@ -776,7 +776,7 @@ class Summarizer(object):
                     # cpkt_every=5, save_intermediate=True, run_val_subset=True,
                     cpkt_every=int(nbatches / 10), save_intermediate=True, run_val_subset=True,
                     tb_writer=self.tb_tr_writer)
-
+  # -------------------------------- add results to tensorboard---------------------------------
                 for k, v in stats_avgs.items():
                     self.tb_tr_writer.add_scalar('overall_stats/{}'.format(k), v, epoch)
                 for stat, rouges in evaluator.get_avg_stats_dicts().items():
