@@ -14,7 +14,7 @@ from models.nn_utils import move_to_cuda, calc_clf_acc, convert_to_onehot, Label
 from project_settings import PAD_ID, EDOC_ID
 
 
-
+#defined only one Class here: SummarizationModel(nn.Module)
 
 
 class SummarizationModel(nn.Module):
@@ -27,13 +27,13 @@ class SummarizationModel(nn.Module):
                  hp, dataset):
         super(SummarizationModel, self).__init__()
 
-        self.docs_enc = docs_enc
-        self.docs_autodec = docs_autodec
+        self.docs_enc = docs_enc #StackedLSTMEncoder
+        self.docs_autodec = docs_autodec #StackedLSTMDecoder
         self.combine_encs_h_net = combine_encs_h_net
         self.combine_encs_c_net = combine_encs_c_net
-        self.summ_dec = summ_dec
-        self.summ_enc = summ_enc
-        self.docs_dec = docs_dec
+        self.summ_dec = summ_dec #StackedLSTMDecoder
+        self.summ_enc = summ_enc #StackedLSTMEncoder
+        self.docs_dec = docs_dec #StackedLSTMDecoder
         self.discrim_model = discrim_model
         self.clf_model = clf_model
         self.fixed_lm = fixed_lm
@@ -61,8 +61,8 @@ class SummarizationModel(nn.Module):
                 wass_loss=None, grad_pen_loss=None, adv_gen_loss=None, clf_loss=None, clf_acc=None, clf_avg_diff=None):
         """
         Args:
-            docs_ids: [batch, max_len (concatenated reviews)] when concat_docs=True
-                      [batch, n_docs, max_len] when concat_docs=False
+            docs_ids: [batch, max_len (concatenated reviews)] when concat_docs=True 
+                      [batch, n_docs, max_len] when concat_docs=False (present case)
             labels: [batch]
                 - ratings for classification
             cycle_tgt_ids: [batch, n_docs, seq_len]
@@ -111,7 +111,12 @@ class SummarizationModel(nn.Module):
             n_docs = docs_ids.size(1)  # TODO: need to get data loader to choose items with same n_docs
             docs_ids = docs_ids.view(-1, docs_ids.size(-1))  # [batch * n_docs, len]
 
-        h_init, c_init = self.docs_enc.rnn.state0(docs_ids.size(0))
+        h_init, c_init = self.docs_enc.rnn.state0(docs_ids.size(0))# batch * n_docs,  
+        # def state0(self, batch_size):
+        # h_0 = torch.zeros(batch_size, self.num_layers, self.hidden_size, requires_grad=False)
+        # c_0 = torch.zeros(batch_size, self.num_layers, self.hidden_size, requires_grad=False)
+        # return h_0, c_0
+        
         h_init, c_init = move_to_cuda(h_init), move_to_cuda(c_init)
         hiddens, cells, outputs = self.docs_enc(docs_ids, h_init, c_init)
         docs_enc_h, docs_enc_c = hiddens[-1], cells[-1]  # [_, n_layers, hidden]
@@ -212,6 +217,22 @@ class SummarizationModel(nn.Module):
                                                      subwordenc=self.dataset.subwordenc)
 
         # [batch, max_summ_len, vocab];  [batch] of str's
+
+
+
+
+
+
+#todo , modify loss function 
+
+
+
+
+
+
+
+
+
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the
         # summary decoder and each of the original encoded reviews.
