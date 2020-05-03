@@ -10,6 +10,7 @@ mkdir -p "datasets/${f}_dataset/processed/subwordenc/"
 
 mkdir -p "checkpoints/lm/mlstm/${f}"
 mkdir -p "checkpoints/clf/cnn/${f}"
+mkdir -p "checkpoints/sum/train/${f}"
 mkdir -p "checkpoints/sum/mlstm/${f}"
 mkdir -p "outputs/eval/${f}"
 
