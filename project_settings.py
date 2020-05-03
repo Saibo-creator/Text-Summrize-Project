@@ -145,7 +145,7 @@ class DatasetConfig(object):
             #self.lm_path = 'checkpoints/lm/mlstm/hotel_mask/lm_e9_2.93.pt' not working
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask_sing_asp/default_2af3b2ac/lm_e8_3.01.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_sing_asp/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
-            self.sum_path = 't/checkpoints/sum/train/hotel_mask_sing_asp/batch_size_2-notes_try_1/sum_e0_tot2.33_r1f0.28.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_2-notes_try_1/sum_e0_tot2.33_r1f0.28.pt'
             self.autoenc_path = None
 
         elif name == 'hotel_mask_asp_0':
