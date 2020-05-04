@@ -184,7 +184,7 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_asp_1_dataset/processed/subwordenc/subwordenc.pkl'
             
 
-            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_1/default_8d1b9abf/lm_e14_2.99pt'
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_1/default_cc782cf7/lm_e6_3.70.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_1/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_1_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None

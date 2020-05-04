@@ -1,4 +1,4 @@
-# generate_from_lm.py
+#!/bin/bash
 
 """
 Load a trained language model and generate text
@@ -7,8 +7,8 @@ Example usage:
 PYTHONPATH=. python generate_from_lm.py \
 --init="Although the food" --tau=0.5 \
 --sample_method=gumbel --g_eps=1e-5 \
---load_model='checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt' \
---dataset='hotel' --cpu=1 --sample_method=greedy
+--load_model='checkpoints/lm/mlstm/hotel_mask_asp_1/default_cc782cf7/lm_e6_3.70.pt ' \
+--dataset='hotel_mask_asp_1' --cpu=1 --sample_method=greedy
 """
 import pdb
 
