@@ -326,7 +326,7 @@ class Hotel_Mask_Asp_3_Dataset(SummReviewDataset):
         self.conf = DatasetConfig('hotel_mask_asp_3')
         self.n_ratings_labels = 5
         self.reviews = None
-        #self.subwordenc = load_file(self.conf.subwordenc_path)
+        self.subwordenc = load_file(self.conf.subwordenc_path)
 
 
 
