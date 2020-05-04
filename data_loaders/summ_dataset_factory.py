@@ -35,14 +35,15 @@ class SummDatasetFactory(object):
         elif name == 'hotel_mask_sing_asp':
             return Hotel_Mask_Sing_Asp_Dataset()
         elif name == 'hotel_mask_asp_0':
-            return Hotel_Mask_Sing_Asp_Dataset()
+            print(Hotel_Mask_Asp_0_Dataset)
+            return Hotel_Mask_Asp_0_Dataset()
         elif name == 'hotel_mask_asp_1':
-            return Hotel_Mask_Sing_Asp_Dataset()
+            return Hotel_Mask_Asp_1_Dataset()
         elif name == 'hotel_mask_asp_2':
-            return Hotel_Mask_Sing_Asp_Dataset()
+            return Hotel_Mask_Asp_2_Dataset()
         elif name == 'hotel_mask_asp_3':
-            return Hotel_Mask_Sing_Asp_Dataset()
+            return Hotel_Mask_Asp_3_Dataset()
         elif name == 'hotel_mask_asp_4':
-            return Hotel_Mask_Sing_Asp_Dataset()
+            return Hotel_Mask_Asp_4_Dataset()
 
 

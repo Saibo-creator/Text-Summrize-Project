@@ -51,7 +51,7 @@ def main(opt):
                                      batch_size=1, num_workers=0, shuffle=False)
         print('Writing reviews to file')
         with open('/tmp/{}_data.txt'.format(opt.dataset), 'w') as f:
-            for texts, ratings, metadata in dl:
+            for hotel_url, texts, ratings, metadata in dl:
                 f.write('{}\n'.format(texts[0]))
         print('Creating token counts')
         token_counts = tokenizer.corpus_token_counts(
