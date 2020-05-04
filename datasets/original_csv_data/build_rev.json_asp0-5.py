@@ -113,15 +113,14 @@ if __name__ == '__main__':
     dev = pd.merge(dev, dev_asp_rating, left_on='hotel_url',
                    right_on='hotel_url', how='left')
 
-    # round float to 1-5 integers
-    test = test[test['rating'] != -1]
-    train = train[train['rating'] != -1]
-    dev = dev[dev['rating'] != -1]
+
 
     # round float to 1-5 integers
     test['rating'] = test['rating'].apply(np.round)
     train['rating'] = train['rating'].apply(np.round)
     dev['rating'] = dev['rating'].apply(np.round)
+
+    
 
     for n in range(5):
         export_aspect_n(n, test, train, dev)
