@@ -161,7 +161,7 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_asp_0_dataset/processed/subwordenc/subwordenc.pkl'
             
 
-            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_90f9d3ac/lm_e14_2.99pt'
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_0/default_8d1b9abf/lm_e14_2.99pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_0/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_0_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None
@@ -186,7 +186,7 @@ class DatasetConfig(object):
 
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_1/default_cc782cf7/lm_e6_3.70.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_1/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
-            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_1/batch_size_2-notes_lm3.70/sum_e5_tot9.56_r1f0.28.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_1_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None
 
         elif name == 'hotel_mask_asp_2':
@@ -207,8 +207,8 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_asp_2_dataset/processed/subwordenc/subwordenc.pkl'
             
 
-            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_44cc9455/lm_e5_3.73.pt'
-            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_2/batch_size_256-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.4943_a0.8376_d0.0000.pt'
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_8d1b9abf/lm_e14_2.99pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_2/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_2_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None
 
@@ -369,7 +369,7 @@ class HParams(object):
         # TRAINING AND DATA REPRESENTATION
         ###############################################
         self.seed = 1234
-        self.batch_size = 72 # 32 需要 4.8G显存 用于训练lm 
+        self.batch_size = 48 # 32 需要 4.8G显存 用于训练lm 
         self.n_docs = 8
         self.n_docs_min = -1
         self.n_docs_max = -1
