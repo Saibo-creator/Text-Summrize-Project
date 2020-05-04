@@ -77,7 +77,7 @@ def main(opt):
     enc_fp = os.path.join(opt.output_dir, opt.output_fn + '.pkl')
     save_file(encoder, enc_fp, verbose=True)
 
-    pdb.set_trace()
+    # pdb.set_trace()
 
 
 if __name__ == '__main__':
