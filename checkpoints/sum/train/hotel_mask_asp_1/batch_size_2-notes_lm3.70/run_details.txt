@@ -1,0 +1,3 @@
+Command:
+train_sum.py --mode=train --batch_size=2 --dataset=hotel_mask_asp_1 --notes=lm3.70 --skip_clf=1
+Start time: May04_10-28-51
