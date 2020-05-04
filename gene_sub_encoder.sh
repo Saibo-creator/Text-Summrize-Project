@@ -7,7 +7,7 @@ do
 
 bash scripts/preprocess_data.sh "${f}_dataset.py"
 
-PYTHONPATH=.  python3 data_loaders/build_subword_encoder.py --dataset=$f\
+PYTHONPATH=.  python3 data_loaders/build_subword_encoder.py --dataset=${f} \
 --output_dir="./datasets/${f}_dataset/processed/subwordenc/" --output_fn=subwordenc
 
 
