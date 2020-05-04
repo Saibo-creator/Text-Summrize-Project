@@ -369,7 +369,7 @@ class HParams(object):
         # TRAINING AND DATA REPRESENTATION
         ###############################################
         self.seed = 1234
-        self.batch_size = 48 # 32 需要 4.8G显存 用于训练lm 
+        self.batch_size = 72 # 32 需要 4.8G显存 用于训练lm 
         self.n_docs = 8
         self.n_docs_min = -1
         self.n_docs_max = -1
