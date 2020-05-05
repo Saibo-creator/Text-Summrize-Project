@@ -321,7 +321,7 @@ if __name__ == '__main__':
                         help="batchsize")
     opt = parser.parse_args()
 
-    if opt.batchsize>0:
+    if opt.bs>0:
         hp.batch_size=opt.bs
 
     # Create directory to store results and save run info
