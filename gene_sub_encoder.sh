@@ -44,43 +44,43 @@ done
 # --output_fn=subwordenc
 
 
-PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
---dataset=hotel_mask_asp_0 \
---output_dir=./ \
---output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_0_dataset/processed/subwordenc/* \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_0_dataset/processed/subwordenc/ \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_0_dataset/processed/subwordenc/
+# PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
+# --dataset=hotel_mask_asp_0 \
+# --output_dir=./ \
+# --output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_0_dataset/processed/subwordenc/* \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_0_dataset/processed/subwordenc/ \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_0_dataset/processed/subwordenc/
 
-PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
---dataset=hotel_mask_asp_1 \
---output_dir=./ \
---output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_1_dataset/processed/subwordenc/* \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_1_dataset/processed/subwordenc/ \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_1_dataset/processed/subwordenc/
+# PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
+# --dataset=hotel_mask_asp_1 \
+# --output_dir=./ \
+# --output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_1_dataset/processed/subwordenc/* \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_1_dataset/processed/subwordenc/ \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_1_dataset/processed/subwordenc/
 
-PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
---dataset=hotel_mask_asp_2 \
---output_dir=./ \
---output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_2_dataset/processed/subwordenc/* \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_2_dataset/processed/subwordenc/ \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_2_dataset/processed/subwordenc/
+# PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
+# --dataset=hotel_mask_asp_2 \
+# --output_dir=./ \
+# --output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_2_dataset/processed/subwordenc/* \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_2_dataset/processed/subwordenc/ \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_2_dataset/processed/subwordenc/
 
-PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
---dataset=hotel_mask_asp_3 \
---output_dir=./ \
---output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_3_dataset/processed/subwordenc/* \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_3_dataset/processed/subwordenc/ \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_3_dataset/processed/subwordenc/
+# PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
+# --dataset=hotel_mask_asp_3 \
+# --output_dir=./ \
+# --output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_3_dataset/processed/subwordenc/* \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_3_dataset/processed/subwordenc/ \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_3_dataset/processed/subwordenc/
 
 
-PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
---dataset=hotel_mask_asp_4 \
---output_dir=./ \
---output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/* \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/ \
-&& mv subwordenc.pkl ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/
+# PYTHONPATH=. python3 data_loaders/build_subword_encoder.py \
+# --dataset=hotel_mask_asp_4 \
+# --output_dir=./ \
+# --output_fn=subwordenc&& rm ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/* \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/ \
+# && mv subwordenc.pkl ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/
 
-# """
+# # """
 
-ls -l ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/
+# ls -l ./datasets/hotel_mask_asp_4_dataset/processed/subwordenc/
 
