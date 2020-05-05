@@ -317,11 +317,11 @@ if __name__ == '__main__':
                         help="Print stats every n batches")
     parser.add_argument('--gpus', default='0',
                         help="CUDA visible devices, e.g. 2,3")
-    parser.add_argument('--bs', default='-1',
+    parser.add_argument('--bs', default=None,
                         help="batchsize")
     opt = parser.parse_args()
 
-    if opt.bs>0:
+    if opt.bs:
         hp.batch_size=opt.bs
 
     # Create directory to store results and save run info
