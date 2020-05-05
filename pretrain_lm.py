@@ -317,7 +317,12 @@ if __name__ == '__main__':
                         help="Print stats every n batches")
     parser.add_argument('--gpus', default='0',
                         help="CUDA visible devices, e.g. 2,3")
+    parser.add_argument('--bs', default='-1',
+                        help="batchsize")
     opt = parser.parse_args()
+
+    if opt.batchsize>0:
+        hp.batch_size=opt.bs
 
     # Create directory to store results and save run info
     save_dir = os.path.join(opt.save_model_basedir.format(hp.model_type, opt.dataset), run_name)
