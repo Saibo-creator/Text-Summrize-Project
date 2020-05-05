@@ -161,8 +161,8 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_asp_0_dataset/processed/subwordenc/subwordenc.pkl'
             
 
-            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_90f9d3ac/lm_e14_2.99pt'
-            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_0/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_0/default_90f9d3ac/lm_e8_3.16.pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_0/batch_size_200-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e1_l0.5964_a0.7728_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_0_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None
 
@@ -207,9 +207,10 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_asp_2_dataset/processed/subwordenc/subwordenc.pkl'
             
 
-            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_44cc9455/lm_e5_3.73.pt'
+            # self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_4a2f5c37/lm_e5_3.73.pt'
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_2/default_4a2f5c37/lm_e7_3.75.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_2/batch_size_256-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.4943_a0.8376_d0.0000.pt'
-            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_2_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_2/batch_size_12-notes_4gpu/sum_e1_tot16.46_r1f0.21.pt'
             self.autoenc_path = None
 
         elif name == 'hotel_mask_asp_3':
@@ -230,7 +231,7 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_asp_3_dataset/processed/subwordenc/subwordenc.pkl'
             
 
-            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_3/default_8d1b9abf/lm_e14_2.99pt'
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_3/default_7215754b/lm_e4_intermediate.pt' #3.20左右，训练不够充分
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_3/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_3_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None
@@ -253,7 +254,7 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_mask_asp_4_dataset/processed/subwordenc/subwordenc.pkl'
             
 
-            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_4/default_8d1b9abf/lm_e14_2.99pt'
+            self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_4/default_d13335b7/lm_e8_3.14.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_4/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_4_dataset/batch_size_8-notes_./sum_e2_sub1_2.33_r1f0.31.pt'
             self.autoenc_path = None
