@@ -1,0 +1,3 @@
+Command:
+pretrain_classifier.py --dataset=hotel_mask_asp_0 --model_type=cnn --clf_lr=0.0005 --cnn_n_feat_maps=256 --batch_size=200 --gpus=0,1,2,3
+Start time: May05_04-03-27
