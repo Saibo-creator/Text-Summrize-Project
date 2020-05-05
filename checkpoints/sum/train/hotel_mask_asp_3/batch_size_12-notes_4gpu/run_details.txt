@@ -1,0 +1,3 @@
+Command:
+train_sum.py --mode=train --batch_size=12 --dataset=hotel_mask_asp_3 --notes=4gpu --gpus=0,1,2,3 --skip_clf=1
+Start time: May04_20-44-31
