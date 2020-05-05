@@ -322,7 +322,7 @@ if __name__ == '__main__':
     opt = parser.parse_args()
 
     if opt.bs:
-        hp.batch_size=opt.bs
+        hp.batch_size=int(opt.bs)
 
     # Create directory to store results and save run info
     save_dir = os.path.join(opt.save_model_basedir.format(hp.model_type, opt.dataset), run_name)
