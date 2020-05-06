@@ -1,0 +1,3 @@
+Command:
+train_sum.py --mode=train --batch_size=12 --dataset=hotel_mask_asp_2 --notes=lr_1e-5 --gpus=0,1,2,3 --lr=1e-5
+Start time: May06_05-50-37
