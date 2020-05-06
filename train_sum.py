@@ -118,6 +118,9 @@ if __name__ == '__main__':
     parser.add_argument('--skip_clf', default=False,
                         help="set 1 if want to skip test/train clf")
 
+    parser.add_argument('--lr', default=None, #1e-4
+                        help="learning rate")
+
 
     opt = parser.parse_args()
 
@@ -128,6 +131,9 @@ if __name__ == '__main__':
 
     if opt.skip_clf:
         hp.sum_clf=False
+
+    if opt.lr:
+        hp.sum_lr=float(opt.lr)
 
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
