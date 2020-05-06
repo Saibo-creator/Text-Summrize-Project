@@ -133,7 +133,7 @@ if __name__ == '__main__':
         hp.sum_clf=False
 
     if opt.lr:
-        hp.sum_lr=int(opt.lr)
+        hp.sum_lr=float(opt.lr)
 
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
