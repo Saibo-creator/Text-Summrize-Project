@@ -139,8 +139,8 @@ class DatasetConfig(object):
             
 
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask_sing_asp/default_056be728/lm_e9_3.05.pt'
-            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_sing_asp/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
-            self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_2-notes_try_1/sum_e0_tot2.33_r1f0.28.pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_sing_asp/batch_size_200-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e1_l0.6990_a0.6904_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_12-notes_4gpu/sum_e0_tot2.76_r1f0.31.pt'
             self.autoenc_path = None
 
         elif name == 'hotel_mask_asp_0':
@@ -185,7 +185,7 @@ class DatasetConfig(object):
             
 
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_1/default_cc782cf7/lm_e6_3.70.pt'
-            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_1/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_1/batch_size_200-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e0_l0.6483_a0.7447_d0.0000.pt '
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_1/batch_size_2-notes_lm3.70/sum_e5_tot9.56_r1f0.28.pt'
             self.autoenc_path = None
 
