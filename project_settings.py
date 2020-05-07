@@ -140,7 +140,9 @@ class DatasetConfig(object):
 
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask_sing_asp/default_056be728/lm_e9_3.05.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_sing_asp/batch_size_200-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e1_l0.6990_a0.6904_d0.0000.pt'
-            self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_12-notes_4gpu/sum_e0_tot2.76_r1f0.31.pt'
+            #self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_12-notes_4gpu/sum_e0_tot2.76_r1f0.31.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_sing_asp/batch_size_12-notes_4gpu/sum_e1_sub2.pt'
+            
             self.autoenc_path = None
 
         elif name == 'hotel_mask_asp_0':
