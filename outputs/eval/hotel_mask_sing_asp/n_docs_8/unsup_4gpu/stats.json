@@ -1,0 +1,12 @@
+{
+    "adv_gen_loss": 0,
+    "autoenc_loss": 3.6371435670569396,
+    "clf_acc": 0,
+    "clf_avg_diff": 0,
+    "clf_loss": 0,
+    "cycle_loss": -0.8704413945722098,
+    "grad_pen_loss": 0,
+    "nll": 1.1393136458821815,
+    "total_loss": 2.7667021515345827,
+    "wass_loss": 0
+}
