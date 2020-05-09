@@ -235,7 +235,7 @@ class DatasetConfig(object):
 
             self.lm_path ='checkpoints/lm/mlstm/hotel_mask_asp_3/default_9e863997/lm_e10_3.14.pt' #3.20左右，训练不够充分
             self.clf_path = 'checkpoints/clf/cnn/hotel_mask_asp_3/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e2_l0.8130_a0.6326_d0.0000.pt'
-            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_3_dataset/batch_size_8-notes_./sum_e1_sub9_tot2.8_r1f0.31.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_3_dataset/batch_size_12-notes_4gpu/sum_e1_sub9_tot2.8_r1f0.31.pt'
             self.autoenc_path = None
 
         elif name == 'hotel_mask_asp_4':
