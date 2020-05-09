@@ -1,0 +1,2 @@
+Number of parameters to optimize:=25618974
+optimizer used :=normal
