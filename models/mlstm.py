@@ -11,7 +11,7 @@ import torch.nn.functional as F
 
 from models.nn_utils import move_to_cuda, logits_to_prob, prob_to_vocab_id
 from project_settings import EOS_ID, PAD_ID
-
+print("EOS_ID: ",EOS_ID)
 
 class mLSTM(nn.Module):
 
@@ -291,12 +291,9 @@ class StackedLSTMDecoder(nn.Module):
             hidden, cell, output = self.rnn(input_emb, hidden, cell)
 
             #print(output.shape) =[6, 23852]
-
             prob = logits_to_prob(output, softmax_method,
                                   tau=tau, eps=eps, gumbel_hard=gumbel_hard)  # [batch, vocab]
             prob, id = prob_to_vocab_id(prob, sample_method, k=k)  # [batch * k^(t+1)]
-            # print(prob.shape)=[6, 23852]
-            # print(id.shape)=[6]
             #print(id)=tensor([6, 6, 6, 6, 6, 6]) 6='the_'
             # If sequence (row) has *previously* produced an EOS,
             # replace prob with one hot (probability one for pad) and id with pad
@@ -305,8 +302,8 @@ class StackedLSTMDecoder(nn.Module):
             # Now update rows_with_eos to include this time step
             # This has to go after the above! Otherwise EOS is replaced as well
             rows_with_eos = rows_with_eos | (id == eos_id).long()
-            decoded_probs[:, t, :] = prob
-            decoded_ids[:, t] = id
+            decoded_probs[:, t, :] = prob # shape:torch.Size([6, 128, 23852]) decoded_probs.grad_fn: <CopySlices object at 0x1a6afa23d0>
+            decoded_ids[:, t] = id #shape:torch.Size([6, 128]), grad_fn=None
 
             # Get next input
             if targets is not None:  # teacher forcing
@@ -325,6 +322,10 @@ class StackedLSTMDecoder(nn.Module):
         # if return_last_state:
         #     extra['last_state'] = states
 
+
+        #print(decoded_probs[:,:,0])
+        #print(torch.mean(decoded_probs[:, :, 0],axis=1))#id=0 => <pad> # tensor([6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],\
+        extra['shortness']=torch.mean(decoded_probs[:, :, 0],axis=1)
         decoded_texts = []
         if subwordenc:
             for i in range(batch_size):
@@ -369,4 +370,5 @@ class StackedLSTMEncoderDecoder(nn.Module):
             _, dec_init_input = prob_to_vocab_id(last_probs, 'greedy')  # [batch]
 
         probs, ids, texts, extra = self.decoder(last_hidden, last_cell, dec_init_input, **dec_kwargs)
+        extra['']
         return probs, ids, texts, extra

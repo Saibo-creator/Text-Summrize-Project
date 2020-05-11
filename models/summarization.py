@@ -6,6 +6,7 @@ Unsupervised summarization model
 import pdb
 import time
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -115,8 +116,8 @@ class SummarizationModel(nn.Module):
         if self.hp.autoenc_docs or (self.hp.cycle_loss == 'rec'):
             if minibatch_idx % print_every_nbatches == 0:
                 if docs_ids.get_device() == 0:
-                    print('\n', '-' * 100)
                     orig_rev_text = self.dataset.subwordenc.decode(docs_ids[0][0])
+                    print('\n', '-' * 100)
                     print('ORIGINAL REVIEW: ', orig_rev_text.encode('utf8'))
                     print('-' * 100)
                     if tb_writer:
@@ -223,14 +224,13 @@ class SummarizationModel(nn.Module):
         # useful things (e.g. tracking NLL of summaries)
         tgt_summ_seq_len = self.dataset.conf.review_max_len if hasattr(self.dataset, 'conf') else \
             self.hp.yelp_review_max_len
-        summ_probs, _, summ_texts, _ = self.summ_dec(docs_enc_h_comb, docs_enc_c_comb, init_input,
+        summ_probs, _, summ_texts, extra = self.summ_dec(docs_enc_h_comb, docs_enc_c_comb, init_input,
                                                      seq_len=tgt_summ_seq_len, eos_id=EDOC_ID,
                                                      # seq_len=self.dataset.conf.review_max_len, eos_id=EDOC_ID,
                                                      softmax_method=softmax_method, sample_method=sample_method,
                                                      tau=tau, eps=self.hp.g_eps, gumbel_hard=True,
                                                      attend_to_embs=docs_enc_h,
                                                      subwordenc=self.dataset.subwordenc)
-        print(summ_probs.shape)
         ##########################################################
         # LENGTH DIFF  LOSS
         ##########################################################
@@ -238,14 +238,12 @@ class SummarizationModel(nn.Module):
         # [batch, max_summ_len, vocab];  [batch] of str's
 
         if self.hp.length_loss:
-            summ_texts_lengths = torch.tensor([len(summ.replace('<pad>', '').split(' ')) for summ in summ_texts],
-                                              requires_grad=False)
-            # print(summ_texts_lengths)
-            ideal_length = torch.ones(batch_size)
-            length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
-            length_loss = length_cos(ideal_length,
-                                     summ_texts_lengths / input_txts_mean_lengths)  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
-            self.stats['length_loss'] = length_loss
+            # length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
+            # length_loss = length_cos(ideal_length,
+            #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
+
+            self.stats['length_loss'] = torch.mean(torch.ones(extra['shortness'].shape)-extra['shortness'])#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
+            print('length_loss=:', self.stats['length_loss'].grad_fn)
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the
         # summary decoder and each of the original encoded reviews.

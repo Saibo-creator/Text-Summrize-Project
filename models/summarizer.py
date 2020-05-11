@@ -206,7 +206,7 @@ class Summarizer(object):
                                     minibatch_idx=s, print_every_nbatches=self.opt.print_every_nbatches,
                                     tb_writer=tb_writer, tb_step=step,
                                     wass_loss=stats_avgs['wass_loss'],
-                                    grad_eos_idpen_loss=stats_avgs['grad_pen_loss'],
+                                    grad_pen_loss=stats_avgs['grad_pen_loss'],
                                     adv_gen_loss=stats_avgs['adv_gen_loss'],
                                     clf_loss=stats_avgs['clf_loss'],
                                     clf_acc=stats_avgs['clf_acc'],
@@ -236,14 +236,15 @@ class Summarizer(object):
                     stats['autoenc_loss'].backward(retain_graph=retain_graph)
                 if self.hp.early_cycle and (not self.hp.autoenc_only):# False
                     stats['early_cycle_loss'].backward()
+                if self.hp.length_loss:#True
+                    stats['length_loss'].backward(retain_graph=True)
                 if self.hp.sum_cycle and (not self.hp.autoenc_only):#True
                     retain_graph = self.hp.extract_loss
                     stats['cycle_loss'].backward(retain_graph=retain_graph)
                 if self.hp.extract_loss and (not self.hp.autoenc_only):  #False
                     retain_graph = clf_optimizer is not None
                     stats['extract_loss'].backward(retain_graph=retain_graph)
-                if self.hp.length_loss:
-                    stats['length_loss'].backward(retain_graph=retain_graph)
+
                 sum_gn = calc_grad_norm(self.docs_enc)
                 sum_optimizer.step()
 
