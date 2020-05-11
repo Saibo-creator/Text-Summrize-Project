@@ -223,6 +223,7 @@ class StackedLSTMDecoder(nn.Module):
             # For non-teacher forcing
             seq_len: int (length to generate)
             eos_id: int (generate until every sequence in batch has generated eos, or until seq_len)
+                    eos_id=EDOC_ID in summarization.py
             non_pad_prob_val: float
                 When replacing tokens after eos_id, set probability of non-pad tokens to this value
                 A small epsilon may be used if the log of the probs will be computed for a NLLLoss in order
@@ -265,9 +266,9 @@ class StackedLSTMDecoder(nn.Module):
         decoded_ids = move_to_cuda(torch.zeros(batch_size * k, output_len).long())
         extra = {}
 
-        rows_with_eos = move_to_cuda(torch.zeros(batch_size * k).long())  # track which sequences have generated eos_id
+        rows_with_eos = move_to_cuda(torch.zeros(batch_size * k).long())  # track which sequences have generated eos_id=[0,0,0,0,0,0]
         pad_ids = move_to_cuda(torch.Tensor(batch_size * k).fill_(PAD_ID).long())
-        pad_prob = move_to_cuda(torch.zeros(batch_size * k, vocab_size)).fill_(non_pad_prob_val)
+        pad_prob = move_to_cuda(torch.zeros(batch_size * k, vocab_size)).fill_(non_pad_prob_val)#k=1
         pad_prob[:, PAD_ID] = 1.0
 
         hidden, cell = init_hidden, init_cell  # [batch, n_layers, hidden]
@@ -288,18 +289,22 @@ class StackedLSTMDecoder(nn.Module):
                 hidden = self.context_alpha * context + (1 - self.context_alpha) * hidden
 
             hidden, cell, output = self.rnn(input_emb, hidden, cell)
+
+            #print(output.shape) =[6, 23852]
+
             prob = logits_to_prob(output, softmax_method,
                                   tau=tau, eps=eps, gumbel_hard=gumbel_hard)  # [batch, vocab]
             prob, id = prob_to_vocab_id(prob, sample_method, k=k)  # [batch * k^(t+1)]
-
+            # print(prob.shape)=[6, 23852]
+            # print(id.shape)=[6]
+            #print(id)=tensor([6, 6, 6, 6, 6, 6]) 6='the_'
             # If sequence (row) has *previously* produced an EOS,
             # replace prob with one hot (probability one for pad) and id with pad
             prob = torch.where((rows_with_eos == 1).unsqueeze(1), pad_prob, prob)  # unsqueeze to broadcast
-            id = torch.where(rows_with_eos == 1, pad_ids, id)
+            id = torch.where(rows_with_eos == 1, pad_ids, id) #[6, 6, 6, 6, 6, 6]
             # Now update rows_with_eos to include this time step
             # This has to go after the above! Otherwise EOS is replaced as well
             rows_with_eos = rows_with_eos | (id == eos_id).long()
-
             decoded_probs[:, t, :] = prob
             decoded_ids[:, t] = id
 

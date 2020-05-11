@@ -66,7 +66,7 @@ if __name__ == '__main__':
     hp = HParams()
     hp, run_name, parser = create_argparse_and_update_hp(hp)
 
-    parser.add_argument('--dataset', default='hotel',
+    parser.add_argument('--dataset', default='hotel_mask_asp_1',
                         help='yelp,amazon,hotel,hote_mask')
 
     parser.add_argument('--test_on_another_dataset', default=None,
@@ -120,6 +120,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--lr', default=None, #1e-4
                         help="learning rate")
+    parser.add_argument('--len_loss',default=True,
+                        help="include length diff loss between input reviews and generated summries")
 
 
     opt = parser.parse_args()
@@ -134,6 +136,9 @@ if __name__ == '__main__':
 
     if opt.lr:
         hp.sum_lr=float(opt.lr)
+
+    if opt.len_loss:
+        hp.length_loss=True
 
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a

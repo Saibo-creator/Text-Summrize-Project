@@ -91,6 +91,21 @@ class SummarizationModel(nn.Module):
             summ_texts: list of strs
         """
         batch_size = docs_ids.size(0)
+        n_docs = docs_ids.size(1)
+        max_len = docs_ids.size(2)
+
+        ##########################################################
+        # CALCULATE AVERAGE LENGTH OF INPUT REVIEWS
+        ##########################################################
+        docs_ids_unstacked=torch.squeeze(docs_ids.view(1, -1, max_len)) # [batchsize*ndocs:max_len]
+        input_txts=[self.dataset.subwordenc.decode(x_i).replace('<pad>','') for x_i in docs_ids_unstacked]#len(input_txts)=batchsize*ndocs
+        input_txts_lengths=torch.tensor([len(txt.split(' ')) for txt in input_txts],dtype=torch.float).view(batch_size,n_docs) #  [batchsize*ndocs:lenth_tokens] ,length_tokens is always <150
+        # print(input_txts_lengths)
+        # print('\n')
+        input_txts_mean_lengths=torch.mean(input_txts_lengths,1) # get mean length per batch; len(input_txts_mean_lengths)=batch_size
+
+        # print(input_txts_mean_lengths)
+
 
         ##########################################################
         # ENCODE DOCUMENTS
@@ -215,25 +230,22 @@ class SummarizationModel(nn.Module):
                                                      tau=tau, eps=self.hp.g_eps, gumbel_hard=True,
                                                      attend_to_embs=docs_enc_h,
                                                      subwordenc=self.dataset.subwordenc)
-
+        print(summ_probs.shape)
+        ##########################################################
+        # LENGTH DIFF  LOSS
+        ##########################################################
+        ###########################  summ_texts_lengths  ###############################
         # [batch, max_summ_len, vocab];  [batch] of str's
-        
 
-
-
-
-
-
-#todo , modify loss function 
-
-
-
-
-
-
-
-
-
+        if self.hp.length_loss:
+            summ_texts_lengths = torch.tensor([len(summ.replace('<pad>', '').split(' ')) for summ in summ_texts],
+                                              requires_grad=False)
+            # print(summ_texts_lengths)
+            ideal_length = torch.ones(batch_size)
+            length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
+            length_loss = length_cos(ideal_length,
+                                     summ_texts_lengths / input_txts_mean_lengths)  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
+            self.stats['length_loss'] = length_loss
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the
         # summary decoder and each of the original encoded reviews.
@@ -285,7 +297,7 @@ class SummarizationModel(nn.Module):
             summ_enc_c_rep = summ_enc_c.repeat(1, n_docs, 1) \
                 .view(batch_size * n_docs, summ_enc_c.size(1), summ_enc_c.size(2))
 
-            if self.hp.cycle_loss == 'enc':
+            if self.hp.cycle_loss == 'enc':#defualt case, compare summary
                 assert (self.hp.concat_docs == False), \
                     'Docs must have been encoded individually for autoencoder. Set concat_docs=False'
                 # (It's possible to have cycle_loss=enc and concat_docs=False, you just have to als encode them

@@ -306,6 +306,7 @@ class HParams(object):
         self.autoenc_docs = True  # add autoencoding loss
         self.autoenc_only = False  # only perform autoencoding of reviews (would be used to pretrain)
         self.autoenc_docs_tie_dec = True  # use same decoder for summaries and review autoencoder
+        self.length_loss = False
         self.tie_enc = True  # use same encoder for encoding documents and encoding summary
         self.sum_label_smooth = False  # for autoenc_loss and reconstruction cycle_loss
         self.sum_label_smooth_val = 0.1

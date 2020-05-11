@@ -135,7 +135,7 @@ class Summarizer(object):
         summaries = []  # this is only added to if store_all_summaries is True
         ids = []
 
-        
+        #here print many reviews
         for s, (hotel_url ,texts, ratings, metadata) in enumerate(data_iter):
             # texts: list of strs, each str is n_docs concatenated together with EDOC_TOK delimiter
             if s > nbatches:
@@ -206,7 +206,7 @@ class Summarizer(object):
                                     minibatch_idx=s, print_every_nbatches=self.opt.print_every_nbatches,
                                     tb_writer=tb_writer, tb_step=step,
                                     wass_loss=stats_avgs['wass_loss'],
-                                    grad_pen_loss=stats_avgs['grad_pen_loss'],
+                                    grad_eos_idpen_loss=stats_avgs['grad_pen_loss'],
                                     adv_gen_loss=stats_avgs['adv_gen_loss'],
                                     clf_loss=stats_avgs['clf_loss'],
                                     clf_acc=stats_avgs['clf_acc'],
@@ -221,7 +221,7 @@ class Summarizer(object):
 
             # Classifier loss
             clf_gn = -1.0
-            if clf_optimizer:
+            if clf_optimizer: # set be fault in MeanSum and our model
                 retain_graph = sum_optimizer is not None
                 stats['clf_loss'].backward(retain_graph=retain_graph)
                 clf_gn = calc_grad_norm(self.clf_model)
@@ -242,6 +242,8 @@ class Summarizer(object):
                 if self.hp.extract_loss and (not self.hp.autoenc_only):  #False
                     retain_graph = clf_optimizer is not None
                     stats['extract_loss'].backward(retain_graph=retain_graph)
+                if self.hp.length_loss:
+                    stats['length_loss'].backward(retain_graph=retain_graph)
                 sum_gn = calc_grad_norm(self.docs_enc)
                 sum_optimizer.step()
 
