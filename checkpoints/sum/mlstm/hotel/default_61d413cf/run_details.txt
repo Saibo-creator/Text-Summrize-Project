@@ -1,0 +1,3 @@
+Command:
+/Users/saibo/AEPFL_S2/project/Text-Summrize-Project/train_sum.py
+Start time: May11_11-31-33
