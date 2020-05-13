@@ -116,11 +116,11 @@ if __name__ == '__main__':
                         help="if want to run on cpu, set --cpu=True")
 
     parser.add_argument('--skip_clf', default=False,
-                        help="set 1 if want to skip test/train clf")
+                        help="set True if want to skip test/train clf")
 
     parser.add_argument('--lr', default=None, #1e-4
                         help="learning rate")
-    parser.add_argument('--len_loss',default=True,
+    parser.add_argument('--len_loss',default=False,
                         help="include length diff loss between input reviews and generated summries")
 
 

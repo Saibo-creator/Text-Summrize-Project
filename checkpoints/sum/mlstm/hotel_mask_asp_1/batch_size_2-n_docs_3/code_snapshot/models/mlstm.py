@@ -271,6 +271,7 @@ class StackedLSTMDecoder(nn.Module):
         pad_prob = move_to_cuda(torch.zeros(batch_size * k, vocab_size)).fill_(non_pad_prob_val)#k=1
         pad_prob[:, PAD_ID] = 1.0
 
+
         hidden, cell = init_hidden, init_cell  # [batch, n_layers, hidden]
         input = init_input.long()
 
@@ -325,7 +326,8 @@ class StackedLSTMDecoder(nn.Module):
 
         #print(decoded_probs[:,:,0])
         #print(torch.mean(decoded_probs[:, :, 0],axis=1))#id=0 => <pad> # tensor([6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],\
-        extra['shortness']=torch.mean(decoded_probs[:, :, 0],axis=1)
+        extra['shortness']=move_to_cuda(torch.mean(decoded_probs[:, :, 0],axis=1))
+
         decoded_texts = []
         if subwordenc:
             for i in range(batch_size):
