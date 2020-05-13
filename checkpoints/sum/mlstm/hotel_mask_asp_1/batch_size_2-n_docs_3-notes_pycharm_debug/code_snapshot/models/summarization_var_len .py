@@ -6,7 +6,6 @@ Unsupervised summarization model
 import pdb
 import time
 
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -92,21 +91,6 @@ class SummarizationModel(nn.Module):
             summ_texts: list of strs
         """
         batch_size = docs_ids.size(0)
-        n_docs = docs_ids.size(1)
-        max_len = docs_ids.size(2)
-
-        ##########################################################
-        # CALCULATE AVERAGE LENGTH OF INPUT REVIEWS
-        ##########################################################
-        docs_ids_unstacked=torch.squeeze(docs_ids.view(1, -1, max_len)) # [batchsize*ndocs:max_len]
-        input_txts=[self.dataset.subwordenc.decode(x_i).replace('<pad>','') for x_i in docs_ids_unstacked]#len(input_txts)=batchsize*ndocs
-        input_txts_lengths=torch.tensor([len(txt.split(' ')) for txt in input_txts],dtype=torch.float).view(batch_size,n_docs) #  [batchsize*ndocs:lenth_tokens] ,length_tokens is always <150
-        # print(input_txts_lengths)
-        # print('\n')
-        input_txts_mean_lengths=torch.mean(input_txts_lengths,1) # get mean length per batch; len(input_txts_mean_lengths)=batch_size
-
-        # print(input_txts_mean_lengths)
-
 
         ##########################################################
         # ENCODE DOCUMENTS
@@ -116,8 +100,8 @@ class SummarizationModel(nn.Module):
         if self.hp.autoenc_docs or (self.hp.cycle_loss == 'rec'):
             if minibatch_idx % print_every_nbatches == 0:
                 if docs_ids.get_device() == 0:
-                    orig_rev_text = self.dataset.subwordenc.decode(docs_ids[0][0])
                     print('\n', '-' * 100)
+                    orig_rev_text = self.dataset.subwordenc.decode(docs_ids[0][0])
                     print('ORIGINAL REVIEW: ', orig_rev_text.encode('utf8'))
                     print('-' * 100)
                     if tb_writer:
@@ -224,27 +208,31 @@ class SummarizationModel(nn.Module):
         # useful things (e.g. tracking NLL of summaries)
         tgt_summ_seq_len = self.dataset.conf.review_max_len if hasattr(self.dataset, 'conf') else \
             self.hp.yelp_review_max_len
-        summ_probs, _, summ_texts, extra = self.summ_dec(docs_enc_h_comb, docs_enc_c_comb, init_input,
+        summ_probs, _, summ_texts, _ = self.summ_dec(docs_enc_h_comb, docs_enc_c_comb, init_input,
                                                      seq_len=tgt_summ_seq_len, eos_id=EDOC_ID,
                                                      # seq_len=self.dataset.conf.review_max_len, eos_id=EDOC_ID,
                                                      softmax_method=softmax_method, sample_method=sample_method,
                                                      tau=tau, eps=self.hp.g_eps, gumbel_hard=True,
                                                      attend_to_embs=docs_enc_h,
                                                      subwordenc=self.dataset.subwordenc)
-        ##########################################################
-        # LENGTH DIFF  LOSS
-        ##########################################################
-        ###########################  summ_texts_lengths  ###############################
+
         # [batch, max_summ_len, vocab];  [batch] of str's
 
-        if self.hp.length_loss:
-            # length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
-            # length_loss = length_cos(ideal_length,
-            #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
 
-            self.stats['length_loss'] = move_to_cuda(1e4*torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
 
-            print('length_loss=:', self.stats['length_loss'].grad_fn)
+
+
+
+#todo , modify loss function 
+
+
+
+
+
+
+
+
+
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the
         # summary decoder and each of the original encoded reviews.
@@ -296,7 +284,7 @@ class SummarizationModel(nn.Module):
             summ_enc_c_rep = summ_enc_c.repeat(1, n_docs, 1) \
                 .view(batch_size * n_docs, summ_enc_c.size(1), summ_enc_c.size(2))
 
-            if self.hp.cycle_loss == 'enc':#defualt case, compare summary
+            if self.hp.cycle_loss == 'enc':
                 assert (self.hp.concat_docs == False), \
                     'Docs must have been encoded individually for autoencoder. Set concat_docs=False'
                 # (It's possible to have cycle_loss=enc and concat_docs=False, you just have to als encode them
