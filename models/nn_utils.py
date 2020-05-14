@@ -133,6 +133,7 @@ def logits_to_prob(logits, method,
         prob = F.gumbel_softmax(logits, tau=tau, eps=eps, hard=gumbel_hard)
     elif method == 'softmax':
         prob = F.softmax(logits / tau, dim=1)
+        
     return prob
 
 
