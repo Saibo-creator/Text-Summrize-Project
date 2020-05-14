@@ -231,19 +231,23 @@ class SummarizationModel(nn.Module):
                                                      tau=tau, eps=self.hp.g_eps, gumbel_hard=True,
                                                      attend_to_embs=docs_enc_h,
                                                      subwordenc=self.dataset.subwordenc)
+        # summ_texts:2 texts
+        # summ_prob.shape:torch.Size([2, 180, 23852])
         ##########################################################
         # LENGTH DIFF  LOSS
         ##########################################################
         ###########################  summ_texts_lengths  ###############################
         # [batch, max_summ_len, vocab];  [batch] of str's
-
+        print(summ_texts)
+        print(summ_probs.shape)
+        print(extra['shortness'])
         if self.hp.length_loss:
             # length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
             # length_loss = length_cos(ideal_length,
             #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
 
             #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-            self.stats['length_loss'] = 1e4 * move_to_cuda(torch.mean(move_to_cuda(extra['shortness'])))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
+            self.stats['length_loss'] = 1e4 * move_to_cuda(torch.max(move_to_cuda(extra['shortness'])))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
 
             print('length_loss=:', self.stats['length_loss'])
 

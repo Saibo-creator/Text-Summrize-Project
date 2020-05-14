@@ -11,7 +11,8 @@ OUTPUTS_COMPAR_DIR = os.path.join(OUTPUTS_DIR, 'compar/')
 
 WORD2VEC_PATH = 'datasets/GoogleNews-vectors-negative300.bin'  # for extractive method
 
-PAD_TOK, EOS_TOK, GO_TOK, OOV_TOK, SDOC_TOK, EDOC_TOK = '<pad>', '<EOS>', '<GO>', '<OOV>', '<DOC>', '</DOC>'# 'OOV'  = 'UNK,' 
+PAD_TOK, EOS_TOK, GO_TOK, OOV_TOK, SDOC_TOK, EDOC_TOK = \
+    '<pad>', '<EOS>', '<GO>', '<OOV>', '<DOC>', '</DOC>'
 PAD_ID, EOS_ID, GO_ID, OOV_ID, SDOC_ID, EDOC_ID = \
     0, 1, 2, 3, 4, 5
 RESERVED_TOKENS = [PAD_TOK, EOS_TOK, GO_TOK, OOV_TOK, SDOC_TOK, EDOC_TOK]

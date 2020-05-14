@@ -292,6 +292,9 @@ class StackedLSTMDecoder(nn.Module):
             hidden, cell, output = self.rnn(input_emb, hidden, cell)
 
             #print(output.shape) =[6, 23852]
+
+            #####################   sampling    ############################
+
             prob = logits_to_prob(output, softmax_method,
                                   tau=tau, eps=eps, gumbel_hard=gumbel_hard)  # [batch, vocab]
             prob, id = prob_to_vocab_id(prob, sample_method, k=k)  # [batch * k^(t+1)]
@@ -325,8 +328,8 @@ class StackedLSTMDecoder(nn.Module):
 
 
         #print(decoded_probs[:,:,0])
-        #print(torch.mean(decoded_probs[:, :, 0],axis=1))#id=0 => <pad> # tensor([6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],\
-        #print(torch.mean(decoded_probs[:, :, 5],axis=1))
+        #print(torch.mean(decoded_probs[:, :, 0],axis=1))#id=0 => <pad> # tensor([6.4844e-01, 4.2873e-06(long), 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06(long)],\
+        #print(torch.mean(decoded_probs[:, :, 5],axis=1))#id=5 => </DOC>
         #print(torch.mean(decoded_probs[:, :, 0],axis=1))
         extra['shortness']=move_to_cuda(torch.mean(decoded_probs[:, :, 5],axis=1))
         #print(extra['shortness'].is_cuda)
@@ -374,5 +377,4 @@ class StackedLSTMEncoderDecoder(nn.Module):
             _, dec_init_input = prob_to_vocab_id(last_probs, 'greedy')  # [batch]
 
         probs, ids, texts, extra = self.decoder(last_hidden, last_cell, dec_init_input, **dec_kwargs)
-        extra['']
         return probs, ids, texts, extra
