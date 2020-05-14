@@ -123,6 +123,9 @@ if __name__ == '__main__':
     parser.add_argument('--len_loss',default=False,
                         help="include length diff loss between input reviews and generated summries")
 
+    parser.add_argument('--sum_combine',default=False,
+                        help="mean,ff,gru")
+
 
     opt = parser.parse_args()
 
@@ -139,7 +142,8 @@ if __name__ == '__main__':
 
     if opt.len_loss:
         hp.length_loss=True
-
+    if opt.sum_combine:
+        hp.combine_encs = opt.sum_combine
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
     # command line argument
