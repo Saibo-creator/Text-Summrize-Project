@@ -244,7 +244,7 @@ class SummarizationModel(nn.Module):
 
             #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
             self.stats['length_loss'] = 1e4 * move_to_cuda(torch.mean(move_to_cuda(extra['shortness'])))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-            print(extra['shortness'])
+
             print('length_loss=:', self.stats['length_loss'])
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the
