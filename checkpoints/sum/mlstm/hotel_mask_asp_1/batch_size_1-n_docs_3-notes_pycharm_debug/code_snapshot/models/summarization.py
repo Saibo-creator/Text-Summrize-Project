@@ -248,7 +248,7 @@ class SummarizationModel(nn.Module):
             #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
 
             #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-            self.stats['length_loss'] = 1e4 * move_to_cuda(torch.max(move_to_cuda(extra['shortness'])))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
+            self.stats['length_loss'] = 1e4 * move_to_cuda(torch.mean(move_to_cuda(extra['shortness'])))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
 
             print('length_loss=:', self.stats['length_loss'])
 

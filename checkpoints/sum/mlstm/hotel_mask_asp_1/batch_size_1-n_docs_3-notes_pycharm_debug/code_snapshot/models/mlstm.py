@@ -292,6 +292,9 @@ class StackedLSTMDecoder(nn.Module):
             hidden, cell, output = self.rnn(input_emb, hidden, cell)
 
             #print(output.shape) =[6, 23852]
+
+            #####################   sampling    ############################
+
             prob = logits_to_prob(output, softmax_method,
                                   tau=tau, eps=eps, gumbel_hard=gumbel_hard)  # [batch, vocab]
             prob, id = prob_to_vocab_id(prob, sample_method, k=k)  # [batch * k^(t+1)]
@@ -374,5 +377,4 @@ class StackedLSTMEncoderDecoder(nn.Module):
             _, dec_init_input = prob_to_vocab_id(last_probs, 'greedy')  # [batch]
 
         probs, ids, texts, extra = self.decoder(last_hidden, last_cell, dec_init_input, **dec_kwargs)
-        extra['']
         return probs, ids, texts, extra

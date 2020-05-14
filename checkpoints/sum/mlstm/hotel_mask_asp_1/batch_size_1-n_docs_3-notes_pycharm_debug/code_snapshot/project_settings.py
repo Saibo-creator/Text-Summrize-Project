@@ -11,8 +11,7 @@ OUTPUTS_COMPAR_DIR = os.path.join(OUTPUTS_DIR, 'compar/')
 
 WORD2VEC_PATH = 'datasets/GoogleNews-vectors-negative300.bin'  # for extractive method
 
-PAD_TOK, EOS_TOK, GO_TOK, OOV_TOK, SDOC_TOK, EDOC_TOK = \
-    '<pad>', '<EOS>', '<GO>', '<OOV>', '<DOC>', '</DOC>'
+PAD_TOK, EOS_TOK, GO_TOK, OOV_TOK, SDOC_TOK, EDOC_TOK = '<pad>', '<EOS>', '<GO>', '<OOV>', '<DOC>', '</DOC>'# 'OOV'  = 'UNK,' 
 PAD_ID, EOS_ID, GO_ID, OOV_ID, SDOC_ID, EDOC_ID = \
     0, 1, 2, 3, 4, 5
 RESERVED_TOKENS = [PAD_TOK, EOS_TOK, GO_TOK, OOV_TOK, SDOC_TOK, EDOC_TOK]
@@ -307,6 +306,7 @@ class HParams(object):
         self.autoenc_only = False  # only perform autoencoding of reviews (would be used to pretrain)
         self.autoenc_docs_tie_dec = True  # use same decoder for summaries and review autoencoder
         self.length_loss = False
+        self.length_loss_coef = False
         self.tie_enc = True  # use same encoder for encoding documents and encoding summary
         self.sum_label_smooth = False  # for autoenc_loss and reconstruction cycle_loss
         self.sum_label_smooth_val = 0.1
