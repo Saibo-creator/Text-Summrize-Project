@@ -377,5 +377,4 @@ class StackedLSTMEncoderDecoder(nn.Module):
             _, dec_init_input = prob_to_vocab_id(last_probs, 'greedy')  # [batch]
 
         probs, ids, texts, extra = self.decoder(last_hidden, last_cell, dec_init_input, **dec_kwargs)
-        extra['']
         return probs, ids, texts, extra
