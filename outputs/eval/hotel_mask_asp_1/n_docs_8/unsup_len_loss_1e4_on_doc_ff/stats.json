@@ -1,13 +1,13 @@
 {
     "adv_gen_loss": 0,
-    "autoenc_loss": 4.4968725364031945,
+    "autoenc_loss": 4.659565660276302,
     "clf_acc": 0,
     "clf_avg_diff": 0,
     "clf_loss": 0,
-    "cycle_loss": -0.9326021529821097,
+    "cycle_loss": -0.7960268855094907,
     "grad_pen_loss": 0,
     "length_loss": 0.0,
-    "nll": 1.819212875941382,
-    "total_loss": 3.564270385972258,
+    "nll": 1.499024125388623,
+    "total_loss": 3.8635387838118773,
     "wass_loss": 0
 }
