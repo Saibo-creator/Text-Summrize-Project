@@ -123,6 +123,9 @@ if __name__ == '__main__':
     parser.add_argument('--len_loss',default=False,
                         help="include length diff loss between input reviews and generated summries")
 
+    parser.add_argument('--len_loss_coef',default=False,
+                        help="set coefficient of lenth loss ,effect similar to stepsize")
+
     parser.add_argument('--sum_combine',default=False,
                         help="mean,ff,gru")
 
@@ -142,6 +145,9 @@ if __name__ == '__main__':
 
     if opt.len_loss:
         hp.length_loss=True
+    if opt.len_loss_coef:
+        hp.length_loss_coef=float(opt.len_loss_coef)
+
     if opt.sum_combine:
         hp.combine_encs = opt.sum_combine
 
