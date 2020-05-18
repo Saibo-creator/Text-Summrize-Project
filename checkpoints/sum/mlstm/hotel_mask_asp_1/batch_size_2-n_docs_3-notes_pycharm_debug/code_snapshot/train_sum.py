@@ -123,11 +123,17 @@ if __name__ == '__main__':
     parser.add_argument('--len_loss',default=False,
                         help="include length diff loss between input reviews and generated summries")
 
+    parser.add_argument('--len_loss_coef',default=False,
+                        help="set coefficient of lenth loss ,effect similar to stepsize")
+
     parser.add_argument('--sum_combine',default=False,
                         help="mean,ff,gru")
 
 
     opt = parser.parse_args()
+    #opt:Namespace(autoenc_docs=None, autoenc_docs_tie_dec=None, autoenc_only=None, az_cat=None, batch_size=2, bs_dir='', clf_clip=None, clf_lr=None, clf_mse=None, clf_onehot=None, cnn_dropout=None, cnn_filter_sizes=None, cnn_n_feat_maps=None, combine_encs=None, combine_encs_gru_bi=None, combine_encs_gru_dropout=None, combine_encs_gru_nlayers=None, combine_tie_hc=None, concat_docs=None, cos_honly=None, cos_wgt=None, cpu='1', cycle_loss=None, dataset='hotel_mask_asp_1', debug=None, decay_interval_size=None, decay_tau=None, decay_tau_alpha=None, decay_tau_method=None, discrim_clip=None, discrim_lr=None, discrim_model=None, discrim_onehot=None, docs_attn=None, docs_attn_hidden_size=None, docs_attn_learn_alpha=None, early_cycle=None, emb_size=None, extract_loss=None, freeze_embed=None, g_eps=None, gpus='0', hidden_size=None, len_loss='True', len_loss_coef='1e2', length_loss=None, length_loss_coef=None, lm_clip=None, lm_lr=None, lm_lr_decay=None, lm_lr_decay_method=None, lm_seq_len=None, load_ae_freeze=None, load_autoenc=None, load_clf=None, load_discrim='', load_lm=None, load_test_sum=None, lr=None, lstm_dropout=None, lstm_layers=None, lstm_ln=None, max_nepochs=None, min_tau=None, mode='train', model_type=None, n_docs=3, n_docs_max=None, n_docs_min=None, no_bigstore=False, noam_warmup=None, notes='pycharm_debug', optim=None, print_every_nbatches=1, remove_stopwords=None, save_model_basedir='checkpoints/sum/{}/{}', save_model_fn='sum', seed=None, show_figs=False, skip_clf='1', sum_clf=None, sum_clf_lr=None, sum_clip=None, sum_combine='ff', sum_cycle=None, sum_discrim=None, sum_label_smooth=None, sum_label_smooth_val=None, sum_lr=None, tau=None, test_group_ratings=False, test_on_another_dataset=None, tie_enc=None, track_ppl=None, train_subset=None, tsfr_blocks=None, tsfr_dropout=None, tsfr_ff_size=None, tsfr_label_smooth=None, tsfr_nheads=None, tsfr_tie_embs=None, use_stemmer=None, wgan_lam=None)
+    # majority of opt.items are none
+
 
     # Hardcoded at the moment
     opt.no_bigstore = True
@@ -142,6 +148,9 @@ if __name__ == '__main__':
 
     if opt.len_loss:
         hp.length_loss=True
+    if opt.len_loss_coef:
+        hp.length_loss_coef=float(opt.len_loss_coef)
+
     if opt.sum_combine:
         hp.combine_encs = opt.sum_combine
 
@@ -164,6 +173,7 @@ if __name__ == '__main__':
         save_run_data(save_dir, hp=hp)
         if (not hp.debug) and (not opt.no_bigstore):
             sync_run_data_to_bigstore(save_dir, exp_sub_dir=opt.bs_dir, method='cp')
+
 
         summarizer = Summarizer(hp, opt, save_dir)
 

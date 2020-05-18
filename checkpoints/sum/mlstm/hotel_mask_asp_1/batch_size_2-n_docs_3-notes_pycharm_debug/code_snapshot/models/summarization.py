@@ -147,7 +147,7 @@ class SummarizationModel(nn.Module):
                 'Docs must be encoded individually for autoencoder. Set concat_docs=False'
             init_input = torch.LongTensor([EDOC_ID for _ in range(docs_enc_h.size(0))])  # batch * n_docs
             init_input = move_to_cuda(init_input)
-            docs_autodec_probs, _, docs_autodec_texts, _ = self.docs_autodec(docs_enc_h, docs_enc_c, init_input,
+            docs_autodec_probs, _, docs_autodec_texts, extra = self.docs_autodec(docs_enc_h, docs_enc_c, init_input,
                                                                              targets=docs_ids,
                                                                              eos_id=EDOC_ID, non_pad_prob_val=1e-14,
                                                                              softmax_method='softmax',
@@ -155,6 +155,10 @@ class SummarizationModel(nn.Module):
                                                                              tau=tau,
                                                                              subwordenc=self.dataset.subwordenc)
 
+            print(extra['shortness'].shape)
+            shortness=torch.squeeze(extra['shortness']).reshape(-1,batch_size)
+            input_shortness=torch.mean(shortness, dim=0) #
+            print(input_shortness)
             docs_autodec_logprobs = torch.log(docs_autodec_probs)
             autoenc_loss = self.rec_crit(docs_autodec_logprobs.view(-1, docs_autodec_logprobs.size(-1)),
                                          docs_ids.view(-1))
@@ -233,22 +237,24 @@ class SummarizationModel(nn.Module):
                                                      subwordenc=self.dataset.subwordenc)
         # summ_texts:2 texts
         # summ_prob.shape:torch.Size([2, 180, 23852])
+        # extra['shortness']= tensor([0.0000, 0.0667] 设定batch_size=1，保证迭代的时候的精确度
         ##########################################################
         # LENGTH DIFF  LOSS
         ##########################################################
         ###########################  summ_texts_lengths  ###############################
         # [batch, max_summ_len, vocab];  [batch] of str's
+        # summ.extra['shortness']
         print(summ_texts)
         print(summ_probs.shape)
-        print(extra['shortness'])
+        print(extra['shortness'])#
+        summ_shortness=extra['shortness']
         if self.hp.length_loss:
             # length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
             # length_loss = length_cos(ideal_length,
             #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
 
             #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-            self.stats['length_loss'] = 1e4 * move_to_cuda(torch.max(move_to_cuda(extra['shortness'])))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-
+            self.stats['length_loss'] = move_to_cuda(torch.mean(move_to_cuda(torch.norm(summ_shortness-input_shortness))))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
             print('length_loss=:', self.stats['length_loss'])
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the

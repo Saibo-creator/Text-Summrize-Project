@@ -253,7 +253,6 @@ def create_argparse_and_update_hp(hp):
         param_type = str2bool if param_type == bool else param_type
         parser.add_argument('--{}'.format(param), dest=param, default=None, type=param_type)
     opt, unknown = parser.parse_known_args()
-
     # Update hp if any command line arguments passed
     # Also create description of run
     run_name = []

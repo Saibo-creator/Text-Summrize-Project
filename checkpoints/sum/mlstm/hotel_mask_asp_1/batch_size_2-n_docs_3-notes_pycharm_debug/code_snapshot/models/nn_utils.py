@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from models.topk_nucleus_sampling import TopKNucleusSampling
 from project_settings import PAD_ID
 from utils import load_file, update_moving_avg
 
@@ -133,6 +133,9 @@ def logits_to_prob(logits, method,
         prob = F.gumbel_softmax(logits, tau=tau, eps=eps, hard=gumbel_hard)
     elif method == 'softmax':
         prob = F.softmax(logits / tau, dim=1)
+    elif method == 'nucleus':
+        Nucleus=TopKNucleusSampling()
+        prob = Nucleus.top_k_top_p_filtering(logits)
     return prob
 
 
@@ -159,6 +162,8 @@ def prob_to_vocab_id(prob, method, k=1):
         _, ids = torch.topk(prob, k, dim=1)
     elif method == 'sample':
         ids = torch.multinomial(prob, k)
+    elif method == 'nucleus':
+        pass
     batch_size = prob.size(0)
     prob = prob.repeat(1, k).view(batch_size * k, -1)
     ids = ids.view(-1)

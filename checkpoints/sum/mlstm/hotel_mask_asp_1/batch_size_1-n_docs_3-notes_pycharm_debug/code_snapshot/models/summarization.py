@@ -147,7 +147,7 @@ class SummarizationModel(nn.Module):
                 'Docs must be encoded individually for autoencoder. Set concat_docs=False'
             init_input = torch.LongTensor([EDOC_ID for _ in range(docs_enc_h.size(0))])  # batch * n_docs
             init_input = move_to_cuda(init_input)
-            docs_autodec_probs, _, docs_autodec_texts, _ = self.docs_autodec(docs_enc_h, docs_enc_c, init_input,
+            docs_autodec_probs, _, docs_autodec_texts, extra = self.docs_autodec(docs_enc_h, docs_enc_c, init_input,
                                                                              targets=docs_ids,
                                                                              eos_id=EDOC_ID, non_pad_prob_val=1e-14,
                                                                              softmax_method='softmax',
@@ -155,6 +155,7 @@ class SummarizationModel(nn.Module):
                                                                              tau=tau,
                                                                              subwordenc=self.dataset.subwordenc)
 
+            print(extra['shortness'].shape)
             docs_autodec_logprobs = torch.log(docs_autodec_probs)
             autoenc_loss = self.rec_crit(docs_autodec_logprobs.view(-1, docs_autodec_logprobs.size(-1)),
                                          docs_ids.view(-1))
@@ -249,7 +250,7 @@ class SummarizationModel(nn.Module):
 
             #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
             self.stats['length_loss'] = 1e4 * move_to_cuda(torch.mean(move_to_cuda(extra['shortness'])))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-
+            print(extra['shortness'])
             print('length_loss=:', self.stats['length_loss'])
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the
