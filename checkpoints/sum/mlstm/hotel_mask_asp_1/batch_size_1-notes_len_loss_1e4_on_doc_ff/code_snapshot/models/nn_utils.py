@@ -134,7 +134,8 @@ def logits_to_prob(logits, method,
     elif method == 'softmax':
         prob = F.softmax(logits / tau, dim=1)
     elif method == 'nucleus':
-        prob =None
+        Nucleus=TopKNucleusSampling()
+        prob = Nucleus.top_k_top_p_filtering(logits)
     return prob
 
 
@@ -161,6 +162,8 @@ def prob_to_vocab_id(prob, method, k=1):
         _, ids = torch.topk(prob, k, dim=1)
     elif method == 'sample':
         ids = torch.multinomial(prob, k)
+    elif method == 'nucleus':
+        pass
     batch_size = prob.size(0)
     prob = prob.repeat(1, k).view(batch_size * k, -1)
     ids = ids.view(-1)

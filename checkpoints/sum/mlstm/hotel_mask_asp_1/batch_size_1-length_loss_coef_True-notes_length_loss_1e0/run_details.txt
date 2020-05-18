@@ -1,0 +1,3 @@
+Command:
+train_sum.py --dataset=hotel_mask_asp_1 --len_loss=True --skip_clf=True --batch_size=1 --note=length_loss_1e0 --sum_combine=mean --length_loss_coef=1
+Start time: May18_09-08-45
