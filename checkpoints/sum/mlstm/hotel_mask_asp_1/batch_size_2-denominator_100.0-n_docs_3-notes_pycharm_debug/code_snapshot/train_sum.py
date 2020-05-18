@@ -129,8 +129,8 @@ if __name__ == '__main__':
     parser.add_argument('--sum_combine',default=False,
                         help="mean,ff,gru")
 
-    parser.add_argument('--sscoef',default=False,
-                        help="add a coef to summ_shortness")
+    parser.add_argument('--denom',default=False,
+                        help="add a denominator to summ_shortness")
 
 
 
@@ -158,8 +158,8 @@ if __name__ == '__main__':
     if opt.sum_combine:
         hp.combine_encs = opt.sum_combine
 
-    if opt.sscoef:
-        hp.summ_short_coef = float(opt.sscoef)
+    if opt.denom:
+        hp.denominator = float(opt.denom)
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
     # command line argument

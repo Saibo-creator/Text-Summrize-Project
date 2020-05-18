@@ -155,9 +155,10 @@ class SummarizationModel(nn.Module):
                                                                              tau=tau,
                                                                              subwordenc=self.dataset.subwordenc)
 
-
+            print(extra['shortness'].shape)
             shortness=torch.squeeze(extra['shortness']).reshape(-1,batch_size)
             input_shortness=torch.mean(shortness, dim=0) #
+            print(input_shortness)
             docs_autodec_logprobs = torch.log(docs_autodec_probs)
             autoenc_loss = self.rec_crit(docs_autodec_logprobs.view(-1, docs_autodec_logprobs.size(-1)),
                                          docs_ids.view(-1))
@@ -243,6 +244,9 @@ class SummarizationModel(nn.Module):
         ###########################  summ_texts_lengths  ###############################
         # [batch, max_summ_len, vocab];  [batch] of str's
         # summ.extra['shortness']
+        print(summ_texts)
+        print(summ_probs.shape)
+        print(extra['shortness'])#
         summ_shortness=extra['shortness']
         if self.hp.length_loss:
             # length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
@@ -250,7 +254,7 @@ class SummarizationModel(nn.Module):
             #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
 
             #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-            self.stats['length_loss'] = move_to_cuda(self.hp.length_loss_coef*torch.mean(torch.norm(summ_shortness*self.hp.summ_short_coef-input_shortness)))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06], shortness of summ should be small
+            self.stats['length_loss'] = move_to_cuda(self.hp.length_loss_coef*torch.mean(torch.norm(summ_shortness/self.hp.denominator-input_shortness)))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
             print('*' * 20)
             print('length_loss=:', self.stats['length_loss'])
             print('*' * 20)

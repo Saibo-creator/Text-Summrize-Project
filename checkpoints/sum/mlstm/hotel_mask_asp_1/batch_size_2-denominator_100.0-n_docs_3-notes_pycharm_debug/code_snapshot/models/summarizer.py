@@ -409,9 +409,7 @@ class Summarizer(object):
                                        save_intermediate=False, run_val_subset=False,
                                        tb_writer=self.tb_val_sub_writer, tb_start_step=start_step)
                     tb_writer.add_scalar('stats/sec_per_val_subset', time.time() - start, start_step)
-        print('*'*20)
-        print('one iter finished')
-        print('*' * 20)
+
         return stats_avgs, evaluator, summaries, ids
 
     def train(self):
