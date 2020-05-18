@@ -333,7 +333,7 @@ class StackedLSTMDecoder(nn.Module):
         #print(torch.mean(decoded_probs[:, :, 0],axis=1))
         #shortness=torch.squeeze(torch.mean(decoded_probs[:, :, 5], axis=1)).reshape(-1,batch_size)
         #shortness=torch.mean(shortness, dim=1)
-        extra['shortness']=move_to_cuda(torch.mean(decoded_probs[:, :, 5], axis=1))
+        extra['shortness']=move_to_cuda(torch.mean(decoded_probs[:, :, 0], axis=1))
 
         #print(extra['shortness'].is_cuda)
         decoded_texts = []
