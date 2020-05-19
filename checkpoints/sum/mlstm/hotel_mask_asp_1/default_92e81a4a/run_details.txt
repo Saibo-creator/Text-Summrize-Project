@@ -1,3 +1,0 @@
-Command:
-/Users/saibo/AEPFL_S2/project/Text-Summrize-Project/train_sum.py --cpu=1 --dataset=hotel_mask_asp_1
-Start time: May11_11-42-45

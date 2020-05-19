@@ -1,3 +1,3 @@
 Command:
 train_sum.py --dataset=hotel_mask_asp_1 --skip_clf=True --len_loss=True --batch_size=1 --sum_combine=mean --note=len_loss_1e2_ssc_1e1_mean_token0 --len_loss_coef=1e2 --sscoef=1e1
-Start time: May18_17-30-56
+Start time: May19_03-24-53

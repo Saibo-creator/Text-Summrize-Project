@@ -1,3 +1,0 @@
-Command:
-train_sum.py --dataset=hotel_mask_asp_1 --skip_clf=True --len_loss=True
-Start time: May13_04-11-24
