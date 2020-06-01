@@ -40,6 +40,7 @@ class SummarizationModel(nn.Module):
         self.fixed_lm = fixed_lm
 
         self.hp = hp
+        print(self.hp)
         self.dataset = dataset
 
         if self.hp.sum_label_smooth:
@@ -244,16 +245,21 @@ class SummarizationModel(nn.Module):
         # [batch, max_summ_len, vocab];  [batch] of str's
         # summ.extra['shortness']
         summ_shortness=extra['shortness']
-        if self.hp.length_loss:
-            # length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
-            # length_loss = length_cos(ideal_length,
-            #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
+        print(self.hp)
 
-            #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
-            self.stats['length_loss'] = move_to_cuda(self.hp.length_loss_coef*torch.mean(torch.norm(summ_shortness*self.hp.summ_short_coef-input_shortness)))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06], shortness of summ should be small
-            print('*' * 20)
-            print('length_loss=:', self.stats['length_loss'])
-            print('*' * 20)
+        try:
+            if self.hp.length_loss:
+                # length_cos = nn.CosineSimilarity(dim=0, eps=1e-08)
+                # length_loss = length_cos(ideal_length,
+                #                          summ_texts_lengths )#input_txts_mean_lengths  # 0<=loss<=1( not strictly <1 but summ_text should merely exceed twice the input length in practice)
+
+                #self.stats['length_loss'] = 1e4*move_to_cuda(torch.mean(move_to_cuda(torch.ones(extra['shortness'].shape))-move_to_cuda(extra['shortness'])))#10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06],
+                self.stats['length_loss'] = move_to_cuda(self.hp.length_loss_coef*torch.mean(torch.norm(summ_shortness*self.hp.summ_short_coef-input_shortness)))  # 10*[6.4844e-01, 4.2873e-06, 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06], shortness of summ should be small
+                print('*' * 20)
+                print('length_loss=:', self.stats['length_loss'])
+                print('*' * 20)
+        except AttributeError  as e:
+            pass
 
         # Compute a cosine similarity loss between the (mean) summary representation that's fed to the
         # summary decoder and each of the original encoded reviews.

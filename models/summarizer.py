@@ -239,8 +239,11 @@ class Summarizer(object):
                     stats['autoenc_loss'].backward(retain_graph=retain_graph)
                 if self.hp.early_cycle and (not self.hp.autoenc_only):# False
                     stats['early_cycle_loss'].backward()
-                if self.hp.length_loss:#True
-                    stats['length_loss'].backward(retain_graph=True)
+                try:
+                    if self.hp.length_loss:#True
+                        stats['length_loss'].backward(retain_graph=True)
+                except AttributeError as e:
+                    pass
                 if self.hp.sum_cycle and (not self.hp.autoenc_only):#True
                     retain_graph = self.hp.extract_loss
                     stats['cycle_loss'].backward(retain_graph=retain_graph)
