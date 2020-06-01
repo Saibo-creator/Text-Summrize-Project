@@ -276,10 +276,11 @@ class DatasetConfig(object):
             ######
             self.processed_path = 'datasets/hotel_with_summ_dataset/processed/'
             self.subwordenc_path = 'datasets/hotel_with_summ_dataset/processed/subwordenc_32000_maxrevs260_fixed.pkl'
-
-            self.lm_path = 'checkpoints/lm/mlstm/hotel_with_summ/lm_e24_2.88yelp.pt'
-            self.clf_path = ''
-            self.sum_path = ''   #tot=3.317
+            
+            # Trained models
+            self.lm_path = 'checkpoints/lm/mlstm/hotel/lm_e24_2.88yelp.pt'
+            self.clf_path = 'checkpoints/clf/cnn/hotel/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e3_l0.7940_a0.6464_d0.0000.pt'
+            self.sum_path = 'checkpoints/sum/train/hotel/batch_size_8/sum_e2_sub1.pt'   #tot=3.317
             self.autoenc_path = None
 
 class HParams(object):

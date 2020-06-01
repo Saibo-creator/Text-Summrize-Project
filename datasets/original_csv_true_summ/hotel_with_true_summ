@@ -19,7 +19,7 @@
     "import ast\n",
     "\n",
     "\n",
-    "dataset_path='../hotel_with_summ_dataset/'\n",
+    "dataset_path='../../hotel_with_summ_dataset/'\n",
     "\n",
     "if not os.path.exists(dataset_path):\n",
     "\tos.mkdir(dataset_path)\n",
@@ -36,9 +36,9 @@
    "outputs": [],
    "source": [
     "#load original csv data\n",
-    "test=pd.read_csv('../original_csv_data/test.csv')\n",
-    "train=pd.read_csv('../original_csv_data/train.csv')\n",
-    "dev=pd.read_csv('../original_csv_data/dev.csv')\n",
+    "test=pd.read_csv('../test.csv')\n",
+    "train=pd.read_csv('../train.csv')\n",
+    "dev=pd.read_csv('../dev.csv')\n",
     "\n",
     "\n",
     "tot=pd.concat([dev,test,train])"
@@ -472,33 +472,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
-   "metadata": {
-    "ExecuteTime": {
-     "end_time": "2020-06-01T16:46:00.717368Z",
-     "start_time": "2020-06-01T16:46:00.712983Z"
-    }
-   },
-   "outputs": [
-    {
-     "data": {
-      "text/plain": [
-       "'/Users/saibo/AEPFL_S2/project/Text-Summrize-Project/datasets/original_csv_data/true_summ'"
-      ]
-     },
-     "execution_count": 4,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "os.getcwd()"
-   ]
-  },
-  {
-   "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "collapsed": true
+   },
    "outputs": [],
    "source": []
   }
