@@ -132,6 +132,9 @@ if __name__ == '__main__':
     parser.add_argument('--sscoef',default=False,
                         help="add a coef to summ_shortness")
 
+    parser.add_argument('--true_summ',default=False,
+                        help="calculate rouge w.r.t  true summary")
+
 
 
     opt = parser.parse_args()
@@ -146,20 +149,19 @@ if __name__ == '__main__':
 
     if opt.skip_clf:
         hp.sum_clf=False
-
     if opt.lr:
         hp.sum_lr=float(opt.lr)
-
     if opt.len_loss:
         hp.length_loss=True
     if opt.len_loss_coef:
         hp.length_loss_coef=float(opt.len_loss_coef)
-
     if opt.sum_combine:
         hp.combine_encs = opt.sum_combine
-
     if opt.sscoef:
         hp.summ_short_coef = float(opt.sscoef)
+    if opt.true_summ:
+        hp.true_summary = opt.true_summ
+
 
     # Set some default paths. It's dataset dependent, which is why we do it here, as dataset is also a
     # command line argument

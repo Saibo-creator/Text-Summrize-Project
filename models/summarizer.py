@@ -32,6 +32,7 @@ from pretrain_classifier import TextClassifier
 from project_settings import HParams, SAVED_MODELS_DIR, \
     EDOC_ID, RESERVED_TOKENS, WORD2VEC_PATH, EDOC_TOK, DatasetConfig, OUTPUTS_EVAL_DIR, OUTPUTS_COMPAR_DIR
 from utils import create_argparse_and_update_hp, save_run_data, update_moving_avg, sync_run_data_to_bigstore, save_file
+import warnings; warnings.simplefilter('ignore')
 
 
 class Summarizer(object):
@@ -97,7 +98,7 @@ class Summarizer(object):
                   sum_optimizer=None, discrim_optimizer=None, clf_optimizer=None,
                   cpkt_every=float('inf'), save_intermediate=False, run_val_subset=False,
                   store_all_rouges=False, store_all_summaries=False,
-                  tb_writer=None, tb_start_step=0):
+                  tb_writer=None, tb_start_step=0,true_summary=False):
         """
         Iterate through data in data_iter
 
@@ -122,6 +123,7 @@ class Summarizer(object):
             tb_start_step: int
                 - Starting step. Used when running on subset of validation set. This way the results
                 can appear on the same x-axis timesteps as the training.
+            true_summary: True when calculates rouge w.r.t true summary
 
         Returns:
             dict of str, floats containing losses and stats
@@ -131,16 +133,18 @@ class Summarizer(object):
         stats_avgs = defaultdict(int)
         evaluator = EvalMetrics(remove_stopwords=self.hp.remove_stopwords,
                                 use_stemmer=self.hp.use_stemmer,
-                                store_all=store_all_rouges)
+                                store_all=store_all_rouges,true_summary=self.hp.true_summary)
         summaries = []  # this is only added to if store_all_summaries is True
         ids = []
 
         #here print many reviews
-        for s, (hotel_url ,texts, ratings, metadata) in enumerate(data_iter):
+        for s, (hotel_url ,texts, ratings, metadata) in enumerate(data_iter):#data_iter: iterable providing minibatches
+            #以batch 为单位itererate
+            print("ratings:",ratings)
             # texts: list of strs, each str is n_docs concatenated together with EDOC_TOK delimiter
             if s > nbatches:
                 break
-
+            # print(ratings) tensor([5, 4])
             stats = {}
             start = time.time()
 
@@ -276,28 +280,61 @@ class Summarizer(object):
             for k, v in stats.items():
                 stats_avgs[k] = update_moving_avg(stats_avgs[k], v.item(), s + 1)
 
-            if s % self.opt.print_every_nbatches == 0:
+            if s % self.opt.print_every_nbatches == 0:# self.opt.print_every_nbatches (default=1)
                 # Calculate rouge
-                try:
-                    src_docs = [SummDataset.split_docs(concatenated) for concatenated in texts]
-                    avg_rouges, min_rouges, max_rouges, std_rouges = \
-                        evaluator.batch_update_avg_rouge(clean_summs, src_docs) #def score(self, target, prediction):
-                except Exception as e:  # IndexError in computing (see commit for stack trace)
-                    # This started occurring when I switched to Google's Rouge script
-                    # It's happened after many minibatches (e.g. half way through the first epoch)
-                    # I'm not sure if this is because the summary has degenerated into something that
-                    # throws an error, or just that it's a rare edge case with the data.
-                    # For now, print and log to tensorboard and see when and how often this occurs.
-                    # batch_avg_rouges = evaluator.avg_rouges.
-                    # Note: after some experiments, this only occurred twice in 4 epochs.
-                    avg_rouges, min_rouges, max_rouges, std_rouges = \
-                        evaluator.avg_avg_rouges, evaluator.avg_min_rouges, \
-                        evaluator.avg_max_rouges, evaluator.avg_std_rouges
-                    print('Error in calculating rouge')
-                    if tb_writer:
-                        tb_writer.add_scalar('other/rouge_error', 1, step)
+                if self.hp.true_summary:
+                    try:
+                        #(metadata['short_summary'])   ['Excellent highway hotel. Close to Universal Studios. Easily accessible by car and good for sightseeing. Great rooms and fantastic service. Great pool. Awesome vibe.', 'Excellent golf hotel. Fantastic service. Great pool. Great location. Awesome vibe.']
+                        src_docs = [[summary] for summary in metadata['short_summary']] # it's src_docs when batch size >1  and src_doc when else
+
+                        batch_avg_rouges = evaluator.batch_update_avg_rouge(clean_summs,src_docs,true_summary=self.hp.true_summary)  # def score(self, target, prediction):
+                        #             FOUCS
+                        print(type(batch_avg_rouges))
+                        print(batch_avg_rouges)
+                    except Exception as e:  # IndexError in computing (see commit for stack trace)
+                        # This started occurring when I switched to Google's Rouge script
+                        # It's happened after many minibatches (e.g. half way through the first epoch)
+                        # I'm not sure if this is because the summary has degenerated into something that
+                        # throws an error, or just that it's a rare edge case with the data.
+                        # For now, print and log to tensorboard and see when and how often this occurs.
+                        # batch_avg_rouges = evaluator.avg_rouges.
+                        # Note: after some experiments, this only occurred twice in 4 epochs.
+                        avg_rouges, min_rouges, max_rouges, std_rouges = \
+                            evaluator.avg_avg_rouges, evaluator.avg_min_rouges, \
+                            evaluator.avg_max_rouges, evaluator.avg_std_rouges
+                        print('Error in calculating rouge')
+                        if tb_writer:
+                            tb_writer.add_scalar('other/rouge_error', 1, step)
+
+
+                else:
+                    try:
+
+                        src_docs = [SummDataset.split_docs(concatenated) for concatenated in texts] #len(texts)= batch size
+
+
+
+                        avg_rouges, min_rouges, max_rouges, std_rouges = \
+                            evaluator.batch_update_avg_rouge(clean_summs, src_docs) #def score(self, target, prediction):
+                        #             FOUCS src_docs=>
+
+                    except Exception as e:  # IndexError in computing (see commit for stack trace)
+                        # This started occurring when I switched to Google's Rouge script
+                        # It's happened after many minibatches (e.g. half way through the first epoch)
+                        # I'm not sure if this is because the summary has degenerated into something that
+                        # throws an error, or just that it's a rare edge case with the data.
+                        # For now, print and log to tensorboard and see when and how often this occurs.
+                        # batch_avg_rouges = evaluator.avg_rouges.
+                        # Note: after some experiments, this only occurred twice in 4 epochs.
+                        avg_rouges, min_rouges, max_rouges, std_rouges = \
+                            evaluator.avg_avg_rouges, evaluator.avg_min_rouges, \
+                            evaluator.avg_max_rouges, evaluator.avg_std_rouges
+                        print('Error in calculating rouge')
+                        if tb_writer:
+                            tb_writer.add_scalar('other/rouge_error', 1, step)
 
                 # Construct print statements
+                #{'rouge1': defaultdict(<class 'float'>, {}), 'rouge2': defaultdict(<class 'float'>, {}), 'rougeL': defaultdict(<class 'float'>, {})} {'rouge1': defaultdict(<class 'float'>, {}), 'rouge2': defaultdict(<class 'float'>, {}), 'rougeL': defaultdict(<class 'float'>, {})} {'rouge1': defaultdict(<class 'float'>, {}), 'rouge2': defaultdict(<class 'float'>, {}), 'rougeL': defaultdict(<class 'float'>, {})} {'rouge1': defaultdict(<class 'float'>, {}), 'rouge2': defaultdict(<class 'float'>, {}), 'rougeL': defaultdict(<class 'float'>, {})}
                 mb_time = time.time() - start
                 main_str = 'Epoch={}, batch={}/{}, split={}, time={:.4f}, tau={:.4f}'.format(
                     epoch, s, nbatches, split, mb_time, cur_tau)
@@ -305,17 +342,37 @@ class Summarizer(object):
                 stats_avgs_str = ', '.join(['{}_curavg={:.4f}'.format(k, v) for k, v in stats_avgs.items()])
                 gn_str = 'sum_gn={:.2f}, discrim_gn={:.2f}, clf_gn={:.2f}'.format(sum_gn, discrim_gn, clf_gn)
 
-                batch_rouge_strs = []
-                for stat, rouges in {'avg': avg_rouges, 'min': min_rouges,
-                                     'max': max_rouges, 'std': std_rouges}.items():
-                    batch_rouge_strs.append('batch avg {} rouges: '.format(stat) + evaluator.to_str(rouges))
-                epoch_rouge_strs = []
-                for stat, rouges in evaluator.get_avg_stats_dicts().items():
-                    epoch_rouge_strs.append('epoch avg {} rouges: '.format(stat) + evaluator.to_str(rouges))
+                ################################# print rouge #######################################
 
-                print_str = ' --- '.join([main_str, stats_str, stats_avgs_str, gn_str] +
-                                         batch_rouge_strs + epoch_rouge_strs)
-                print(print_str)
+
+                batch_rouge_strs = []
+                if self.hp.true_summary:
+                    for stat, rouges in {'avg': batch_avg_rouges}.items():
+                        batch_rouge_strs.append('batch {} rouges: '.format(stat) + evaluator.to_str(rouges))
+                    epoch_rouge_strs = []
+                    for stat, rouges in evaluator.get_avg_stats_dicts().items():
+                        epoch_rouge_strs.append('epoch  {} rouges: '.format(stat) + evaluator.to_str(rouges))
+
+                    print_str = ' --- '.join([main_str, stats_str, stats_avgs_str, gn_str] +
+                                             batch_rouge_strs + epoch_rouge_strs)
+
+                    print(print_str)
+                else:
+                    for stat, rouges in {'avg': avg_rouges, 'min': min_rouges,
+                                         'max': max_rouges, 'std': std_rouges}.items():
+                        # FOUCS
+                        batch_rouge_strs.append('batch avg {} rouges: '.format(stat) + evaluator.to_str(rouges))
+                    epoch_rouge_strs = []
+                    for stat, rouges in evaluator.get_avg_stats_dicts().items():
+                        epoch_rouge_strs.append('epoch avg {} rouges: '.format(stat) + evaluator.to_str(rouges))
+
+                    print_str = ' --- '.join([main_str, stats_str, stats_avgs_str, gn_str] +
+                                             batch_rouge_strs + epoch_rouge_strs)
+
+                    print(print_str)
+
+                ################################# print example summary #######################################
+
 
                 # Example summary to get qualitative sense
                 print('\n', '-' * 100)
@@ -324,8 +381,12 @@ class Summarizer(object):
                 print('SUMMARY: ', summ_texts[0].encode('utf8'))
                 print('-' * 100, '\n')
 
+                if self.hp.true_summary:
+                    print('true_summary: ', metadata['short_summary'][0].encode('utf8'))
+                    print('-' * 100, '\n')
 
-                print('\n', '#' * 100, '\n')
+
+                print('\n', '#' * 100,'one batch finished','#' * 100, '\n')
 
 
 
@@ -365,11 +426,18 @@ class Summarizer(object):
                     for k, v in {'sum_gn': sum_gn, 'discrim_gn': discrim_gn, 'clf_gn': clf_gn}.items():
                         tb_writer.add_scalar('grad_norm/{}'.format(k), v, step)
 
-                    for stat, rouges in {'avg': avg_rouges, 'min': min_rouges,
-                                         'max': max_rouges, 'std': std_rouges}.items():
-                        for rouge_name, d in rouges.items():
-                            for metric_name, v in d.items():
-                                tb_writer.add_scalar('rouges_{}/{}/{}'.format(stat, rouge_name, metric_name), v, step)
+
+                    if self.hp.true_summary:
+                        for stat, rouges in {'avg': batch_avg_rouges}.items():
+                            for rouge_name, d in rouges.items():
+                                for metric_name, v in d.items():
+                                    tb_writer.add_scalar('rouges_{}/{}/{}'.format(stat, rouge_name, metric_name), v, step)
+                    else:
+                        for stat, rouges in {'avg': avg_rouges, 'min': min_rouges,
+                                             'max': max_rouges, 'std': std_rouges}.items():
+                            for rouge_name, d in rouges.items():
+                                for metric_name, v in d.items():
+                                    tb_writer.add_scalar('rouges_{}/{}/{}'.format(stat, rouge_name, metric_name), v, step)
 
                     tb_writer.add_scalar('stats/sec_per_nll_calc', time.time() - ppl_time, step)
 
@@ -410,7 +478,7 @@ class Summarizer(object):
                                        tb_writer=self.tb_val_sub_writer, tb_start_step=start_step)
                     tb_writer.add_scalar('stats/sec_per_val_subset', time.time() - start, start_step)
         print('*'*20)
-        print('one iter finished')
+        print('one epoch finished')
         print('*' * 20)
         return stats_avgs, evaluator, summaries, ids
 
@@ -596,7 +664,7 @@ class Summarizer(object):
             # self.docs_enc = trained.docs_enc
             self.docs_enc = StackedLSTMEncoder(trained.docs_enc.embed, trained.docs_enc.rnn)
             self.summ_enc = StackedLSTMEncoder(self.docs_enc.embed, self.docs_enc.rnn)
-            # self.sumn_enc = self.docs_enc # TODO: not sure why this is different from the above
+            # self.sumn_enc = self.docs_enc # : not sure why this is different from the above
 
             self.docs_autodec = StackedLSTMDecoder(trained.docs_autodec.embed, trained.docs_autodec.rnn)
             # self.docs_autodec = trained.docs_autodec
@@ -614,7 +682,7 @@ class Summarizer(object):
             freeze(self.summ_dec)
             freeze(self.summ_enc)
 
-            # TODO: I'm not sure if this is necessary or if it does anything
+            # : I'm not sure if this is necessary or if it does anything
             # Note though that observing memory usage through nvidia-smi before and after doesn't
             # necessarily tell you, as the memory is "freed but not returned to the device"
             # https://discuss.pytorch.org/t/947
@@ -825,8 +893,10 @@ class Summarizer(object):
     def test(self):
         """
         Run trained model on test set
+        true_summary: True when calculates rouge w.r.t true summary
         """
   # -------------------------------- Load data ------------------------------------------
+
 
         self.dataset = SummDatasetFactory.get(self.opt.dataset)
         if self.opt.test_on_another_dataset:
@@ -941,11 +1011,12 @@ class Summarizer(object):
         # both is built using a *target* size of 32000, but the actual size is slightly
         # lower or higher than 32000).
         # self.dataset = SummDatasetFactory.get('yelp')
-        # TODO: handle this better
+        # : handle this better
         with torch.no_grad():    
+            evaluator: EvalMetrics
             stats_avgs, evaluator, summaries,ids  = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,
-                                                              store_all_rouges=True, store_all_summaries=True)
+                                                              store_all_rouges=True, store_all_summaries=True,true_summary=self.hp.true_summary)
         # raise ValueError('A very specific bad thing happened after print')
 
         #
@@ -1063,6 +1134,12 @@ class Summarizer(object):
         print('-' * 50)
         print('Rouges:')
         for stat, rouge_dict in evaluator.get_avg_stats_dicts().items():
+            #if true_summary: evaluator.get_avg_stats_dicts().items()={ "avg": self.avg_rouges }
+            # else:  {'avg': self.avg_avg_rouges,
+            #         'min': self.avg_min_rouges,
+            #         'max': self.avg_max_rouges,
+            #         'std': self.avg_std_rouges}
+
             print('-' * 50)
             print(stat.upper())
             print(evaluator.to_str(rouge_dict))

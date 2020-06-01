@@ -108,7 +108,7 @@ class SummarizationModel(nn.Module):
                         tb_writer.add_text('auto_or_rec/orig_review', orig_rev_text, tb_step)
 
         if not self.hp.concat_docs:
-            n_docs = docs_ids.size(1)  # TODO: need to get data loader to choose items with same n_docs
+            n_docs = docs_ids.size(1)  # : need to get data loader to choose items with same n_docs
             docs_ids = docs_ids.view(-1, docs_ids.size(-1))  # [batch * n_docs, len]
 
         h_init, c_init = self.docs_enc.rnn.state0(docs_ids.size(0))# batch * n_docs,  
@@ -192,7 +192,7 @@ class SummarizationModel(nn.Module):
                 _, docs_enc_h_comb = self.combine_encs_h_net(docs_enc_h_comb, init_h)
                 _, docs_enc_c_comb = self.combine_encs_c_net(docs_enc_c_comb, init_c)
                 # [n_directions * gru_nlayers, batch, hidden]
-                docs_enc_h_comb = docs_enc_h_comb[-1, :, :].unsqueeze(0).transpose(0,1)  # last layer TODO: last or combine?
+                docs_enc_h_comb = docs_enc_h_comb[-1, :, :].unsqueeze(0).transpose(0,1)  # last layer : last or combine?
                 docs_enc_c_comb = docs_enc_c_comb[-1, :, :].unsqueeze(0).transpose(0,1)  # last layer
 
 
@@ -223,7 +223,7 @@ class SummarizationModel(nn.Module):
 
 
 
-#todo , modify loss function 
+# , modify loss function
 
 
 
@@ -321,7 +321,7 @@ class SummarizationModel(nn.Module):
         # ##########################################################
         # # DISCRIMINATOR
         # ##########################################################
-        # # TODO: Remove this -- discriminator is not used
+        # # : Remove this -- discriminator is not used
 
         # # Goal: self.discrim_model should be good at distinguishing between generated canonical review and
         # # original reviews. The adv_loss returns difference between gen and real (plus the gradient penalty)

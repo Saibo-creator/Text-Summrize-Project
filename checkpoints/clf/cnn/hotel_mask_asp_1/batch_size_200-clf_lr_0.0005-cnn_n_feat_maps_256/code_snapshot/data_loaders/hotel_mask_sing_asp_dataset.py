@@ -224,7 +224,7 @@ class Hotel_PytorchDataset(Dataset):
     def __getitem__(self, idx):
         # Map idx to item and load reviews
         item = self.idx_to_item[idx]  # id
-        fp = os.path.join(self.ds_conf.processed_path, '{}/{}_reviews.json'.format(self.split, item))
+        fp = os.path.join(self.ds_conf.processed_path, '{}/{}.json'.format(self.split, item))
         reviews = load_file(fp)
 
         # Get reviews from item
@@ -428,7 +428,7 @@ class Hotel_Mask_Sing_Asp_Dataset(SummReviewDataset):
                 split = 'train'
                 cur_n_tr += n
 
-            out_fp = os.path.join(self.conf.processed_path, '{}/{}_reviews.json'.format(split, item))
+            out_fp = os.path.join(self.conf.processed_path, '{}/{}.json'.format(split, item))
             save_file(item_to_reviews[item], out_fp, verbose=False)
 
             split_to_item_to_nreviews[split][item] = n

@@ -89,8 +89,6 @@ class DatasetConfig(object):
             self.subwordenc_path = 'datasets/hotel_dataset/processed/subwordenc_32000_maxrevs260_fixed.pkl'
 
             # Trained models
-            #self.lm_path = 'stable_checkpoints/lm/mlstm/hotel/batch_size_64-lm_lr_0.001/lm_e49_intermediate.pt'
-            #self.lm_path = 'checkpoints/lm/mlstm/hotel/batch_size_64/lm_e9_2.93.pt'
             self.lm_path = 'checkpoints/lm/mlstm/hotel/lm_e24_2.88yelp.pt'
             self.clf_path = 'checkpoints/clf/cnn/hotel/batch_size_64-clf_lr_0.0005-cnn_n_feat_maps_256/clf_e3_l0.7940_a0.6464_d0.0000.pt'
             self.sum_path = 'checkpoints/sum/train/hotel/batch_size_8/sum_e2_sub1.pt'   #tot=3.317
@@ -260,6 +258,30 @@ class DatasetConfig(object):
             self.sum_path = 'checkpoints/sum/train/hotel_mask_asp_4/batch_size_12-notes_4gpu/sum_e3_tot4.82_r1f0.28.pt'
             self.autoenc_path = None
 
+
+
+        elif name == 'hotel_with_summ':
+            # Params
+            self.review_max_len = 180
+            self.extractive_max_len = 38  # 99.5th percentile of reviews
+            self.item_min_reviews = 20
+            self.item_max_reviews = 260  # 90th percentile
+            self.vocab_size = 32000  # target vocab size when building subwordenc
+
+            # Paths
+            self.dir_path = 'datasets/hotel_with_summ_dataset/'
+            ######
+            self.reviews_path = 'datasets/hotel_with_summ_dataset/review.json'
+            self.businesses_path = 'datasets/hotel_with_summ_dataset/business.json'
+            ######
+            self.processed_path = 'datasets/hotel_with_summ_dataset/processed/'
+            self.subwordenc_path = 'datasets/hotel_with_summ_dataset/processed/subwordenc_32000_maxrevs260_fixed.pkl'
+
+            self.lm_path = 'checkpoints/lm/mlstm/hotel_with_summ/lm_e24_2.88yelp.pt'
+            self.clf_path = ''
+            self.sum_path = ''   #tot=3.317
+            self.autoenc_path = None
+
 class HParams(object):
     def __init__(self):
         ###############################################
@@ -308,6 +330,7 @@ class HParams(object):
         self.length_loss = False
         self.length_loss_coef = 1.
         self.summ_short_coef = 1.
+        self.true_summary = False  # calculate rouge w.r.t  true summary
         self.tie_enc = True  # use same encoder for encoding documents and encoding summary
         self.sum_label_smooth = False  # for autoenc_loss and reconstruction cycle_loss
         self.sum_label_smooth_val = 0.1
@@ -328,7 +351,7 @@ class HParams(object):
         self.sum_clf = True # calculate classification loss and accuracy
         self.sum_clf_lr = 0.0  # when 0, don't backwards() etc
 
-        self.sum_lr = 0.0001  #可调节
+        self.sum_lr = 1e-4  #可调节
         self.sum_clip = 5.0  # clip gradients
         self.train_subset = 1.0  # train on this ratio of the training set (speed up experimentation, try to overfit)
         self.freeze_embed = True  # don't further train embedding layers

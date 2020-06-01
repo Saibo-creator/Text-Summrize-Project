@@ -55,7 +55,7 @@ class AmazonPytorchDataset(Dataset):
                 - For the Amazon dataset, there are 11,870 items in the training set with at least 50 reviews
                 no longer than 150 subtokens. The breakdown of the distribution in the training set is:
                     Percentile  |  percentile_n_reviews  |  n_items  |  total_revs
-                    TODO?
+                    ?
         """
         self.split = split
         self.n_docs = n_docs
@@ -127,7 +127,7 @@ class AmazonPytorchDataset(Dataset):
     def __getitem__(self, idx):
         # Map idx to item and load reviews
         item = self.idx_to_item[idx]
-        fp = os.path.join(self.ds_conf.processed_path, '{}/{}_reviews.json'.format(self.split, item))
+        fp = os.path.join(self.ds_conf.processed_path, '{}/{}.json'.format(self.split, item))
         reviews = load_file(fp)
 
         # Get reviews from item
@@ -260,7 +260,7 @@ class AmazonDataset(SummReviewDataset):
                 split = 'train'
                 cur_n_tr += n
 
-            out_fp = os.path.join(self.conf.processed_path, '{}/{}_reviews.json'.format(split, item))
+            out_fp = os.path.join(self.conf.processed_path, '{}/{}.json'.format(split, item))
             save_file(item_to_reviews[item], out_fp, verbose=False)
 
             split_to_item_to_nreviews[split][item] = n

@@ -596,7 +596,7 @@ class Summarizer(object):
             # self.docs_enc = trained.docs_enc
             self.docs_enc = StackedLSTMEncoder(trained.docs_enc.embed, trained.docs_enc.rnn)
             self.summ_enc = StackedLSTMEncoder(self.docs_enc.embed, self.docs_enc.rnn)
-            # self.sumn_enc = self.docs_enc # TODO: not sure why this is different from the above
+            # self.sumn_enc = self.docs_enc # : not sure why this is different from the above
 
             self.docs_autodec = StackedLSTMDecoder(trained.docs_autodec.embed, trained.docs_autodec.rnn)
             # self.docs_autodec = trained.docs_autodec
@@ -614,7 +614,7 @@ class Summarizer(object):
             freeze(self.summ_dec)
             freeze(self.summ_enc)
 
-            # TODO: I'm not sure if this is necessary or if it does anything
+            # : I'm not sure if this is necessary or if it does anything
             # Note though that observing memory usage through nvidia-smi before and after doesn't
             # necessarily tell you, as the memory is "freed but not returned to the device"
             # https://discuss.pytorch.org/t/947
@@ -941,7 +941,7 @@ class Summarizer(object):
         # both is built using a *target* size of 32000, but the actual size is slightly
         # lower or higher than 32000).
         # self.dataset = SummDatasetFactory.get('yelp')
-        # TODO: handle this better
+        # : handle this better
         with torch.no_grad():    
             stats_avgs, evaluator, summaries,ids  = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,

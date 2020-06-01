@@ -255,7 +255,7 @@ class Hotel_Mask_Asp_PytorchDataset(Dataset):
             categories = '---'
         metadata={'item': item,}
 
-
+        print('avg_rating',avg_rating)
         return hotel_id, texts, avg_rating, metadata
 
     def __len__(self):

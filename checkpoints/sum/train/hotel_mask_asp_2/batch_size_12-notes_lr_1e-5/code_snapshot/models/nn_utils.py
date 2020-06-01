@@ -105,7 +105,7 @@ def update_hp_from_loaded_model(load_path, hp=None, exclude=None, include_match=
     old_hp = load_file(os.path.join(os.path.dirname(load_path), 'hp.json'))
     for name, value in old_hp.items():
         # hp[name] = value
-        # TODO: fix this
+        # : fix this
         if (name not in exclude) and (name in include):
             setattr(hp, name, value)
     return hp

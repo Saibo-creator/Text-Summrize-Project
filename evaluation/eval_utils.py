@@ -26,7 +26,7 @@ from utils import update_moving_avg
 
 
 class EvalMetrics(object):
-    def __init__(self, remove_stopwords=False, use_stemmer=True, store_all=False):
+    def __init__(self, remove_stopwords=False, use_stemmer=True, store_all=False, true_summary=False):
         """
 
         Args:
@@ -35,12 +35,14 @@ class EvalMetrics(object):
             store_all: boolean
                 - whether to store the 4 rouge stats for every summary. This could be used to plot the
                 distribution of the stats instead of just looking at the average.
+            true_summary: True when calculates rouge w.r.t true summary,
         """
         self.remove_stopwords = remove_stopwords
         if remove_stopwords:
             self.stopwords = set(stopwords.words('english'))
         self.use_stemmer = use_stemmer
         self.store_all = store_all
+        self.true_summary=true_summary
 
         # python implementation of ROUGE
         self.rouge_scorer = RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=use_stemmer)
@@ -49,17 +51,24 @@ class EvalMetrics(object):
         # Using those rouge scores, four statistics are computed: the mean, max, min, and std.
         # The following dictionaries are then updated using those statistics, i.e. they will be a mean of
         # each of those four stats.
-        self._updates = 0
-        self.avg_avg_rouges = self.get_rouge_defaultdict()
-        self.avg_min_rouges = self.get_rouge_defaultdict()
-        self.avg_max_rouges = self.get_rouge_defaultdict()
-        self.avg_std_rouges = self.get_rouge_defaultdict()
+        if true_summary:
+            self._updates = 0
+            self.avg_rouges = self.get_rouge_defaultdict()
+            if self.store_all:
+                self.avg_rouges_store_all = self.get_rouge_defaultdict(list)
 
-        if self.store_all:
-            self.avg_rouges = self.get_rouge_defaultdict(list)
-            self.min_rouges = self.get_rouge_defaultdict(list)
-            self.max_rouges = self.get_rouge_defaultdict(list)
-            self.std_rouges = self.get_rouge_defaultdict(list)
+        else:
+            self._updates = 0
+            self.avg_avg_rouges = self.get_rouge_defaultdict()
+            self.avg_min_rouges = self.get_rouge_defaultdict()
+            self.avg_max_rouges = self.get_rouge_defaultdict()
+            self.avg_std_rouges = self.get_rouge_defaultdict()
+
+            if self.store_all:
+                self.avg_rouges = self.get_rouge_defaultdict(list)
+                self.min_rouges = self.get_rouge_defaultdict(list)
+                self.max_rouges = self.get_rouge_defaultdict(list)
+                self.std_rouges = self.get_rouge_defaultdict(list)
 
     #########################################
     #
@@ -75,13 +84,24 @@ class EvalMetrics(object):
                 'rougeL': defaultdict(default_type)}
         return dict
 
-    def get_avg_stats_dicts(self):
-        return {'avg': self.avg_avg_rouges,
-                'min': self.avg_min_rouges,
-                'max': self.avg_max_rouges,
-                'std': self.avg_std_rouges}
+    def get_avg_stats_dicts(self) :
+        """
+
+        @rtype:
+        """
+        if self.true_summary:
+            return { "avg": self.avg_rouges }
+        else:
+            return {'avg': self.avg_avg_rouges,
+                    'min': self.avg_min_rouges,
+                    'max': self.avg_max_rouges,
+                    'std': self.avg_std_rouges}
 
     def get_list_stats_dicts(self):
+        #only if   self.store_all== True
+        if self.true_summary:
+            raise ValueError('Imcompatible with true summary')
+
         return {'avg': self.avg_rouges,
                 'min': self.min_rouges,
                 'max': self.max_rouges,
@@ -128,6 +148,7 @@ class EvalMetrics(object):
         Returns:
             dict: keys are strs, values are rouge objects with ('precision', 'recall', and 'fmeasure' fields)
         """
+
         if self.remove_stopwords:
             source = ' '.join([w for w in word_tokenize(source) if w not in self.stopwords])
             summary = ' '.join([w for w in word_tokenize(summary) if w not in self.stopwords])
@@ -136,75 +157,136 @@ class EvalMetrics(object):
 
         return rouges
 
-    def batch_update_avg_rouge(self, summaries, source_docs):
+    def batch_update_avg_rouge(self, summaries, source_docs, true_summary=False):
         """
         Args:
             summaries: list of strs
             source_docs: list of lists of strs
+            true_summary: True when calculates rouge w.r.t true summary
         Returns: 4 (avg, min, max, std) rouge dicts for this batch
         """
-        # Store average of the four statistics for this batch
-        batch_avg_avg_rouges = self.get_rouge_defaultdict()
-        batch_avg_min_rouges = self.get_rouge_defaultdict()
-        batch_avg_max_rouges = self.get_rouge_defaultdict()
-        batch_avg_std_rouges = self.get_rouge_defaultdict()
 
-        for i, summary in enumerate(summaries):
-            docs = source_docs[i]
+        if self.true_summary:
+            batch_avg_rouges = self.get_rouge_defaultdict()
 
-            # Compute rouges between summary and each document
-            rouges = self.get_rouge_defaultdict(list)
-            for doc in docs:
-                scores = self.calc_rouges(doc, summary)
-                for rouge_name, rouge_obj in scores.items():  # rouge_name = rouge1, rouge2, rougeL
+            for i, summary in enumerate(summaries):  # n of summary = batch_size
+                docs = source_docs[i] # source_docs[i] is a list of single element
+
+                # Compute rouges between summary and each document
+                rouges = self.get_rouge_defaultdict(list)
+                for doc in docs: # only one doc in docs
+                    scores = self.calc_rouges(doc, summary) # scores contain 3 score ,respectively for rouge1,rouge2.rouge-L
+                    for rouge_name, rouge_obj in scores.items():  # rouge_name = rouge1, rouge2, rougeL
+                        for metric in ['precision', 'recall', 'fmeasure']:
+                            score = getattr(rouge_obj, metric)
+                            rouges[rouge_name][metric[0]].append(score)  # [0] for first letter;rouges[rouge_name][metric[0]] is a list
+                # print(rouges)
+                # {'rouge1': defaultdict( <
+                #
+                # class 'list'>, {'p': [0.037037037037037035], 'r': [0.08333333333333333]
+                #
+                # , 'f': [0.05128205128205128]}), 'rouge2': defaultdict( <
+                #
+                # class 'list'>, {'p': [0.0], 'r': [0.0]
+                #
+                # , 'f': [0.0]}), 'rougeL': defaultdict( <
+                #
+                # class 'list'>, {'p': [0.037037037037037035], 'r': [0.08333333333333333]
+                #
+                # , 'f': [0.05128205128205128]})}
+
+
+                # Compute statistics and update batch and global averages
+                avg_rouges = self.get_rouge_defaultdict()
+
+
+
+                self._updates += 1  # global count(count on  number of summary)
+                for rouge_name, rouge_obj in rouges.items():
                     for metric in ['precision', 'recall', 'fmeasure']:
-                        score = getattr(rouge_obj, metric)
-                        rouges[rouge_name][metric[0]].append(score)  # [0] for first letter
+                        scores = rouges[rouge_name][metric[0]]  #scores is a  list containing a single  float
+                        avg=scores[0] #not a real avg
+                        avg_rouges[rouge_name][metric[0]] = avg
 
-            # Compute statistics and update batch and global averages
-            avg_rouges = self.get_rouge_defaultdict()
-            min_rouges = self.get_rouge_defaultdict()
-            max_rouges = self.get_rouge_defaultdict()
-            std_rouges = self.get_rouge_defaultdict()
-            self._updates += 1  # global count
-            for rouge_name, rouge_obj in rouges.items():
-                for metric in ['precision', 'recall', 'fmeasure']:
-                    scores = rouges[rouge_name][metric[0]]
+                        # update batch averages
+                        cur_avg = batch_avg_rouges[rouge_name][metric[0]]#0
+                        batch_avg_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg, avg, i + 1)
 
-                    avg, min, max, std = np.mean(scores), np.min(scores), np.max(scores), np.std(scores)
-                    avg_rouges[rouge_name][metric[0]] = avg
-                    min_rouges[rouge_name][metric[0]] = min
-                    max_rouges[rouge_name][metric[0]] = max
-                    std_rouges[rouge_name][metric[0]] = std
+                        # update global averages
+                        cur_avg = self.avg_rouges[rouge_name][metric[0]]
+                        self.avg_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg, avg, self._updates)
 
-                    # update batch averages
-                    cur_avg_avg = batch_avg_avg_rouges[rouge_name][metric[0]]
-                    cur_avg_min = batch_avg_min_rouges[rouge_name][metric[0]]
-                    cur_avg_max = batch_avg_max_rouges[rouge_name][metric[0]]
-                    cur_avg_std = batch_avg_std_rouges[rouge_name][metric[0]]
-                    batch_avg_avg_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_avg, avg, i + 1)
-                    batch_avg_min_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_min, min, i + 1)
-                    batch_avg_max_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_max, max, i + 1)
-                    batch_avg_std_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_std, std, i + 1)
+                        # Add to dictionary storing all stats
+                        if self.store_all:
+                            self.avg_rouges_store_all[rouge_name][metric[0]].append(avg)
 
-                    # update global averages
-                    cur_avg_avg = self.avg_avg_rouges[rouge_name][metric[0]]
-                    cur_avg_min = self.avg_min_rouges[rouge_name][metric[0]]
-                    cur_avg_max = self.avg_max_rouges[rouge_name][metric[0]]
-                    cur_avg_std = self.avg_std_rouges[rouge_name][metric[0]]
-                    self.avg_avg_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_avg, avg, self._updates)
-                    self.avg_min_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_min, min, self._updates)
-                    self.avg_max_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_max, max, self._updates)
-                    self.avg_std_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_std, std, self._updates)
+            return batch_avg_rouges # dict of dicts with float as values
 
-                    # Add to dictionary storing all stats
-                    if self.store_all:
-                        self.avg_rouges[rouge_name][metric[0]].append(avg)
-                        self.min_rouges[rouge_name][metric[0]].append(min)
-                        self.max_rouges[rouge_name][metric[0]].append(max)
-                        self.std_rouges[rouge_name][metric[0]].append(std)
 
-        return batch_avg_avg_rouges, batch_avg_min_rouges, batch_avg_max_rouges, batch_avg_std_rouges
+        elif self.true_summary==False:
+
+            # Store average of the four statistics for this batch
+            batch_avg_avg_rouges = self.get_rouge_defaultdict()
+            batch_avg_min_rouges = self.get_rouge_defaultdict()
+            batch_avg_max_rouges = self.get_rouge_defaultdict()
+            batch_avg_std_rouges = self.get_rouge_defaultdict()
+
+            for i, summary in enumerate(summaries):
+                docs = source_docs[i]
+
+                # Compute rouges between summary and each document
+                rouges = self.get_rouge_defaultdict(list)
+                for doc in docs:
+                    scores = self.calc_rouges(doc, summary)
+                    for rouge_name, rouge_obj in scores.items():  # rouge_name = rouge1, rouge2, rougeL
+                        for metric in ['precision', 'recall', 'fmeasure']:
+                            score = getattr(rouge_obj, metric)
+                            rouges[rouge_name][metric[0]].append(score)  # [0] for first letter
+
+                # Compute statistics and update batch and global averages
+                avg_rouges = self.get_rouge_defaultdict()
+                min_rouges = self.get_rouge_defaultdict()
+                max_rouges = self.get_rouge_defaultdict()
+                std_rouges = self.get_rouge_defaultdict()
+                self._updates += 1  # global count
+                for rouge_name, rouge_obj in rouges.items():
+                    for metric in ['precision', 'recall', 'fmeasure']:
+                        scores = rouges[rouge_name][metric[0]]
+                        avg, min, max, std = np.mean(scores), np.min(scores), np.max(scores), np.std(scores)
+                        avg_rouges[rouge_name][metric[0]] = avg
+                        min_rouges[rouge_name][metric[0]] = min
+                        max_rouges[rouge_name][metric[0]] = max
+                        std_rouges[rouge_name][metric[0]] = std
+
+                        # update batch averages
+                        cur_avg_avg = batch_avg_avg_rouges[rouge_name][metric[0]]
+                        cur_avg_min = batch_avg_min_rouges[rouge_name][metric[0]]
+                        cur_avg_max = batch_avg_max_rouges[rouge_name][metric[0]]
+                        cur_avg_std = batch_avg_std_rouges[rouge_name][metric[0]]
+                        batch_avg_avg_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_avg, avg, i + 1)
+                        batch_avg_min_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_min, min, i + 1)
+                        batch_avg_max_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_max, max, i + 1)
+                        batch_avg_std_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_std, std, i + 1)
+
+                        # update global averages
+                        cur_avg_avg = self.avg_avg_rouges[rouge_name][metric[0]]
+                        cur_avg_min = self.avg_min_rouges[rouge_name][metric[0]]
+                        cur_avg_max = self.avg_max_rouges[rouge_name][metric[0]]
+                        cur_avg_std = self.avg_std_rouges[rouge_name][metric[0]]
+                        self.avg_avg_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_avg, avg, self._updates)
+                        self.avg_min_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_min, min, self._updates)
+                        self.avg_max_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_max, max, self._updates)
+                        self.avg_std_rouges[rouge_name][metric[0]] = update_moving_avg(cur_avg_std, std, self._updates)
+
+                        # Add to dictionary storing all stats
+                        if self.store_all:
+                            self.avg_rouges[rouge_name][metric[0]].append(avg)
+                            self.min_rouges[rouge_name][metric[0]].append(min)
+                            self.max_rouges[rouge_name][metric[0]].append(max)
+                            self.std_rouges[rouge_name][metric[0]].append(std)
+
+            return batch_avg_avg_rouges, batch_avg_min_rouges, batch_avg_max_rouges, batch_avg_std_rouges
+
 
     #########################################
     #

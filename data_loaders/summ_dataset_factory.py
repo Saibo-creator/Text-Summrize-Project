@@ -16,7 +16,7 @@ from data_loaders.hotel_mask_asp_1_dataset import Hotel_Mask_Asp_1_Dataset
 from data_loaders.hotel_mask_asp_2_dataset import Hotel_Mask_Asp_2_Dataset
 from data_loaders.hotel_mask_asp_3_dataset import Hotel_Mask_Asp_3_Dataset
 from data_loaders.hotel_mask_asp_4_dataset import Hotel_Mask_Asp_4_Dataset
-
+from data_loaders.hotel_with_summ_dataset import Hotel_With_Summ_Dataset
 
 class SummDatasetFactory(object):
     def __init__(self):
@@ -45,5 +45,7 @@ class SummDatasetFactory(object):
             return Hotel_Mask_Asp_3_Dataset()
         elif name == 'hotel_mask_asp_4':
             return Hotel_Mask_Asp_4_Dataset()
+        elif name == 'hotel_with_summ':
+            return Hotel_With_Summ_Dataset()
 
 

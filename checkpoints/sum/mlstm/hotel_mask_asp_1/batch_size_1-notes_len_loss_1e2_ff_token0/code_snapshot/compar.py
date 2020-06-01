@@ -465,7 +465,7 @@ class Summarizer(object):
         # both is built using a *target* size of 32000, but the actual size is slightly
         # lower or higher than 32000).
         # self.dataset = SummDatasetFactory.get('yelp')
-        # TODO: handle this better
+        # : handle this better
         with torch.no_grad():    
             stats_avgs, evaluator, summaries = self.run_epoch(test_iter, test_iter_len, 0, 'test',
                                                               save_intermediate=False, run_val_subset=False,

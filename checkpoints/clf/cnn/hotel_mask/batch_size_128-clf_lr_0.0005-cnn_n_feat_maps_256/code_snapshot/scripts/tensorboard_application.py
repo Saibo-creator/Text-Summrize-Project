@@ -31,7 +31,7 @@ DEFAULT_SIZE_GUIDANCE = {
     event_accumulator.TENSORS: 100,
 }
 
-# TODO(@wchargin): Once SQL mode is in play, replace this with an
+# (@wchargin): Once SQL mode is in play, replace this with an
 # alternative that does not privilege first-party plugins.
 DEFAULT_TENSOR_SIZE_GUIDANCE = {
     scalar_metadata.PLUGIN_NAME: 1000,
@@ -185,7 +185,7 @@ class TensorBoardWSGI(object):
       self._path_prefix = path_prefix
 
     self.data_applications = {
-        # TODO(@chihuahua): Delete this RPC once we have skylark rules that
+        # (@chihuahua): Delete this RPC once we have skylark rules that
         # obviate the need for the frontend to determine which plugins are
         # active.
         self._path_prefix + DATA_PREFIX + PLUGINS_LISTING_ROUTE:
@@ -421,7 +421,7 @@ def create_sqlite_connection_provider(db_uri):
     raise ValueError('Memory mode SQLite not supported: ' + db_uri)
   path = os.path.expanduser(uri.path)
   params = _get_connect_params(uri.query)
-  # TODO(@jart): Add thread-local pooling.
+  # (@jart): Add thread-local pooling.
   return lambda: db.Connection(sqlite3.connect(path, **params))
 
 

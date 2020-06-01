@@ -308,6 +308,7 @@ class HParams(object):
         self.length_loss = False
         self.length_loss_coef = 1.
         self.summ_short_coef = 1.
+        self.true_summary = False  # calculate rouge w.r.t  true summary
         self.tie_enc = True  # use same encoder for encoding documents and encoding summary
         self.sum_label_smooth = False  # for autoenc_loss and reconstruction cycle_loss
         self.sum_label_smooth_val = 0.1
@@ -328,7 +329,7 @@ class HParams(object):
         self.sum_clf = True # calculate classification loss and accuracy
         self.sum_clf_lr = 0.0  # when 0, don't backwards() etc
 
-        self.sum_lr = 0.0001  #可调节
+        self.sum_lr = 1e-4  #可调节
         self.sum_clip = 5.0  # clip gradients
         self.train_subset = 1.0  # train on this ratio of the training set (speed up experimentation, try to overfit)
         self.freeze_embed = True  # don't further train embedding layers
