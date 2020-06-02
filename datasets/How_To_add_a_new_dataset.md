@@ -6,8 +6,8 @@ To add a new dataset
 
 
 3. **建立一个新 data_loaders/hotel_mask_sing_asp_dataset.py**
-  3.1 把class Hotel_Mask_Dataset换成 class Hotel_Mask_Sing_Asp_Dataset
-
+    3.1 把class Hotel_Mask_Dataset换成 class Hotel_Mask_Sing_Asp_Dataset
+(注意class的定义下的init里也要改)
   3.2 然后把所有hotel_mask 替换成 hotel_mask_sing_asp
 
 4. **summ_dataset_factory.py里面添加一个条目**

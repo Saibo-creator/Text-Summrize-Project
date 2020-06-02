@@ -1150,4 +1150,7 @@ class Summarizer(object):
             evaluator.to_csv(rouge_dict, out_fp)
 
         out_fp = os.path.join(out_dir, '{}-rouges.pdf')
-        evaluator.plot_rouge_distributions(show=self.opt.show_figs, out_fp=out_fp)
+        if self.hp.true_summary:
+            pass
+        else:
+            evaluator.plot_rouge_distributions(show=self.opt.show_figs, out_fp=out_fp)
