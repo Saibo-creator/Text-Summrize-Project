@@ -81,13 +81,14 @@ business_df=pd.merge(business_df,true_summary_df,on='hotel_url',how='inner')
 business_df
 
 
-# In[ ]:
+# In[44]:
 
 
+#drop records having text= empty(127 row empty in total)
+review_df=review_df[review_df['text'].apply(lambda x: len(x))>0]
 
 
-
-# In[15]:
+# In[45]:
 
 
 #output to json
@@ -101,25 +102,7 @@ business_df.to_json(os.path.join(dataset_path,'business.json'),orient='records')
 
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
+# In[26]:
 
 
 
