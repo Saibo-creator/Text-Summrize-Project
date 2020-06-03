@@ -249,32 +249,33 @@ class SummarizationModel(nn.Module):
         # SUPERVISED
         ##########################################################
         if self.hp.gold_summ_loss:
-            if not self.hp.autoenc_docs:
-                # default_prob = move_to_cuda(torch.zeros(summ_probs.shape)).fill_(1e-14)  # k=1
-                # summ_probs = torch.where((summ_probs == 0), default_prob, summ_probs)
-                summ_probs+=1e-14
-                summ_logprobs = torch.log(summ_probs)
-                # print(docs_autodec_logprobs.shape) #torch.Size([32, 179, 31688]) 32=n_docs(8)*batch_size(4),31688= vocab size, 179 = token number
-                # print((docs_ids.view(-1)).shape)# torch.Size([5728])
-                try:
-                    gold_summaries_ids=gold_summaries_ids[:, :tgt_summ_seq_len]
-                except Exception as e:
-                    for i, gold_summary_ids in enumerate(gold_summaries_ids):
-                        padded = np.zeros(tgt_summ_seq_len)
-                        padded[:len(gold_summary_ids)] = gold_summary_ids
-                        gold_summaries_ids[i, :] = padded
+            # if not self.hp.autoenc_docs:
+            # default_prob = move_to_cuda(torch.zeros(summ_probs.shape)).fill_(1e-14)  # k=1
+            # summ_probs = torch.where((summ_probs == 0), default_prob, summ_probs)
+            summ_probs+=1e-14
+            summ_logprobs = torch.log(summ_probs)
+            # print(docs_autodec_logprobs.shape) #torch.Size([32, 179, 31688]) 32=n_docs(8)*batch_size(4),31688= vocab size, 179 = token number
+            # print((docs_ids.view(-1)).shape)# torch.Size([5728])
+            try:
+                gold_summaries_ids=gold_summaries_ids[:, :tgt_summ_seq_len]
+            except Exception as e:
+                print('A possible error here in supervised loss calculation')
+                for i, gold_summary_ids in enumerate(gold_summaries_ids):
+                    padded = np.zeros(tgt_summ_seq_len)
+                    padded[:len(gold_summary_ids)] = gold_summary_ids
+                    gold_summaries_ids[i, :] = padded
 
-                gold_summ_loss = self.rec_crit(summ_logprobs.view(-1, summ_logprobs.size(-1)),
-                                             gold_summaries_ids.reshape(-1))  # if torch.view(-1)，then the original tensor will become dimension 1。
-                print(gold_summ_loss)
-                # print(summ_probs)
-                # print(summ_texts)
-                # print(gold_summaries_ids.reshape(-1))
-                self.stats['gold_summ_loss'] = gold_summ_loss
+            gold_summ_loss = self.rec_crit(summ_logprobs.view(-1, summ_logprobs.size(-1)),
+                                         gold_summaries_ids.reshape(-1))  # if torch.view(-1)，then the original tensor will become dimension 1。
+            print(gold_summ_loss)
+            # print(summ_probs)
+            # print(summ_texts)
+            # print(gold_summaries_ids.reshape(-1))
+            self.stats['gold_summ_loss'] = gold_summ_loss
 
                 #TODO
-            else:
-                raise ValueError('hp.autoenc_docs(unsupervised) not recommanded with gold summary loss(supervised)')
+            # else:
+            #     raise ValueError('hp.autoenc_docs(unsupervised) not recommanded with gold summary loss(supervised)')
 
 
 

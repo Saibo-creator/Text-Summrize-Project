@@ -252,7 +252,7 @@ class Summarizer(object):
                 if self.hp.autoenc_docs and \
                         (not self.hp.load_ae_freeze):  # don't backward() if loaded pretrained autoenc (it's frozen)
                     retain_graph = self.hp.early_cycle or self.hp.sum_cycle or self.hp.extract_loss
-                    stats['autoenc_loss'].backward(retain_graph=retain_graph)
+                    stats['autoenc_loss'].backward(retain_graph=True)
                 if self.hp.early_cycle and (not self.hp.autoenc_only):# False
                     stats['early_cycle_loss'].backward()
                 try:
@@ -261,14 +261,13 @@ class Summarizer(object):
                 except AttributeError as e:
                     pass
                 if self.hp.gold_summ_loss:
-                    if not self.hp.autoenc_docs:
-                        stats['gold_summ_loss'].backward(retain_graph=True)
-                    else:
-                        raise ValueError('hp.autoenc_docs(unsupervised) not recommanded with gold summary loss(supervised)')
+                    # if not self.hp.autoenc_docs:
+                    stats['gold_summ_loss'].backward(retain_graph=True)
+                    # else:
+                    #     raise ValueError('hp.autoenc_docs(unsupervised) not recommanded with gold summary loss(supervised)')
                     #TODO
                 if self.hp.sum_cycle and (not self.hp.autoenc_only):#True
-                    retain_graph = self.hp.extract_loss
-                    print('retain_graph=',retain_graph)
+                    retain_graph = self.hp.extract_loss #retain_graph=False
                     stats['cycle_loss'].backward(retain_graph=retain_graph)
                 if self.hp.extract_loss and (not self.hp.autoenc_only):  #False
                     retain_graph = clf_optimizer is not None
