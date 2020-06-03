@@ -173,10 +173,9 @@ class Summarizer(object):
                 # print(docs_ids.shape) torch.Size([2, 3, 177])
 
                 # truncate and then duplicate gold_summaries_ids so that it has the same shape as docs_id.shape
-                # unity=gold_summaries_ids[:,:docs_ids.shape[-1]]
-                # unities=[unity for _ in range(self.hp.n_docs)]
-                # gold_summaries_ids=torch.stack(unities,dim=1)
-                # print(gold_summaries_ids.shape) torch.Size([2, 3, 166])
+                unity=gold_summaries_ids[:,:docs_ids.shape[-1]]
+                unities=[unity for _ in range(self.hp.n_docs)]
+                gold_summaries_ids=torch.stack(unities,dim=1)
                 cycle_tgt_ids = docs_ids
                 labels = move_to_cuda(ratings - 1)
 
@@ -241,7 +240,6 @@ class Summarizer(object):
             clf_gn = -1.0
             if clf_optimizer: # set be fault in MeanSum and our model
                 retain_graph = sum_optimizer is not None
-
                 stats['clf_loss'].backward(retain_graph=retain_graph)
                 clf_gn = calc_grad_norm(self.clf_model)
                 clf_optimizer.step()
@@ -262,12 +260,12 @@ class Summarizer(object):
                     pass
                 if self.hp.gold_summ_loss:
                     if not self.hp.autoenc_docs:
-                        stats['gold_summ_loss'].backward(retain_graph=True)
+                        stats['gold_summ_loss'].backward()
                     else:
                         raise ValueError('hp.autoenc_docs(unsupervised) not recommanded with gold summary loss(supervised)')
                     #TODO
                 if self.hp.sum_cycle and (not self.hp.autoenc_only):#True
-                    retain_graph = self.hp.extract_loss #retain_graph=False
+                    retain_graph = self.hp.extract_loss
                     stats['cycle_loss'].backward(retain_graph=retain_graph)
                 if self.hp.extract_loss and (not self.hp.autoenc_only):  #False
                     retain_graph = clf_optimizer is not None
@@ -291,7 +289,7 @@ class Summarizer(object):
             # Calculate log likelihood of summaries using fixed language model (the one that was used to
             # initialize the models)
             ppl_time = time.time()
-            summs_x, _, _,_ = self.dataset.prepare_batch(clean_summs, ratings)
+            summs_x, _, _ = self.dataset.prepare_batch(clean_summs, ratings)
             nll = calc_lm_nll(self.fixed_lm, summs_x)
             ppl_time = time.time() - ppl_time
             stats['nll'] = nll

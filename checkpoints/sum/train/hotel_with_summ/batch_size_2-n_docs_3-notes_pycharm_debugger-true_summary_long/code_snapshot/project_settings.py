@@ -351,7 +351,7 @@ class HParams(object):
         self.cycle_loss = 'enc'  # When 'rec', reconstruct original texts. When 'enc', compare rev_enc and sum_enc embs
         self.early_cycle = False  # When True, compute CosSim b/n mean and individual representations
         self.extract_loss = False  # use loss comparing summary to extractive summary
-        self.autoenc_docs = False  # add autoencoding loss, default True, I change it maually to False because Diego and I want to test supervised mode
+        self.autoenc_docs = True  # add autoencoding loss
         self.autoenc_only = False  # only perform autoencoding of reviews (would be used to pretrain)
         self.autoenc_docs_tie_dec = True  # use same decoder for summaries and review autoencoder
         self.length_loss = False

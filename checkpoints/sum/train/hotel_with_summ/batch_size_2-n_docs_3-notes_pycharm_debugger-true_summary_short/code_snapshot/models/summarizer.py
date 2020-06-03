@@ -267,7 +267,8 @@ class Summarizer(object):
                         raise ValueError('hp.autoenc_docs(unsupervised) not recommanded with gold summary loss(supervised)')
                     #TODO
                 if self.hp.sum_cycle and (not self.hp.autoenc_only):#True
-                    retain_graph = self.hp.extract_loss #retain_graph=False
+                    retain_graph = self.hp.extract_loss
+                    print('retain_graph=',retain_graph)
                     stats['cycle_loss'].backward(retain_graph=retain_graph)
                 if self.hp.extract_loss and (not self.hp.autoenc_only):  #False
                     retain_graph = clf_optimizer is not None

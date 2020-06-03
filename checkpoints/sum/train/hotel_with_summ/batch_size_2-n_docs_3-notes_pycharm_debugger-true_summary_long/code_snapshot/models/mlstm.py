@@ -322,6 +322,17 @@ class StackedLSTMDecoder(nn.Module):
             if targets is None:
                 if rows_with_eos.sum().item() == (batch_size * k):
                     break
+
+        # if return_last_state:
+        #     extra['last_state'] = states
+
+
+        #print(decoded_probs[:,:,0])
+        #print(torch.mean(decoded_probs[:, :, 0],axis=1))#id=0 => <pad> # tensor([6.4844e-01, 4.2873e-06(long), 8.9063e-01, 7.0317e-02, 5.4688e-01, 7.1737e-06(long)],\
+        #print(torch.mean(decoded_probs[:, :, 5],axis=1))#id=5 => </DOC>
+        #print(torch.mean(decoded_probs[:, :, 0],axis=1))
+        #shortness=torch.squeeze(torch.mean(decoded_probs[:, :, 5], axis=1)).reshape(-1,batch_size)
+        #shortness=torch.mean(shortness, dim=1)
         extra['shortness']=move_to_cuda(torch.mean(decoded_probs[:, :, 0], axis=1))
 
         #print(extra['shortness'].is_cuda)
@@ -329,7 +340,6 @@ class StackedLSTMDecoder(nn.Module):
         if subwordenc:
             for i in range(batch_size):
                 decoded_texts.append(subwordenc.decode(decoded_ids[i].long().tolist()))
-
 
         return decoded_probs, decoded_ids, decoded_texts, extra
 

@@ -1,0 +1,3 @@
+Command:
+train_sum.py --mode=train --batch_size=16 --dataset=hotel_mask --notes=new_subword --skip_clf=1 --gpus=0,1,2,3
+Start time: April26_06-02-15

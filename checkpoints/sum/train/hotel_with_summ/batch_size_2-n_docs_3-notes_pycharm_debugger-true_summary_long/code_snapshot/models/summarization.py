@@ -166,8 +166,7 @@ class SummarizationModel(nn.Module):
             # print((docs_ids.view(-1)).shape)# torch.Size([5728])
             autoenc_loss = self.rec_crit(docs_autodec_logprobs.view(-1, docs_autodec_logprobs.size(-1)),
                                          docs_ids.view(-1))#if torch.view(-1)，then the original tensor will become dimension 1。
-            # print(docs_autodec_probs)
-            # print(docs_ids.view(-1))
+            #here
             if self.hp.sum_label_smooth:
                 autoenc_loss /= (docs_ids != move_to_cuda(torch.tensor(PAD_ID))).sum().float()
             self.stats['autoenc_loss'] = autoenc_loss
@@ -238,7 +237,7 @@ class SummarizationModel(nn.Module):
                                                      seq_len=tgt_summ_seq_len, eos_id=EDOC_ID,
                                                      # seq_len=self.dataset.conf.review_max_len, eos_id=EDOC_ID,
                                                      softmax_method=softmax_method, sample_method=sample_method,
-                                                     tau=tau, eps=self.hp.g_eps, gumbel_hard=True,non_pad_prob_val=1e-14,
+                                                     tau=tau, eps=self.hp.g_eps, gumbel_hard=True,
                                                      attend_to_embs=docs_enc_h,
                                                      subwordenc=self.dataset.subwordenc)
         # summ_texts:2 texts
@@ -250,26 +249,12 @@ class SummarizationModel(nn.Module):
         ##########################################################
         if self.hp.gold_summ_loss:
             if not self.hp.autoenc_docs:
-                # default_prob = move_to_cuda(torch.zeros(summ_probs.shape)).fill_(1e-14)  # k=1
-                # summ_probs = torch.where((summ_probs == 0), default_prob, summ_probs)
-                summ_probs+=1e-14
                 summ_logprobs = torch.log(summ_probs)
                 # print(docs_autodec_logprobs.shape) #torch.Size([32, 179, 31688]) 32=n_docs(8)*batch_size(4),31688= vocab size, 179 = token number
                 # print((docs_ids.view(-1)).shape)# torch.Size([5728])
-                try:
-                    gold_summaries_ids=gold_summaries_ids[:, :tgt_summ_seq_len]
-                except Exception as e:
-                    for i, gold_summary_ids in enumerate(gold_summaries_ids):
-                        padded = np.zeros(tgt_summ_seq_len)
-                        padded[:len(gold_summary_ids)] = gold_summary_ids
-                        gold_summaries_ids[i, :] = padded
-
                 gold_summ_loss = self.rec_crit(summ_logprobs.view(-1, summ_logprobs.size(-1)),
-                                             gold_summaries_ids.reshape(-1))  # if torch.view(-1)，then the original tensor will become dimension 1。
+                                             gold_summaries_ids.view(-1))  # if torch.view(-1)，then the original tensor will become dimension 1。
                 print(gold_summ_loss)
-                # print(summ_probs)
-                # print(summ_texts)
-                # print(gold_summaries_ids.reshape(-1))
                 self.stats['gold_summ_loss'] = gold_summ_loss
 
                 #TODO
@@ -281,6 +266,15 @@ class SummarizationModel(nn.Module):
 
 
 
+
+
+
+
+
+
+
+
+        # extra['shortness']= tensor([0.0000, 0.0667] 设定batch_size=1，保证迭代的时候的精确度
         ##########################################################
         # LENGTH DIFF  LOSS
         ##########################################################
