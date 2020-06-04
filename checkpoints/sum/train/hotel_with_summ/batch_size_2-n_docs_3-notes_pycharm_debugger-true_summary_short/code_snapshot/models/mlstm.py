@@ -202,7 +202,7 @@ class StackedLSTMDecoder(nn.Module):
                 tau=1.0, eps=1e-10, gumbel_hard=False,
                 encoder_hiddens=None, encoder_inputs=None, attend_to_embs=None,
                 subwordenc=None,
-                return_last_state=False, k=10):
+                return_last_state=False, k=1):
         """
         Decode. If targets is given, then use teacher forcing.
 
