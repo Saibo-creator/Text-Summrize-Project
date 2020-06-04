@@ -1,3 +1,3 @@
 Command:
 /Users/saibo/AEPFL_S2/project/Text-Summrize-Project/train_sum.py --cpu=1 --dataset=hotel_with_summ --skip_clf=1 --batch_size=2 --n_docs=3 --note=pycharm_debugger --true_summ=short --mode=train --g_summ_loss=True --skip_clf=True
-Start time: June03_21-05-33
+Start time: June04_23-47-45

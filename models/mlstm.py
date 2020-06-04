@@ -294,7 +294,6 @@ class StackedLSTMDecoder(nn.Module):
             #print(output.shape) =[6, 23852]
 
             #####################   sampling    ############################
-
             prob = logits_to_prob(output, softmax_method,
                                   tau=tau, eps=eps, gumbel_hard=gumbel_hard)  # [batch, vocab]
             prob, id = prob_to_vocab_id(prob, sample_method, k=k)  # [batch * k^(t+1)]

@@ -338,8 +338,8 @@ class HParams(object):
 
         #
         # Decoding (sampling words)
-        #
-        self.tau = 2.0  # temperature for softmax
+
+        self.tau = 2.0  # temperature for softmax 2.0 by default
         self.g_eps = 1e-10  # Gumbel softmax
 
         ###############################################

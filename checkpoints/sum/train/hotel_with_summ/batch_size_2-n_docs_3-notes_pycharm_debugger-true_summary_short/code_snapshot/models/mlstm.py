@@ -202,7 +202,7 @@ class StackedLSTMDecoder(nn.Module):
                 tau=1.0, eps=1e-10, gumbel_hard=False,
                 encoder_hiddens=None, encoder_inputs=None, attend_to_embs=None,
                 subwordenc=None,
-                return_last_state=False, k=1):
+                return_last_state=False, k=10):
         """
         Decode. If targets is given, then use teacher forcing.
 
@@ -294,7 +294,6 @@ class StackedLSTMDecoder(nn.Module):
             #print(output.shape) =[6, 23852]
 
             #####################   sampling    ############################
-
             prob = logits_to_prob(output, softmax_method,
                                   tau=tau, eps=eps, gumbel_hard=gumbel_hard)  # [batch, vocab]
             prob, id = prob_to_vocab_id(prob, sample_method, k=k)  # [batch * k^(t+1)]
