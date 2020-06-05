@@ -164,7 +164,7 @@ class SummarizationModel(nn.Module):
             docs_autodec_logprobs = torch.log(docs_autodec_probs)
             # print(docs_autodec_logprobs.shape) #torch.Size([32, 179, 31688]) 32=n_docs(8)*batch_size(4),31688= vocab size, 179 = token number
             # print((docs_ids.view(-1)).shape)# torch.Size([5728])
-            autoenc_loss = self.rec_crit(docs_autodec_logprobs.view(-1, docs_autodec_logprobs.size(-1)),
+            autoenc_loss = 100*self.rec_crit(docs_autodec_logprobs.view(-1, docs_autodec_logprobs.size(-1)),
                                          docs_ids.view(-1))#if torch.view(-1)，then the original tensor will become dimension 1。
             # print(docs_autodec_probs)
             # print(docs_ids.view(-1))

@@ -221,6 +221,9 @@ class Hotel_Mask_PytorchDataset(Dataset):
         metadata = {'item': self.items[item]['hotel_url'],
                    'short_summary': self.items[item]['short_summary'],
                    'long_summary': self.items[item]['long_summary']}
+
+
+
         return hotel_id, texts, avg_rating, metadata
 
     def __len__(self):

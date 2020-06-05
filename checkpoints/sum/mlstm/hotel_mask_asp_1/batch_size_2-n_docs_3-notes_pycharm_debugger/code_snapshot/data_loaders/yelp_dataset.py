@@ -1,7 +1,7 @@
-# hotel_dataset.py
+# yelp_dataset.py
 
 """
-Data preparation and loaders for Hotel dataset. Here, an item is one "store" or "business"
+Data preparation and loaders for Yelp dataset. Here, an item is one "store" or "business"
 """
 import random
 import torch
@@ -21,7 +21,7 @@ from project_settings import HParams, DatasetConfig
 from utils import load_file, save_file
 
 
-class Hotel_Mask_PytorchDataset(Dataset):
+class YelpPytorchDataset(Dataset):
     """
     Implements Pytorch Dataset
 
@@ -69,17 +69,16 @@ class Hotel_Mask_PytorchDataset(Dataset):
                 as there may be a large number of reviews in a training epoch coming from a single item. This also
                 still matters when uniform_items=True, as items an outlier number of reviews will have reviews
                 that are never sampled.
-                
-                
-                - For the Hotel dataset, there are:
-                 257,186 reviews in the test set
-                 1,749,158 reviews in the train set
-                 216,031 reviews in the dev set
-                 
-                - For the Yelp dataset
-                 6,685,900 reviews in all
-                 192,609 business
-                
+                - For the Yelp dataset, there are 11,870 items in the training set with at least 50 reviews
+                no longer than 150 subtokens. The breakdown of the distribution in the training set is:
+                    Percentile  |  percentile_n_reviews  |  n_items  |  total_revs
+                        50                  89                5945         391829
+                        75                  150               8933         733592
+                        90                  260               10695        1075788
+                        95                  375               11278        1255540
+                        99                  817               11751        1503665
+                        99.5                1090              11810        1558673
+                        99.9                1943              11858        1626489
         """
         self.split = split
 
@@ -92,7 +91,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
         item_max_reviews = float('inf') if item_max_reviews is None else item_max_reviews
         self.item_max_reviews = item_max_reviews
 
-        self.ds_conf = DatasetConfig('mask_with_summ')  # used for paths
+        self.ds_conf = DatasetConfig('yelp')  # used for paths
 
         # Set random seed so that choice is always the same across experiments
         # Especially necessary for test set (along with shuffle=False in the DataLoader)
@@ -110,12 +109,13 @@ class Hotel_Mask_PytorchDataset(Dataset):
                 self.idx_to_nreviews = {}
                 self.idx_to_item_idxs = {}  # indices of reviews
 
-                ns = [8] #[4, 8, 16]
+                ns = [8]
                 # ns = range(n_reviews_min, n_reviews_max+1, 4)  # e.g. [4,8,12,16]
                 idx = 0
                 for item, n_reviews in item_to_nreviews.items():
                     item_n = 0
                     selected_idxs = set()
+
                     while item_n < n_reviews:
                         # Keep selecting batches of reviews from this store (without replacement)
                         cur_n = random.choice(ns)
@@ -148,6 +148,27 @@ class Hotel_Mask_PytorchDataset(Dataset):
                         for _ in range(n_per_item):
                             self.idx_to_item[idx] = item
                             idx += 1
+
+            import pandas as pd
+
+            (pd.DataFrame.from_dict(data=self.idx_to_item, orient='index')\
+                .to_csv('idx_to_item.csv', header=False))         
+
+            (pd.DataFrame.from_dict(data=self.idx_to_nreviews, orient='index')\
+                .to_csv('idx_to_nreviews.csv', header=False))  
+
+            (pd.DataFrame.from_dict(data=self.idx_to_item_idxs, orient='index')\
+                .to_csv('idx_to_item_idxs.csv', header=False))    
+
+            
+            
+
+            
+            
+            
+            
+            
+
         else:
             # __getitem__ will not sample
             idx = 0
@@ -178,9 +199,9 @@ class Hotel_Mask_PytorchDataset(Dataset):
         print('Loading all items')
         items = {}
         with open(self.ds_conf.businesses_path, 'r', encoding='utf-8') as f:
-            business=json.load(f) #business is a list of length 2,222,373
-            for el in business: #el ={'hotel_url':...;'text':.....; 'rating': }
-                items[el['hotel_url']] = el
+            for line in f.readlines():
+                line = json.loads(line)
+                items[line['business_id']] = line
         return items
 
     def __getitem__(self, idx):
@@ -204,27 +225,29 @@ class Hotel_Mask_PytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        hotel_ids,texts, ratings = zip(*[(s['hotel_url'],s['text'], s['rating']) for s in reviews])
+        business_ids,texts, ratings = zip(*[(s['business_id'],s['text'], s['stars']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
-        hotel_id=hotel_ids[0]
+        business_id=business_ids[0]
 
         try:
             categories = '---'.join(self.items[item]['categories'])
         except Exception as e:
+            print(e)
             categories = '---'
-        # print('-'*10)
-        # print('xxxx',self.items)
-        # print('-' * 10)
-        # print("xxxx",item)
-        # print('-' * 10)
-        metadata = {'item': self.items[item]['hotel_url'],
-                   'short_summary': self.items[item]['short_summary'],
-                   'long_summary': self.items[item]['long_summary']}
+        metadata = {'item': item,
+                    'city': self.items[item]['city'],
+                    'categories': categories}
 
+        # try:
+        #     metadata = {'item': item,
+        #                 'city': self.items[item]['city'],
+        #                 'categories': '---'.join(self.items[item]['categories'])}
+        # except Exception as e:
+        #     print(e)
+        #     pdb.set_trace()
 
-
-        return hotel_id, texts, avg_rating, metadata
+        return business_id, texts, avg_rating, metadata
 
     def __len__(self):
         return self.n
@@ -282,14 +305,14 @@ class VariableNDocsSampler(Sampler):
         return len(self.dataloader_idxs)
 
 
-class Mask_With_Summ_Dataset(SummReviewDataset):
+class YelpDataset(SummReviewDataset):
     """
-    Main class for using Hotel dataset
+    Main class for using Yelp dataset
     """
     def __init__(self):
-        super(Mask_With_Summ_Dataset, self).__init__()
-        self.name = 'mask_with_summ'
-        self.conf = DatasetConfig('mask_with_summ')
+        super(YelpDataset, self).__init__()
+        self.name = 'yelp'
+        self.conf = DatasetConfig('yelp')
         self.n_ratings_labels = 5
         self.reviews = None
         self.subwordenc = load_file(self.conf.subwordenc_path)
@@ -299,9 +322,6 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
     # Utils
     #
     ####################################
-
-
-####### below done  #####
     def load_all_reviews(self):
         """
         Return list of dictionaries
@@ -312,8 +332,6 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
             for line in f.readlines():
                 reviews.append(json.loads(line))
         return reviews
-####### above done  #####
-
 
     def get_data_loader(self, split='train',
                         n_docs=8, n_docs_min=None, n_docs_max=None,
@@ -321,9 +339,9 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
                         category=None,  # for compatability with AmazonDataset, which filters in AmazonPytorchDataset
                         batch_size=64, shuffle=True, num_workers=4):
         """
-        Return iterator over specific split in dataset(providing mini_mbtch)
+        Return iterator over specific split in dataset
         """
-        ds = Hotel_Mask_PytorchDataset(split=split,
+        ds = YelpPytorchDataset(split=split,
                                 n_reviews=n_docs, n_reviews_min=n_docs_min, n_reviews_max=n_docs_max,
                                 subset=subset, seed=seed, sample_reviews=sample_reviews,
                                 item_max_reviews=self.conf.item_max_reviews)
@@ -355,16 +373,16 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
         if self.reviews is None:
             self.reviews = self.load_all_reviews()
 
+        #regroup all reviews by their business IDs
         print('Filtering reviews longer than: {}'.format(review_max_len))
         item_to_reviews = defaultdict(list)
-        
-        for r in self.reviews[0]:
+        for r in self.reviews:
             if len(self.subwordenc.encode(r['text'])) < review_max_len:
-                item_to_reviews[r['hotel_url']].append(r)
+                item_to_reviews[r['business_id']].append(r)
 
         # Calculate target amount of reviews per item
         n = sum([len(revs) for revs in item_to_reviews.values()])
-        print('Total number of reviews before filtering: {}'.format(len(self.reviews[0])))
+        print('Total number of reviews before filtering: {}'.format(len(self.reviews)))
         print('Total number of reviews after filtering: {}'.format(n))
 
         print('Filtering items with less than {} reviews'.format(item_min_reviews))
@@ -411,12 +429,93 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
             out_fp = os.path.join(self.conf.processed_path, '{}/store-to-nreviews.json'.format(split))
             save_file(item_to_nreviews, out_fp)
 
+    def print_original_data_stats(self):
+        """
+        Calculate and print some statistics on the original dataset
+        """
+        businesses = set()
+        users = set()
+        rating_to_count = defaultdict(int)
+        n_useful, n_funny, n_cool = 0, 0, 0  # reviews marked as useful, funny, or cool
+        review_lens = []
+        tokens = set()
+
+        if self.reviews is None:
+            self.reviews = self.load_all_reviews()
+
+        for r in self.reviews:
+            businesses.add(r['review_id'])
+            users.add(r['user_id'])
+            rating_to_count[r['stars']] += 1
+            n_useful += int(r['useful'] != 0)
+            n_funny += int(r['funny'] != 0)
+            n_cool += int(r['cool'] != 0)
+
+            tokenized = self.subwordenc.encode(r['text'])
+            review_lens.append(len(tokenized))
+            # tokenized = nltk.word_tokenize(r['text'].lower())
+            # review_lens.append(len(r['text']))
+            tokens.update(tokenized)
+            print(len(tokenized))
+
+        print('Total number of reviews: {}'.format(len(self.reviews)))
+        print('Number of unique businesses: {}'.format(len(businesses)))
+        print('Number of unique users: {}'.format(len(users)))
+        print('Number of reviews per star rating:')
+        for stars, count in sorted(rating_to_count.items()):
+            print('-- {} stars: {:.2f} reviews; {} of dataset'.format(stars, count, float(count) / len(self.reviews)))
+        print('Number of reviews marked as:')
+        print('-- useful: {}'.format(n_useful))
+        print('-- funny: {}'.format(n_funny))
+        print('-- cool: {}'.format(n_cool))
+        print('Length of review:')
+        print('-- mean: {}'.format(np.mean(review_lens)))
+        print('-- median: {}'.format(np.median(review_lens)))
+        print('-- 75th percentile: {}'.format(np.percentile(review_lens, 75)))
+        print('-- 90th percentile: {}'.format(np.percentile(review_lens, 90)))
+        print('Number of unique tokens: {}'.format(len(tokens)))
+        pdb.set_trace()
+
+    def print_filtered_data_stats(self):
+        """
+        Calculate and print some statistics on the filtered dataset. This is what we use for
+        training, validation, and testing.
+        """
+
+        all_rev_lens = []
+        rating_to_count = defaultdict(int)
+        for split in ['train', 'val', 'test']:
+            dl = self.get_data_loader(split=split, n_reviews=1, sample_reviews=False,
+                                      batch_size=1, num_workers=0, shuffle=False)
+            for texts, ratings in dl:
+                for i, text in enumerate(texts):
+                    all_rev_lens.append(len(self.subwordenc.encode(text)))
+                    rating_to_count[ratings[i].item()] += 1
+
+        print('Number of reviews per star rating:')
+        for rating, count in sorted(rating_to_count.items()):
+            print('-- {} stars: {:.2f} reviews; {} of dataset'.format(rating, count,
+                                                                      float(count) / len(all_rev_lens)))
+        print('Length of review:')
+        print('-- mean: {}'.format(np.mean(all_rev_lens)))
+        print('-- 75th percentile: {}'.format(np.percentile(all_rev_lens, 75)))
+        print('-- 90th percentile: {}'.format(np.percentile(all_rev_lens, 90)))
 
 
 if __name__ == '__main__':
     from data_loaders.summ_dataset_factory import SummDatasetFactory
 
     hp = HParams()
-    ds = SummDatasetFactory.get('mask_with_summ')
+    ds = SummDatasetFactory.get('yelp')
     ds.save_processed_splits()
-   
+    # ds.print_original_data_stats()
+    # ds.print_filtered_data_stats()
+
+    # Variable batch size and n_docs
+    # test_dl = ds.get_data_loader(split='test', n_docs_min=4, n_docs_max=16, sample_reviews=True,
+    #                              batch_size=1, shuffle=False)
+    # test_dl = ds.get_data_loader(split='test', n_docs=8, sample_reviews=False,
+    #                              batch_size=1, shuffle=False)
+    # for texts, ratings, metadata in test_dl:
+    #     x, lengths, labels = ds.prepare_batch(texts, ratings)
+    #     pdb.set_trace()

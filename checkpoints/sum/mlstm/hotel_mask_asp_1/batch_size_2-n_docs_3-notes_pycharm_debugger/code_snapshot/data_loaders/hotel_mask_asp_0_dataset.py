@@ -21,7 +21,8 @@ from project_settings import HParams, DatasetConfig
 from utils import load_file, save_file
 
 
-class Hotel_Mask_PytorchDataset(Dataset):
+
+class Hotel_Mask_Asp_PytorchDataset(Dataset):
     """
     Implements Pytorch Dataset
 
@@ -92,7 +93,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
         item_max_reviews = float('inf') if item_max_reviews is None else item_max_reviews
         self.item_max_reviews = item_max_reviews
 
-        self.ds_conf = DatasetConfig('mask_with_summ')  # used for paths
+        self.ds_conf = DatasetConfig('hotel_mask_asp_0')  # used for paths
 
         # Set random seed so that choice is always the same across experiments
         # Especially necessary for test set (along with shuffle=False in the DataLoader)
@@ -105,12 +106,42 @@ class Hotel_Mask_PytorchDataset(Dataset):
             os.path.join(self.ds_conf.processed_path, '{}/store-to-nreviews.json'.format(split)))
         self.idx_to_item = {}
 
+        ''' item_to_nreviews=store-to-nreviews.json
+          id : number of review on this hotel/store
+          "z8XIldYr65CKOz8yOI5R8A": 217,
+          "zCmwErM82hdKl4L2UixDJw": 309,
+          "zDKH2ua2DauqiWOAP9yz7g": 205,
+          "zE7pCmT1P9-tFLHcoJ7jQw": 50,
+          "zEaGcSVPDQipnRdEZp-F6g": 413,
+          "zHYjts6JqKBiKM5ZbO8eHA": 78,
+          "zINKP9rtvo2IUKTZoYJUvQ": 151,
+          "zJGtD3y-pAIGNId4codEEg": 539,
+          "zTNFyAXMEkgVP-o_HTC2xw": 143,
+          "zcZn9_qCLqRU8qsxYXtOBQ": 78,
+          "zdE82PiD6wquvjYLyhOJNA": 867,
+          "zfMA___zTTBGzZPsKZFWxw": 51,
+          "zjwdU1OdlbKTGjm-IfD4TQ": 118,
+          "zkhBU5qW_zCy0q4OEtIrsA": 217,
+          "zm-nB9xWL0RWZ-zoL7JNuQ": 76,
+          "znWHLW1pt19HzW1VY6KfCA": 468,
+          "zr42_UsWfaIF-rcp37OpwA": 144,
+          "zrTGcb83AsfyVTMrsCa65A": 352,
+          "zsYYAnHEs5qzsfazSsGkBw": 94,
+          "zwvshlu1bE2na9sXYrP0TQ": 81
+
+
+
+
+
+
+
+        '''
         if sample_reviews:
             if n_reviews_min and n_reviews_max:
                 self.idx_to_nreviews = {}
                 self.idx_to_item_idxs = {}  # indices of reviews
 
-                ns = [8] #[4, 8, 16]
+                ns = [8]#[4, 8, 16]
                 # ns = range(n_reviews_min, n_reviews_max+1, 4)  # e.g. [4,8,12,16]
                 idx = 0
                 for item, n_reviews in item_to_nreviews.items():
@@ -122,6 +153,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
                         if item_n + cur_n > n_reviews:
                             break
                         available_idxs = set(range(n_reviews)).difference(selected_idxs)
+                        
                         cur_idxs = np.random.choice(list(available_idxs), cur_n, replace=False)
                         selected_idxs.update(cur_idxs)
 
@@ -178,9 +210,16 @@ class Hotel_Mask_PytorchDataset(Dataset):
         print('Loading all items')
         items = {}
         with open(self.ds_conf.businesses_path, 'r', encoding='utf-8') as f:
-            business=json.load(f) #business is a list of length 2,222,373
-            for el in business: #el ={'hotel_url':...;'text':.....; 'rating': }
-                items[el['hotel_url']] = el
+            for line in f.readlines():
+                line = json.loads(line)[0]
+                items[line['hotel_url']] = line # key = hotel_url , value=  "name": "Bloom",
+                                                                  # "address": "8877 N Scottsdale Rd, Ste 402",
+                                                                  # "city": "Scottsdale",
+                                                                  # "state": "AZ",
+                                                                  # "postal_code": "85253",
+                                                                  # "latitude": 33.5663822,
+                                                                  # "longitude": -111.925581,
+
         return items
 
     def __getitem__(self, idx):
@@ -212,16 +251,9 @@ class Hotel_Mask_PytorchDataset(Dataset):
         try:
             categories = '---'.join(self.items[item]['categories'])
         except Exception as e:
+            print(e)
             categories = '---'
-        # print('-'*10)
-        # print('xxxx',self.items)
-        # print('-' * 10)
-        # print("xxxx",item)
-        # print('-' * 10)
-        metadata = {'item': self.items[item]['hotel_url'],
-                   'short_summary': self.items[item]['short_summary'],
-                   'long_summary': self.items[item]['long_summary']}
-
+        metadata={'item': item,}
 
 
         return hotel_id, texts, avg_rating, metadata
@@ -282,17 +314,23 @@ class VariableNDocsSampler(Sampler):
         return len(self.dataloader_idxs)
 
 
-class Mask_With_Summ_Dataset(SummReviewDataset):
+
+
+class Hotel_Mask_Asp_0_Dataset(SummReviewDataset):
     """
     Main class for using Hotel dataset
     """
     def __init__(self):
-        super(Mask_With_Summ_Dataset, self).__init__()
-        self.name = 'mask_with_summ'
-        self.conf = DatasetConfig('mask_with_summ')
+        super(Hotel_Mask_Asp_0_Dataset, self).__init__()
+        self.name = 'hotel_mask_asp_0'
+        self.conf = DatasetConfig('hotel_mask_asp_0')
         self.n_ratings_labels = 5
         self.reviews = None
         self.subwordenc = load_file(self.conf.subwordenc_path)
+
+
+
+
 
     ####################################
     #
@@ -315,15 +353,16 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
 ####### above done  #####
 
 
+
     def get_data_loader(self, split='train',
                         n_docs=8, n_docs_min=None, n_docs_max=None,
                         subset=None, seed=0, sample_reviews=True,
                         category=None,  # for compatability with AmazonDataset, which filters in AmazonPytorchDataset
                         batch_size=64, shuffle=True, num_workers=4):
         """
-        Return iterator over specific split in dataset(providing mini_mbtch)
+        Return iterator over specific split in dataset
         """
-        ds = Hotel_Mask_PytorchDataset(split=split,
+        ds = Hotel_Mask_Asp_PytorchDataset(split=split,
                                 n_reviews=n_docs, n_reviews_min=n_docs_min, n_reviews_max=n_docs_max,
                                 subset=subset, seed=seed, sample_reviews=sample_reviews,
                                 item_max_reviews=self.conf.item_max_reviews)
@@ -417,6 +456,6 @@ if __name__ == '__main__':
     from data_loaders.summ_dataset_factory import SummDatasetFactory
 
     hp = HParams()
-    ds = SummDatasetFactory.get('mask_with_summ')
+    ds = SummDatasetFactory.get('hotel_mask_asp_0')
     ds.save_processed_splits()
    

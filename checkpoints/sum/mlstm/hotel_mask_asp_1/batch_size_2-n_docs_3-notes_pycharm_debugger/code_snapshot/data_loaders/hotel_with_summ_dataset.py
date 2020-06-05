@@ -92,7 +92,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
         item_max_reviews = float('inf') if item_max_reviews is None else item_max_reviews
         self.item_max_reviews = item_max_reviews
 
-        self.ds_conf = DatasetConfig('mask_with_summ')  # used for paths
+        self.ds_conf = DatasetConfig('hotel_with_summ')  # used for paths
 
         # Set random seed so that choice is always the same across experiments
         # Especially necessary for test set (along with shuffle=False in the DataLoader)
@@ -221,9 +221,6 @@ class Hotel_Mask_PytorchDataset(Dataset):
         metadata = {'item': self.items[item]['hotel_url'],
                    'short_summary': self.items[item]['short_summary'],
                    'long_summary': self.items[item]['long_summary']}
-
-
-
         return hotel_id, texts, avg_rating, metadata
 
     def __len__(self):
@@ -282,14 +279,14 @@ class VariableNDocsSampler(Sampler):
         return len(self.dataloader_idxs)
 
 
-class Mask_With_Summ_Dataset(SummReviewDataset):
+class Hotel_With_Summ_Dataset(SummReviewDataset):
     """
     Main class for using Hotel dataset
     """
     def __init__(self):
-        super(Mask_With_Summ_Dataset, self).__init__()
-        self.name = 'mask_with_summ'
-        self.conf = DatasetConfig('mask_with_summ')
+        super(Hotel_With_Summ_Dataset, self).__init__()
+        self.name = 'hotel_with_summ'
+        self.conf = DatasetConfig('hotel_with_summ')
         self.n_ratings_labels = 5
         self.reviews = None
         self.subwordenc = load_file(self.conf.subwordenc_path)
@@ -417,6 +414,6 @@ if __name__ == '__main__':
     from data_loaders.summ_dataset_factory import SummDatasetFactory
 
     hp = HParams()
-    ds = SummDatasetFactory.get('mask_with_summ')
+    ds = SummDatasetFactory.get('hotel_with_summ')
     ds.save_processed_splits()
    

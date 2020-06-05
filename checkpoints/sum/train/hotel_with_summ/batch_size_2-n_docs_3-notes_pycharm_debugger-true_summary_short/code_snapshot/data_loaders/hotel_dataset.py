@@ -186,8 +186,12 @@ class HotelPytorchDataset(Dataset):
     def __getitem__(self, idx):
         # Map idx to item and load reviews
         item = self.idx_to_item[idx]  # id
-        fp = os.path.join(self.ds_conf.processed_path, '{}/{}.json'.format(self.split, item))
-        reviews = load_file(fp)
+        try:
+            fp = os.path.join(self.ds_conf.processed_path, '{}/{}.json'.format(self.split, item))
+            reviews = load_file(fp)
+        except FileNotFoundError :
+            fp = os.path.join(self.ds_conf.processed_path, '{}/{}_reviews.json'.format(self.split, item))
+            reviews = load_file(fp)
 
         # Get reviews from item
         if self.sample_reviews:

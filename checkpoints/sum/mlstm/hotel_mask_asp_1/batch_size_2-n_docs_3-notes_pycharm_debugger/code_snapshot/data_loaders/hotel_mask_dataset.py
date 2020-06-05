@@ -92,7 +92,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
         item_max_reviews = float('inf') if item_max_reviews is None else item_max_reviews
         self.item_max_reviews = item_max_reviews
 
-        self.ds_conf = DatasetConfig('mask_with_summ')  # used for paths
+        self.ds_conf = DatasetConfig('hotel_mask')  # used for paths
 
         # Set random seed so that choice is always the same across experiments
         # Especially necessary for test set (along with shuffle=False in the DataLoader)
@@ -178,9 +178,9 @@ class Hotel_Mask_PytorchDataset(Dataset):
         print('Loading all items')
         items = {}
         with open(self.ds_conf.businesses_path, 'r', encoding='utf-8') as f:
-            business=json.load(f) #business is a list of length 2,222,373
-            for el in business: #el ={'hotel_url':...;'text':.....; 'rating': }
-                items[el['hotel_url']] = el
+            for line in f.readlines():
+                line = json.loads(line)[0]
+                items[line['hotel_url']] = line
         return items
 
     def __getitem__(self, idx):
@@ -204,7 +204,7 @@ class Hotel_Mask_PytorchDataset(Dataset):
             reviews = reviews[start_idx:start_idx + self.n_reviews]
 
         # Collect data for this item
-        hotel_ids,texts, ratings = zip(*[(s['hotel_url'],s['text'], s['rating']) for s in reviews])
+        hotel_ids,texts, ratings = zip(*[(s['hotel_url'],s['text_filtered_per_sentence'], s['rating']) for s in reviews])
         texts = SummDataset.concat_docs(texts, edok_token=True)
         avg_rating = int(np.round(np.mean(ratings)))
         hotel_id=hotel_ids[0]
@@ -212,18 +212,20 @@ class Hotel_Mask_PytorchDataset(Dataset):
         try:
             categories = '---'.join(self.items[item]['categories'])
         except Exception as e:
+            print(e)
             categories = '---'
-        # print('-'*10)
-        # print('xxxx',self.items)
-        # print('-' * 10)
-        # print("xxxx",item)
-        # print('-' * 10)
-        metadata = {'item': self.items[item]['hotel_url'],
-                   'short_summary': self.items[item]['short_summary'],
-                   'long_summary': self.items[item]['long_summary']}
+        metadata={'item': item,}
+#        metadata = {'item': item,
+#                    'city': self.items[item]['city'],
+#                    'categories': categories}
 
-
-
+        # try:
+        #     metadata = {'item': item,
+        #                 'city': self.items[item]['city'],
+        #                 'categories': '---'.join(self.items[item]['categories'])}
+        # except Exception as e:
+        #     print(e)
+        #     pdb.set_trace(
         return hotel_id, texts, avg_rating, metadata
 
     def __len__(self):
@@ -282,14 +284,14 @@ class VariableNDocsSampler(Sampler):
         return len(self.dataloader_idxs)
 
 
-class Mask_With_Summ_Dataset(SummReviewDataset):
+class Hotel_Mask_Dataset(SummReviewDataset):
     """
     Main class for using Hotel dataset
     """
     def __init__(self):
-        super(Mask_With_Summ_Dataset, self).__init__()
-        self.name = 'mask_with_summ'
-        self.conf = DatasetConfig('mask_with_summ')
+        super(Hotel_Mask_Dataset, self).__init__()
+        self.name = 'hotel_mask'
+        self.conf = DatasetConfig('hotel_mask')
         self.n_ratings_labels = 5
         self.reviews = None
         self.subwordenc = load_file(self.conf.subwordenc_path)
@@ -321,7 +323,7 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
                         category=None,  # for compatability with AmazonDataset, which filters in AmazonPytorchDataset
                         batch_size=64, shuffle=True, num_workers=4):
         """
-        Return iterator over specific split in dataset(providing mini_mbtch)
+        Return iterator over specific split in dataset
         """
         ds = Hotel_Mask_PytorchDataset(split=split,
                                 n_reviews=n_docs, n_reviews_min=n_docs_min, n_reviews_max=n_docs_max,
@@ -359,7 +361,7 @@ class Mask_With_Summ_Dataset(SummReviewDataset):
         item_to_reviews = defaultdict(list)
         
         for r in self.reviews[0]:
-            if len(self.subwordenc.encode(r['text'])) < review_max_len:
+            if len(self.subwordenc.encode(r['text_filtered_per_sentence'])) < review_max_len:
                 item_to_reviews[r['hotel_url']].append(r)
 
         # Calculate target amount of reviews per item
@@ -417,6 +419,6 @@ if __name__ == '__main__':
     from data_loaders.summ_dataset_factory import SummDatasetFactory
 
     hp = HParams()
-    ds = SummDatasetFactory.get('mask_with_summ')
+    ds = SummDatasetFactory.get('hotel_mask')
     ds.save_processed_splits()
    

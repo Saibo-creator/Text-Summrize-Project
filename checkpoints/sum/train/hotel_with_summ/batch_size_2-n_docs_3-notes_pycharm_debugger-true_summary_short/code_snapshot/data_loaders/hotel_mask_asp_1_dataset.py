@@ -225,8 +225,12 @@ class Hotel_Mask_Asp_PytorchDataset(Dataset):
     def __getitem__(self, idx):
         # Map idx to item and load reviews
         item = self.idx_to_item[idx]  # id
-        fp = os.path.join(self.ds_conf.processed_path, '{}/{}_reviews.json'.format(self.split, item))
-        reviews = load_file(fp)
+        try:
+            fp = os.path.join(self.ds_conf.processed_path, '{}/{}.json'.format(self.split, item))
+            reviews = load_file(fp)
+        except FileNotFoundError :
+            fp = os.path.join(self.ds_conf.processed_path, '{}/{}_reviews.json'.format(self.split, item))
+            reviews = load_file(fp)
 
         # Get reviews from item
         if self.sample_reviews:
@@ -253,9 +257,14 @@ class Hotel_Mask_Asp_PytorchDataset(Dataset):
         except Exception as e:
             print(e)
             categories = '---'
-        metadata={'item': item,}
+        metadata = {'item': item}
 
-        print('avg_rating',avg_rating)
+        # metadata['short_summary']=self.items[item]['short_summary']
+        # metadata['long_summary']=self.items[item]['long_summary']
+
+        # metadata = {'item': item,
+        #            'short_summary': None,
+        #            'long_summary': None}
         return hotel_id, texts, avg_rating, metadata
 
     def __len__(self):
