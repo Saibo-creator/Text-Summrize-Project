@@ -1,0 +1,3 @@
+Command:
+train_sum.py --dataset=hotel_with_summ --skip_clf=1 --batch_size=2 --note=supervised_autoencoder --true_summ=short --mode=train --g_summ_loss=True --lr=1e-6
+Start time: June08_06-15-30
