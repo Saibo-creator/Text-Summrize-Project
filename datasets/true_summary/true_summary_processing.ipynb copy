@@ -5,8 +5,8 @@
    "execution_count": 1,
    "metadata": {
     "ExecuteTime": {
-     "end_time": "2020-06-02T03:51:47.028516Z",
-     "start_time": "2020-06-02T03:51:45.944148Z"
+     "end_time": "2020-06-08T01:31:50.486671Z",
+     "start_time": "2020-06-08T01:31:48.227195Z"
     }
    },
    "outputs": [],
@@ -25,67 +25,11 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
-   "metadata": {
-    "ExecuteTime": {
-     "end_time": "2020-06-02T03:51:49.898578Z",
-     "start_time": "2020-06-02T03:51:49.881755Z"
-    }
-   },
-   "outputs": [
-    {
-     "data": {
-      "text/html": [
-       "<div>\n",
-       "<style scoped>\n",
-       "    .dataframe tbody tr th:only-of-type {\n",
-       "        vertical-align: middle;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe tbody tr th {\n",
-       "        vertical-align: top;\n",
-       "    }\n",
-       "\n",
-       "    .dataframe thead th {\n",
-       "        text-align: right;\n",
-       "    }\n",
-       "</style>\n",
-       "<table border=\"1\" class=\"dataframe\">\n",
-       "  <thead>\n",
-       "    <tr style=\"text-align: right;\">\n",
-       "      <th></th>\n",
-       "      <th>hotel_url</th>\n",
-       "      <th>short_summary</th>\n",
-       "      <th>long_summary</th>\n",
-       "    </tr>\n",
-       "  </thead>\n",
-       "  <tbody>\n",
-       "  </tbody>\n",
-       "</table>\n",
-       "</div>"
-      ],
-      "text/plain": [
-       "Empty DataFrame\n",
-       "Columns: [hotel_url, short_summary, long_summary]\n",
-       "Index: []"
-      ]
-     },
-     "execution_count": 2,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "json_df"
-   ]
-  },
-  {
-   "cell_type": "code",
    "execution_count": null,
    "metadata": {
     "ExecuteTime": {
-     "end_time": "2020-06-02T03:53:42.208373Z",
-     "start_time": "2020-06-02T03:51:55.934030Z"
+     "end_time": "2020-06-08T01:32:55.080813Z",
+     "start_time": "2020-06-08T01:32:11.409856Z"
     }
    },
    "outputs": [],
@@ -102,11 +46,11 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 8,
    "metadata": {
     "ExecuteTime": {
-     "end_time": "2020-06-02T03:54:20.142252Z",
-     "start_time": "2020-06-02T03:54:20.095954Z"
+     "end_time": "2020-06-08T01:33:40.324304Z",
+     "start_time": "2020-06-08T01:33:40.292909Z"
     }
    },
    "outputs": [],
@@ -123,11 +67,11 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 9,
    "metadata": {
     "ExecuteTime": {
-     "end_time": "2020-06-02T03:54:38.113518Z",
-     "start_time": "2020-06-02T03:54:38.094334Z"
+     "end_time": "2020-06-08T01:33:40.651966Z",
+     "start_time": "2020-06-08T01:33:40.639732Z"
     }
    },
    "outputs": [
@@ -467,7 +411,7 @@
        " 'hotel_type': []}"
       ]
      },
-     "execution_count": 6,
+     "execution_count": 9,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -478,30 +422,128 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 11,
+   "execution_count": 22,
    "metadata": {
     "ExecuteTime": {
-     "end_time": "2020-05-24T14:52:52.606022Z",
-     "start_time": "2020-05-24T14:52:52.571067Z"
+     "end_time": "2020-06-08T01:36:43.217267Z",
+     "start_time": "2020-06-08T01:36:43.212860Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['Breakfast', 'Value', 'Food', 'Service', 'Cleanliness', 'Room', 'Location']"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-06-08T01:43:49.923769Z",
+     "start_time": "2020-06-08T01:42:42.429635Z"
     }
    },
    "outputs": [],
    "source": [
-    "import time\n"
+    "#executed in 14ms\n",
+    "categories=[]\n",
+    "for i,json_fn in enumerate(json_fns):\n",
+    "    with open(os.path.join(path_to_json,json_fn)) as json_file:\n",
+    "        json_dict=json.load(json_file)\n",
+    "        categories.extend([category['category_name'] for category in json_dict['category']])"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": 27,
    "metadata": {
     "ExecuteTime": {
-     "end_time": "2020-05-24T14:53:15.060665Z",
-     "start_time": "2020-05-24T14:53:10.050909Z"
+     "end_time": "2020-06-08T01:47:41.336246Z",
+     "start_time": "2020-06-08T01:47:41.288061Z"
     }
    },
    "outputs": [],
    "source": [
-    "time.sleep(5)"
+    "categories=list(set(categories))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-06-08T01:47:44.573994Z",
+     "start_time": "2020-06-08T01:47:44.569622Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['Service',\n",
+       " 'Breakfast',\n",
+       " 'Room',\n",
+       " 'Bar',\n",
+       " 'Cleanliness',\n",
+       " 'Beach',\n",
+       " 'Location',\n",
+       " 'Comfort',\n",
+       " 'Value',\n",
+       " 'Food',\n",
+       " 'Pool',\n",
+       " 'Wellness Area',\n",
+       " 'Wellness',\n",
+       " 'Amenities',\n",
+       " 'Value for money',\n",
+       " 'WiFi',\n",
+       " 'Vibe']"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "categories"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i,json_fn in enumerate(json_fns):\n",
+    "    with open(os.path.join(path_to_json,json_fn)) as json_file:\n",
+    "        json_dict=json.load(json_file)\n",
+    "        hotel_url=json_fn\n",
+    "        short_summary=json_dict[\"summary\"][\"text\"]\n",
+    "        long_summary=''.join([' '.join([xx['text'] for xx in x['summary_sentences']]) for x in json_dict['category']])\n",
+    "        json_df.loc[i]=[hotel_url,short_summary,long_summary]"
    ]
   },
   {
