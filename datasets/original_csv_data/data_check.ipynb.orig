@@ -1,0 +1,2402 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 2,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-04T06:37:43.398536Z",
+     "start_time": "2020-05-04T06:37:42.100830Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import ast\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "%matplotlib inline\n",
+    "import matplotlib.pyplot as plt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-04T06:38:13.244299Z",
+     "start_time": "2020-05-04T06:37:43.797268Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "tot=pd.read_json('../hotel_mask_sing_asp_dataset/review.json')\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+=======
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   "execution_count": 9,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-04T06:41:03.347452Z",
+     "start_time": "2020-05-04T06:41:01.391977Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>hotel_url</th>\n",
+       "      <th>text</th>\n",
+       "      <th>rating</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>aspect</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <td>aspect 3</td>\n",
+       "      <td>1537321</td>\n",
+       "      <td>1537321</td>\n",
+       "      <td>1537321</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 0</td>\n",
+       "      <td>609577</td>\n",
+       "      <td>609577</td>\n",
+       "      <td>609577</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 4</td>\n",
+       "      <td>459777</td>\n",
+       "      <td>459777</td>\n",
+       "      <td>459777</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 2</td>\n",
+       "      <td>334332</td>\n",
+       "      <td>334332</td>\n",
+       "      <td>334332</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 1</td>\n",
+       "      <td>233379</td>\n",
+       "      <td>233379</td>\n",
+       "      <td>233379</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "          hotel_url     text   rating\n",
+       "aspect                               \n",
+       "aspect 3    1537321  1537321  1537321\n",
+       "aspect 0     609577   609577   609577\n",
+       "aspect 4     459777   459777   459777\n",
+       "aspect 2     334332   334332   334332\n",
+       "aspect 1     233379   233379   233379"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "tot['aspect']=tot['hotel_url'].apply(lambda x:x[:8])\n",
+    "tot.groupby('aspect').count().sort_values('text',ascending=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-04T06:40:33.260898Z",
+     "start_time": "2020-05-04T06:40:33.248788Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['T',\n",
+       " '_AXIS_ALIASES',\n",
+       " '_AXIS_IALIASES',\n",
+       " '_AXIS_LEN',\n",
+       " '_AXIS_NAMES',\n",
+       " '_AXIS_NUMBERS',\n",
+       " '_AXIS_ORDERS',\n",
+       " '_AXIS_REVERSED',\n",
+       " '__abs__',\n",
+       " '__add__',\n",
+       " '__and__',\n",
+       " '__array__',\n",
+       " '__array_priority__',\n",
+       " '__array_wrap__',\n",
+       " '__bool__',\n",
+       " '__class__',\n",
+       " '__contains__',\n",
+       " '__copy__',\n",
+       " '__deepcopy__',\n",
+       " '__delattr__',\n",
+       " '__delitem__',\n",
+       " '__dict__',\n",
+       " '__dir__',\n",
+       " '__div__',\n",
+       " '__doc__',\n",
+       " '__eq__',\n",
+       " '__finalize__',\n",
+       " '__floordiv__',\n",
+       " '__format__',\n",
+       " '__ge__',\n",
+       " '__getattr__',\n",
+       " '__getattribute__',\n",
+       " '__getitem__',\n",
+       " '__getstate__',\n",
+       " '__gt__',\n",
+       " '__hash__',\n",
+       " '__iadd__',\n",
+       " '__iand__',\n",
+       " '__ifloordiv__',\n",
+       " '__imod__',\n",
+       " '__imul__',\n",
+       " '__init__',\n",
+       " '__init_subclass__',\n",
+       " '__invert__',\n",
+       " '__ior__',\n",
+       " '__ipow__',\n",
+       " '__isub__',\n",
+       " '__iter__',\n",
+       " '__itruediv__',\n",
+       " '__ixor__',\n",
+       " '__le__',\n",
+       " '__len__',\n",
+       " '__lt__',\n",
+       " '__matmul__',\n",
+       " '__mod__',\n",
+       " '__module__',\n",
+       " '__mul__',\n",
+       " '__ne__',\n",
+       " '__neg__',\n",
+       " '__new__',\n",
+       " '__nonzero__',\n",
+       " '__or__',\n",
+       " '__pos__',\n",
+       " '__pow__',\n",
+       " '__radd__',\n",
+       " '__rand__',\n",
+       " '__rdiv__',\n",
+       " '__reduce__',\n",
+       " '__reduce_ex__',\n",
+       " '__repr__',\n",
+       " '__rfloordiv__',\n",
+       " '__rmatmul__',\n",
+       " '__rmod__',\n",
+       " '__rmul__',\n",
+       " '__ror__',\n",
+       " '__round__',\n",
+       " '__rpow__',\n",
+       " '__rsub__',\n",
+       " '__rtruediv__',\n",
+       " '__rxor__',\n",
+       " '__setattr__',\n",
+       " '__setitem__',\n",
+       " '__setstate__',\n",
+       " '__sizeof__',\n",
+       " '__str__',\n",
+       " '__sub__',\n",
+       " '__subclasshook__',\n",
+       " '__truediv__',\n",
+       " '__weakref__',\n",
+       " '__xor__',\n",
+       " '_accessors',\n",
+       " '_add_numeric_operations',\n",
+       " '_add_series_only_operations',\n",
+       " '_add_series_or_dataframe_operations',\n",
+       " '_agg_by_level',\n",
+       " '_agg_examples_doc',\n",
+       " '_agg_summary_and_see_also_doc',\n",
+       " '_aggregate',\n",
+       " '_aggregate_multiple_funcs',\n",
+       " '_align_frame',\n",
+       " '_align_series',\n",
+       " '_box_col_values',\n",
+       " '_box_item_values',\n",
+       " '_builtin_table',\n",
+       " '_check_inplace_setting',\n",
+       " '_check_is_chained_assignment_possible',\n",
+       " '_check_label_or_level_ambiguity',\n",
+       " '_check_percentile',\n",
+       " '_check_setitem_copy',\n",
+       " '_clear_item_cache',\n",
+       " '_clip_with_one_bound',\n",
+       " '_clip_with_scalar',\n",
+       " '_combine_const',\n",
+       " '_combine_frame',\n",
+       " '_combine_match_columns',\n",
+       " '_combine_match_index',\n",
+       " '_consolidate',\n",
+       " '_consolidate_inplace',\n",
+       " '_construct_axes_dict',\n",
+       " '_construct_axes_dict_from',\n",
+       " '_construct_axes_from_arguments',\n",
+       " '_constructor',\n",
+       " '_constructor_expanddim',\n",
+       " '_constructor_sliced',\n",
+       " '_convert',\n",
+       " '_count_level',\n",
+       " '_create_indexer',\n",
+       " '_cython_table',\n",
+       " '_data',\n",
+       " '_deprecations',\n",
+       " '_dir_additions',\n",
+       " '_dir_deletions',\n",
+       " '_drop_axis',\n",
+       " '_drop_labels_or_levels',\n",
+       " '_ensure_valid_index',\n",
+       " '_find_valid_index',\n",
+       " '_from_arrays',\n",
+       " '_from_axes',\n",
+       " '_get_agg_axis',\n",
+       " '_get_axis',\n",
+       " '_get_axis_name',\n",
+       " '_get_axis_number',\n",
+       " '_get_axis_resolvers',\n",
+       " '_get_block_manager_axis',\n",
+       " '_get_bool_data',\n",
+       " '_get_cacher',\n",
+       " '_get_index_resolvers',\n",
+       " '_get_item_cache',\n",
+       " '_get_label_or_level_values',\n",
+       " '_get_numeric_data',\n",
+       " '_get_space_character_free_column_resolvers',\n",
+       " '_get_value',\n",
+       " '_get_values',\n",
+       " '_getitem_bool_array',\n",
+       " '_getitem_frame',\n",
+       " '_getitem_multilevel',\n",
+       " '_gotitem',\n",
+       " '_iget_item_cache',\n",
+       " '_indexed_same',\n",
+       " '_info_axis',\n",
+       " '_info_axis_name',\n",
+       " '_info_axis_number',\n",
+       " '_info_repr',\n",
+       " '_init_mgr',\n",
+       " '_internal_get_values',\n",
+       " '_internal_names',\n",
+       " '_internal_names_set',\n",
+       " '_is_builtin_func',\n",
+       " '_is_cached',\n",
+       " '_is_copy',\n",
+       " '_is_cython_func',\n",
+       " '_is_datelike_mixed_type',\n",
+       " '_is_homogeneous_type',\n",
+       " '_is_label_or_level_reference',\n",
+       " '_is_label_reference',\n",
+       " '_is_level_reference',\n",
+       " '_is_mixed_type',\n",
+       " '_is_numeric_mixed_type',\n",
+       " '_is_view',\n",
+       " '_ix',\n",
+       " '_ixs',\n",
+       " '_join_compat',\n",
+       " '_maybe_cache_changed',\n",
+       " '_maybe_update_cacher',\n",
+       " '_metadata',\n",
+       " '_needs_reindex_multi',\n",
+       " '_obj_with_exclusions',\n",
+       " '_protect_consolidate',\n",
+       " '_reduce',\n",
+       " '_reindex_axes',\n",
+       " '_reindex_columns',\n",
+       " '_reindex_index',\n",
+       " '_reindex_multi',\n",
+       " '_reindex_with_indexers',\n",
+       " '_repr_data_resource_',\n",
+       " '_repr_fits_horizontal_',\n",
+       " '_repr_fits_vertical_',\n",
+       " '_repr_html_',\n",
+       " '_repr_latex_',\n",
+       " '_reset_cache',\n",
+       " '_reset_cacher',\n",
+       " '_sanitize_column',\n",
+       " '_selected_obj',\n",
+       " '_selection',\n",
+       " '_selection_list',\n",
+       " '_selection_name',\n",
+       " '_series',\n",
+       " '_set_as_cached',\n",
+       " '_set_axis',\n",
+       " '_set_axis_name',\n",
+       " '_set_is_copy',\n",
+       " '_set_item',\n",
+       " '_set_value',\n",
+       " '_setitem_array',\n",
+       " '_setitem_frame',\n",
+       " '_setitem_slice',\n",
+       " '_setup_axes',\n",
+       " '_shallow_copy',\n",
+       " '_slice',\n",
+       " '_stat_axis',\n",
+       " '_stat_axis_name',\n",
+       " '_stat_axis_number',\n",
+       " '_to_dict_of_blocks',\n",
+       " '_try_aggregate_string_function',\n",
+       " '_typ',\n",
+       " '_unpickle_frame_compat',\n",
+       " '_unpickle_matrix_compat',\n",
+       " '_update_inplace',\n",
+       " '_validate_dtype',\n",
+       " '_values',\n",
+       " '_where',\n",
+       " '_xs',\n",
+       " 'abs',\n",
+       " 'add',\n",
+       " 'add_prefix',\n",
+       " 'add_suffix',\n",
+       " 'agg',\n",
+       " 'aggregate',\n",
+       " 'align',\n",
+       " 'all',\n",
+       " 'any',\n",
+       " 'append',\n",
+       " 'apply',\n",
+       " 'applymap',\n",
+       " 'as_matrix',\n",
+       " 'asfreq',\n",
+       " 'asof',\n",
+       " 'aspect',\n",
+       " 'assign',\n",
+       " 'astype',\n",
+       " 'at',\n",
+       " 'at_time',\n",
+       " 'axes',\n",
+       " 'between_time',\n",
+       " 'bfill',\n",
+       " 'bool',\n",
+       " 'boxplot',\n",
+       " 'clip',\n",
+       " 'clip_lower',\n",
+       " 'clip_upper',\n",
+       " 'columns',\n",
+       " 'combine',\n",
+       " 'combine_first',\n",
+       " 'compound',\n",
+       " 'copy',\n",
+       " 'corr',\n",
+       " 'corrwith',\n",
+       " 'count',\n",
+       " 'cov',\n",
+       " 'cummax',\n",
+       " 'cummin',\n",
+       " 'cumprod',\n",
+       " 'cumsum',\n",
+       " 'describe',\n",
+       " 'diff',\n",
+       " 'div',\n",
+       " 'divide',\n",
+       " 'dot',\n",
+       " 'drop',\n",
+       " 'drop_duplicates',\n",
+       " 'droplevel',\n",
+       " 'dropna',\n",
+       " 'dtypes',\n",
+       " 'duplicated',\n",
+       " 'empty',\n",
+       " 'eq',\n",
+       " 'equals',\n",
+       " 'eval',\n",
+       " 'ewm',\n",
+       " 'expanding',\n",
+       " 'explode',\n",
+       " 'ffill',\n",
+       " 'fillna',\n",
+       " 'filter',\n",
+       " 'first',\n",
+       " 'first_valid_index',\n",
+       " 'floordiv',\n",
+       " 'from_dict',\n",
+       " 'from_records',\n",
+       " 'ftypes',\n",
+       " 'ge',\n",
+       " 'get',\n",
+       " 'get_dtype_counts',\n",
+       " 'get_ftype_counts',\n",
+       " 'get_values',\n",
+       " 'groupby',\n",
+       " 'gt',\n",
+       " 'head',\n",
+       " 'hist',\n",
+       " 'hotel_url',\n",
+       " 'iat',\n",
+       " 'idxmax',\n",
+       " 'idxmin',\n",
+       " 'iloc',\n",
+       " 'index',\n",
+       " 'infer_objects',\n",
+       " 'info',\n",
+       " 'insert',\n",
+       " 'interpolate',\n",
+       " 'isin',\n",
+       " 'isna',\n",
+       " 'isnull',\n",
+       " 'items',\n",
+       " 'iteritems',\n",
+       " 'iterrows',\n",
+       " 'itertuples',\n",
+       " 'ix',\n",
+       " 'join',\n",
+       " 'keys',\n",
+       " 'kurt',\n",
+       " 'kurtosis',\n",
+       " 'last',\n",
+       " 'last_valid_index',\n",
+       " 'le',\n",
+       " 'loc',\n",
+       " 'lookup',\n",
+       " 'lt',\n",
+       " 'mad',\n",
+       " 'mask',\n",
+       " 'max',\n",
+       " 'mean',\n",
+       " 'median',\n",
+       " 'melt',\n",
+       " 'memory_usage',\n",
+       " 'merge',\n",
+       " 'min',\n",
+       " 'mod',\n",
+       " 'mode',\n",
+       " 'mul',\n",
+       " 'multiply',\n",
+       " 'ndim',\n",
+       " 'ne',\n",
+       " 'nlargest',\n",
+       " 'notna',\n",
+       " 'notnull',\n",
+       " 'nsmallest',\n",
+       " 'nunique',\n",
+       " 'pct_change',\n",
+       " 'pipe',\n",
+       " 'pivot',\n",
+       " 'pivot_table',\n",
+       " 'plot',\n",
+       " 'pop',\n",
+       " 'pow',\n",
+       " 'prod',\n",
+       " 'product',\n",
+       " 'quantile',\n",
+       " 'query',\n",
+       " 'radd',\n",
+       " 'rank',\n",
+       " 'rating',\n",
+       " 'rdiv',\n",
+       " 'reindex',\n",
+       " 'reindex_like',\n",
+       " 'rename',\n",
+       " 'rename_axis',\n",
+       " 'reorder_levels',\n",
+       " 'replace',\n",
+       " 'resample',\n",
+       " 'reset_index',\n",
+       " 'rfloordiv',\n",
+       " 'rmod',\n",
+       " 'rmul',\n",
+       " 'rolling',\n",
+       " 'round',\n",
+       " 'rpow',\n",
+       " 'rsub',\n",
+       " 'rtruediv',\n",
+       " 'sample',\n",
+       " 'select_dtypes',\n",
+       " 'sem',\n",
+       " 'set_axis',\n",
+       " 'set_index',\n",
+       " 'shape',\n",
+       " 'shift',\n",
+       " 'size',\n",
+       " 'skew',\n",
+       " 'slice_shift',\n",
+       " 'sort_index',\n",
+       " 'sort_values',\n",
+       " 'sparse',\n",
+       " 'squeeze',\n",
+       " 'stack',\n",
+       " 'std',\n",
+       " 'style',\n",
+       " 'sub',\n",
+       " 'subtract',\n",
+       " 'sum',\n",
+       " 'swapaxes',\n",
+       " 'swaplevel',\n",
+       " 'tail',\n",
+       " 'take',\n",
+       " 'text',\n",
+       " 'to_clipboard',\n",
+       " 'to_csv',\n",
+       " 'to_dense',\n",
+       " 'to_dict',\n",
+       " 'to_excel',\n",
+       " 'to_feather',\n",
+       " 'to_gbq',\n",
+       " 'to_hdf',\n",
+       " 'to_html',\n",
+       " 'to_json',\n",
+       " 'to_latex',\n",
+       " 'to_msgpack',\n",
+       " 'to_numpy',\n",
+       " 'to_parquet',\n",
+       " 'to_period',\n",
+       " 'to_pickle',\n",
+       " 'to_records',\n",
+       " 'to_sparse',\n",
+       " 'to_sql',\n",
+       " 'to_stata',\n",
+       " 'to_string',\n",
+       " 'to_timestamp',\n",
+       " 'to_xarray',\n",
+       " 'transform',\n",
+       " 'transpose',\n",
+       " 'truediv',\n",
+       " 'truncate',\n",
+       " 'tshift',\n",
+       " 'tz_convert',\n",
+       " 'tz_localize',\n",
+       " 'unstack',\n",
+       " 'update',\n",
+       " 'values',\n",
+       " 'var',\n",
+       " 'where',\n",
+       " 'xs']"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dir(tot)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:19:02.895489Z",
+     "start_time": "2020-05-01T02:16:25.851410Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'executed in 2m 49s'"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test=pd.read_csv('./test.csv')\n",
+    "train=pd.read_csv('./train.csv')\n",
+    "dev=pd.read_csv('./dev.csv')\n",
+    "'''executed in 2m 49s'''"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:19:03.005827Z",
+     "start_time": "2020-05-01T02:19:02.944946Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(1749157, 257186, 216030)"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(train),len(test),len(dev)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:19:45.025648Z",
+     "start_time": "2020-05-01T02:19:35.976344Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'executed in 2m 24s'"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "def parse_str_list(df):\n",
+    "    df['text_filtered_per_sentence']=df['text_filtered_per_sentence'].apply(ast.literal_eval)\n",
+    "    df['aspect_filtered_per_sentence']=df['aspect_filtered_per_sentence'].apply(ast.literal_eval)\n",
+    "    \n",
+    "    \n",
+    "parse_str_list(test)\n",
+    "# parse_str_list(train)\n",
+    "# parse_str_list(dev)\n",
+    "\n",
+    "'''executed in 2m 24s'''"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "heading_collapsed": true
+   },
+   "source": [
+    "### language fluency issue"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-25T12:42:09.278149Z",
+     "start_time": "2020-04-25T12:42:09.237719Z"
+    },
+    "hidden": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "\"Check-in was quick and Jessie (spelling) was very friendly. She explained everything and went out of her way to check on things for us. The room was nice, but older. The beds were metal frames (weight rating unknown...) with nice mattresses. The headboards....interesting and had reading lights attached. The room was clean.....until day 2 when we had a roach wave hello from the side table. We killed it and forgot about it. Then the last day, we saw more. In all stages of growth, from nymph to full adult. One had even gotten into the fridge. So, we were happy to be leaving. The A/C unit worked well. The pool hours were enforced and the place was quiet during quiet time. Wifi worked good enough. Nice sized TV with an okay line up. Parking was a pain in the butt....cars parking in the truck/trailer parking spaces, making it difficult to maneuver around them to avoid hitting them, then not being able make the turn to get out because of it. Super annoying when cars park where they shouldn't! Need to know: Fridge/microwave in room Truck/trailer parking (tight) They accept incoming mail - no charge Guest laundry No Elevator (2 floors) We probably wouldn't stay again because of the bugs. Everything else was good until they started to appear...\""
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test['text'][330]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-25T12:42:15.721253Z",
+     "start_time": "2020-04-25T12:42:15.711290Z"
+    },
+    "hidden": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "\"check - in was quick and jessie ( spelling ) was very friendly .she explained everything and went out of her way to check on things for us .the room was nice , but older .the room was clean ..... until day 2 when we had a roach wave hello from the side table .in all stages of growth , from nymph to full adult .one had even gotten into the fridge .so , we were happy to be leaving .the pool hours were enforced and the place was quiet during quiet time .wifi worked good enough .nice sized tv with an okay line up .parking was a pain in the butt ....cars parking in the truck / trailer parking spaces , making it difficult to maneuver around them to avoid hitting them , then not being able make the turn to get out because of it .super annoying when cars park where they should n't !need to know : fridge / microwave in room truck / trailer parking ( tight )\""
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "''.join(ast.literal_eval(test['text_filtered_per_sentence'][330]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-25T12:42:39.656777Z",
+     "start_time": "2020-04-25T12:42:39.652230Z"
+    },
+    "hidden": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Hotel_Review-g60724-d267781-Reviews-Red_Cliffs_Lodge-Moab_Utah.html'"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\n",
+    "test['text'][201]\n",
+    "\n",
+    "test['hotel_url'][201]\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "hidden": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "hidden": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "hidden": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### build the mean of single aspect rating"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:19:47.834718Z",
+     "start_time": "2020-05-01T02:19:47.825518Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def build_asp_rating(split):\n",
+    "    aspect_rating=split.replace(-1,np.nan).groupby('hotel_url')[[\"service\",\"cleanliness\",\"value\",\"location\",\"rooms\"]].mean()\n",
+    "\n",
+    "    aspect_rating=aspect_rating.rename(columns={'service':'aspect 0 ','cleanliness':'aspect 1 ',\\\n",
+    "                                  'value':'aspect 2 ','location':'aspect 3 ','rooms':'aspect 4 '}).reset_index()\n",
+    "\n",
+    "\n",
+    "    aspect_rating=pd.melt(aspect_rating, id_vars='hotel_url', value_vars=['aspect 0 ','aspect 1 ','aspect 2 '\\\n",
+    "                                                              ,'aspect 3 ','aspect 4 ',])\n",
+    "\n",
+    "    aspect_rating['hotel_url_new']=aspect_rating['variable']+aspect_rating['hotel_url']\n",
+    "    aspect_rating=aspect_rating[['hotel_url_new','value']].rename(columns={'hotel_url_new':'hotel_url'})\n",
+    "\n",
+    "    aspect_rating=aspect_rating.replace(np.nan,-1)\n",
+    "    aspect_rating.rename(columns={'value':'rating'},inplace=True)\n",
+    "    return aspect_rating\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:19:51.877711Z",
+     "start_time": "2020-05-01T02:19:48.473893Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test_asp_rating=build_asp_rating(test)\n",
+    "# train_asp_rating=build_asp_rating(train)\n",
+    "# dev_asp_rating=build_asp_rating(dev)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### build RSAR"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:19:51.890544Z",
+     "start_time": "2020-05-01T02:19:51.879239Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "def groupByAspect(split):\n",
+    "    split_sentence=split[['hotel_url','text','text_filtered_per_sentence']].explode('text_filtered_per_sentence')\n",
+    "    split_aspect=split[['hotel_url','text','aspect_filtered_per_sentence']].explode('aspect_filtered_per_sentence')\n",
+    "    split_sentence.reset_index(drop=True,inplace=True)\n",
+    "    split_aspect.reset_index(drop=True,inplace=True)\n",
+    "    split_exploded=split_aspect.join(split_sentence[['text_filtered_per_sentence']])\n",
+    "    \n",
+    "    grouped=pd.DataFrame(split_exploded.groupby(['hotel_url','aspect_filtered_per_sentence'])['text_filtered_per_sentence'].apply(list))\n",
+    "    grouped.reset_index(inplace=True)\n",
+    "    grouped['text_filtered_per_sentence']=grouped['text_filtered_per_sentence'].apply(lambda data: [data[x:x+5] for x in range(0, len(data), 5)])\n",
+    "    grouped.head()\n",
+    "    \n",
+    "    grouped=grouped.explode('text_filtered_per_sentence').reset_index()\n",
+    "    grouped['text']=grouped['text_filtered_per_sentence'].apply(lambda x:''.join(x))\n",
+    "    grouped=grouped.rename(columns={'hotel_url':'hotel_url_original'})\n",
+    "    grouped['hotel_url']=grouped['hotel_url_original']\n",
+    "    grouped=grouped[['index', 'hotel_url', 'aspect_filtered_per_sentence',\n",
+    "           'text_filtered_per_sentence', 'text','hotel_url_original']]\n",
+    "    \n",
+    "    grouped['hotel_url']='aspect '+grouped['aspect_filtered_per_sentence'].apply(str)+' '+grouped['hotel_url_original']\n",
+    "    return grouped"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:20:13.214070Z",
+     "start_time": "2020-05-01T02:19:52.535459Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>index</th>\n",
+       "      <th>hotel_url</th>\n",
+       "      <th>aspect_filtered_per_sentence</th>\n",
+       "      <th>text_filtered_per_sentence</th>\n",
+       "      <th>text</th>\n",
+       "      <th>hotel_url_original</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>aspect 0 Hotel_Review-g10006284-d1083311-Revie...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>[beware of the food service , the restaurant t...</td>\n",
+       "      <td>beware of the food service , the restaurant th...</td>\n",
+       "      <td>Hotel_Review-g10006284-d1083311-Reviews-The_Re...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>1</td>\n",
+       "      <td>1</td>\n",
+       "      <td>aspect 1 Hotel_Review-g10006284-d1083311-Revie...</td>\n",
+       "      <td>1</td>\n",
+       "      <td>[the service was outstanding , the room was ve...</td>\n",
+       "      <td>the service was outstanding , the room was ver...</td>\n",
+       "      <td>Hotel_Review-g10006284-d1083311-Reviews-The_Re...</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   index                                          hotel_url  \\\n",
+       "0      0  aspect 0 Hotel_Review-g10006284-d1083311-Revie...   \n",
+       "1      1  aspect 1 Hotel_Review-g10006284-d1083311-Revie...   \n",
+       "\n",
+       "   aspect_filtered_per_sentence  \\\n",
+       "0                             0   \n",
+       "1                             1   \n",
+       "\n",
+       "                          text_filtered_per_sentence  \\\n",
+       "0  [beware of the food service , the restaurant t...   \n",
+       "1  [the service was outstanding , the room was ve...   \n",
+       "\n",
+       "                                                text  \\\n",
+       "0  beware of the food service , the restaurant th...   \n",
+       "1  the service was outstanding , the room was ver...   \n",
+       "\n",
+       "                                  hotel_url_original  \n",
+       "0  Hotel_Review-g10006284-d1083311-Reviews-The_Re...  \n",
+       "1  Hotel_Review-g10006284-d1083311-Reviews-The_Re...  "
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\"executed in 14m 6s\"\n",
+    "\n",
+    "test=groupByAspect(test)\n",
+    "# train=groupByAspect(train)\n",
+    "# dev=groupByAspect(dev)\n",
+    "test.head(2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:21:34.935696Z",
+     "start_time": "2020-05-01T02:21:34.163204Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>index</th>\n",
+       "      <th>hotel_url</th>\n",
+       "      <th>aspect_filtered_per_sentence</th>\n",
+       "      <th>text_filtered_per_sentence</th>\n",
+       "      <th>text</th>\n",
+       "      <th>hotel_url_original</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>aspect</th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <td>aspect 0</td>\n",
+       "      <td>82776</td>\n",
+       "      <td>82776</td>\n",
+       "      <td>82776</td>\n",
+       "      <td>82776</td>\n",
+       "      <td>82776</td>\n",
+       "      <td>82776</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 1</td>\n",
+       "      <td>37185</td>\n",
+       "      <td>37185</td>\n",
+       "      <td>37185</td>\n",
+       "      <td>37185</td>\n",
+       "      <td>37185</td>\n",
+       "      <td>37185</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 2</td>\n",
+       "      <td>48639</td>\n",
+       "      <td>48639</td>\n",
+       "      <td>48639</td>\n",
+       "      <td>48639</td>\n",
+       "      <td>48639</td>\n",
+       "      <td>48639</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 3</td>\n",
+       "      <td>183900</td>\n",
+       "      <td>183900</td>\n",
+       "      <td>183900</td>\n",
+       "      <td>183900</td>\n",
+       "      <td>183900</td>\n",
+       "      <td>183900</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <td>aspect 4</td>\n",
+       "      <td>64482</td>\n",
+       "      <td>64482</td>\n",
+       "      <td>64482</td>\n",
+       "      <td>64482</td>\n",
+       "      <td>64482</td>\n",
+       "      <td>64482</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           index  hotel_url  aspect_filtered_per_sentence  \\\n",
+       "aspect                                                      \n",
+       "aspect 0   82776      82776                         82776   \n",
+       "aspect 1   37185      37185                         37185   \n",
+       "aspect 2   48639      48639                         48639   \n",
+       "aspect 3  183900     183900                        183900   \n",
+       "aspect 4   64482      64482                         64482   \n",
+       "\n",
+       "          text_filtered_per_sentence    text  hotel_url_original  \n",
+       "aspect                                                            \n",
+       "aspect 0                       82776   82776               82776  \n",
+       "aspect 1                       37185   37185               37185  \n",
+       "aspect 2                       48639   48639               48639  \n",
+       "aspect 3                      183900  183900              183900  \n",
+       "aspect 4                       64482   64482               64482  "
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test['aspect']=test['hotel_url'].apply(lambda x:x[:8])\n",
+    "test.groupby('aspect').count()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-01T02:22:07.537983Z",
+     "start_time": "2020-05-01T02:22:07.422803Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "index                           416982\n",
+       "hotel_url                       416982\n",
+       "aspect_filtered_per_sentence    416982\n",
+       "text_filtered_per_sentence      416982\n",
+       "text                            416982\n",
+       "hotel_url_original              416982\n",
+       "aspect                          416982\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test.count()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### merge asp rating and RSAR"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-29T15:06:26.488489Z",
+     "start_time": "2020-04-29T15:06:26.164041Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "#merge rating dataframe with RSAR review dataframe\n",
+    "test=pd.merge(test,test_asp_rating,left_on='hotel_url',right_on='hotel_url',how='left')\n",
+    "#train=pd.merge(train,train_asp_rating,left_on='hotel_url',right_on='hotel_url',how='left')\n",
+    "#dev=pd.merge(dev,dev_asp_rating,left_on='hotel_url',right_on='hotel_url',how='left')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-29T15:08:04.020836Z",
+     "start_time": "2020-04-29T15:08:03.981492Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "# drop rows which rating are missing,round float to 1-5 integers\n",
+    "test=test[test['rating']!=-1]\n",
+    "test['rating']=test['rating'].apply(np.round)\n",
+    "\n",
+    "train=train[train['rating']!=-1]\n",
+    "train['rating']=train['rating'].apply(np.round)\n",
+    "\n",
+    "dev=dev[dev['rating']!=-1]\n",
+    "dev['rating']=dev['rating'].apply(np.round)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-27T12:11:26.634699Z",
+     "start_time": "2020-04-27T12:11:26.451719Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test=test[test['hotel_url'].str.startswith('aspect 0')]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-25T13:07:36.127090Z",
+     "start_time": "2020-04-25T13:07:35.932914Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>index</th>\n",
+       "      <th>hotel_url</th>\n",
+       "      <th>aspect_filtered_per_sentence</th>\n",
+       "      <th>text_filtered_per_sentence</th>\n",
+       "      <th>text</th>\n",
+       "      <th>hotel_url_original</th>\n",
+       "      <th>value</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "Empty DataFrame\n",
+       "Columns: [index, hotel_url, aspect_filtered_per_sentence, text_filtered_per_sentence, text, hotel_url_original, value]\n",
+       "Index: []"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# no null value in rating \n",
+    "test_final[test_final['rating'].isna()]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## data visualization"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-02-24T16:37:41.135926Z",
+     "start_time": "2020-02-24T16:37:40.343290Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(38897, 37538, 36681)"
+      ]
+     },
+     "execution_count": 35,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# check the number of business \n",
+    "\n",
+    "def check_business_no(data):\n",
+    "    return len(set(data['hotel_url']))\n",
+    "\n",
+    "check_business_no(train),check_business_no(test),check_business_no(dev)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-02-24T16:41:40.796520Z",
+     "start_time": "2020-02-24T16:41:39.943475Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1540616        9\n",
+       "588528        14\n",
+       "1579838       16\n",
+       "1646008       17\n",
+       "588531        19\n",
+       "           ...  \n",
+       "972406     32683\n",
+       "1118628    35119\n",
+       "509202     40224\n",
+       "509208     58889\n",
+       "509206     63343\n",
+       "Name: text, Length: 1749157, dtype: int64"
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "train['text'].apply(len).sort_values()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "__Distribution of review lenth:__  ⬇️"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-25T12:53:03.798257Z",
+     "start_time": "2020-04-25T12:53:03.794250Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "416982"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-02-24T16:46:21.571717Z",
+     "start_time": "2020-02-24T16:46:20.324901Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "\n",
+    "plt.hist(train['text'].apply(len),bins=100,range=(0,4000));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "__Distribution of number of reviews associated to hotel:__  ⬇️"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-02-24T16:54:51.283001Z",
+     "start_time": "2020-02-24T16:54:46.407729Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "n_review_to_hotel=train.groupby('hotel_url')['text'].apply(list).apply(len)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-02-24T16:56:35.885241Z",
+     "start_time": "2020-02-24T16:56:35.009731Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "plt.hist(n_review_to_hotel,bins=100,range=(0,300));"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## to_json"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-04T02:11:27.077201Z",
+     "start_time": "2020-04-04T02:10:35.504795Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "\"executed in 51.6s\"\n",
+    "tot=pd.concat([dev,test,train])\n",
+    "\n",
+    "\"executed in 1m 1.82s\"\n",
+    "df=tot.sort_values('hotel_url')[['hotel_url','text','rating']]\n",
+    "#df=tot.sort_values('hotel_url')[['hotel_url','rating']]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### build the mean of single aspect rating"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-25T12:44:32.936095Z",
+     "start_time": "2020-04-25T12:44:32.386671Z"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "KeyError",
+     "evalue": "\"Columns not found: 'value', 'rooms', 'service', 'location', 'cleanliness'\"",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mKeyError\u001b[0m                                  Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-11-5f7c09e5be31>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0maspect_rating\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtest\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mreplace\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mnan\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgroupby\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'hotel_url'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"service\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\"cleanliness\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\"value\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\"location\"\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\"rooms\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmean\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/pandas/core/base.py\u001b[0m in \u001b[0;36m__getitem__\u001b[0;34m(self, key)\u001b[0m\n\u001b[1;32m    255\u001b[0m                 \u001b[0mbad_keys\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mlist\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mset\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mdifference\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mobj\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcolumns\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    256\u001b[0m                 raise KeyError(\n\u001b[0;32m--> 257\u001b[0;31m                     \u001b[0;34m\"Columns not found: {missing}\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mformat\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmissing\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mstr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mbad_keys\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    258\u001b[0m                 )\n\u001b[1;32m    259\u001b[0m             \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_gotitem\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mlist\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mndim\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;36m2\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mKeyError\u001b[0m: \"Columns not found: 'value', 'rooms', 'service', 'location', 'cleanliness'\""
+     ]
+    }
+   ],
+   "source": [
+    "aspect_rating=test.replace(-1,np.nan).groupby('hotel_url')[[\"service\",\"cleanliness\",\"value\",\"location\",\"rooms\"]].mean()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-07T16:01:13.354607Z",
+     "start_time": "2020-04-07T16:01:13.352171Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "aspect_rating=aspect_rating.rename(columns={'service':'aspect 0 ','cleanliness':'aspect 1 ',\\\n",
+    "                              'value':'aspect 2 ','location':'aspect 3 ','rooms':'aspect 4 '}).reset_index()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-07T16:01:13.568677Z",
+     "start_time": "2020-04-07T16:01:13.566274Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "aspect_rating=pd.melt(aspect_rating, id_vars='hotel_url', value_vars=['aspect 0 ','aspect 1 ','aspect 2 '\\\n",
+    "                                                          ,'aspect 3 ','aspect 4 ',])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-07T16:01:13.983728Z",
+     "start_time": "2020-04-07T16:01:13.981431Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "aspect_rating['hotel_url_new']=aspect_rating['variable']+aspect_rating['hotel_url']\n",
+    "aspect_rating=aspect_rating[['hotel_url_new','value']].rename(columns={'hotel_url_new':'hotel_url'})\n",
+    "\n",
+    "aspect_rating"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-04T02:12:58.919751Z",
+     "start_time": "2020-04-04T02:12:28.937071Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "\"executed in 30.0\"\n",
+    "df.to_json('../review.json',orient='records')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Mask\n",
+    "Five aspect:\n",
+    "\n",
+    "0.service                         \n",
+    "1.cleanliness                                                \n",
+    "2.value                           \n",
+    "3.location  \n",
+    "4.room\n",
+    "\n",
+    "\n",
+    "\n",
+    " 0-4 in this order\n",
+    "\n",
+    "Service   Cleanliness Value  Location Room "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-03T17:41:09.385120Z",
+     "start_time": "2020-04-03T17:41:09.368345Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import ast"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-03T17:41:09.441416Z",
+     "start_time": "2020-04-03T17:41:09.390884Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[\"unfortunately the accommodation does n't come up to standard !\",\n",
+       " 'the free shuttle from the airport is great , which s the main reason we chose the avra and rafina .',\n",
+       " 'there is really no other competition in rafina as far as hotel accommodation is concerned-',\n",
+       " \"there 's a few places with rooms , and some studios\",\n",
+       " 'the hotel is a bit run down , but is due for a makeover soon , which will make it a fantastic place to stay with its proximity to the port and many good restaurants nearby .',\n",
+       " \"if you do n't mind a few frayed carpets and a knocked about room you wo n't have any complaints .\"]"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test['text_filtered_per_sentence'][1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-03T17:41:09.447189Z",
+     "start_time": "2020-04-03T17:41:09.442812Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "\"Unfortunately the accommodation doesn't come up to standard! The free shuttle from the airport is great, which s the main reason we chose The Avra and Rafina. There is really no other competition in Rafina as far as hotel accommodation is concerned- there's a few places with rooms, and some studios but that's about it. The hotel is a bit run down, but is due for a makeover soon, which will make it a fantastic place to stay with its proximity to the port and many good restaurants nearby. If you don't mind a few frayed carpets and a knocked about room you won't have any complaints.\""
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test['text'][1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-03T17:41:09.791124Z",
+     "start_time": "2020-04-03T17:41:09.482125Z"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "ValueError",
+     "evalue": "malformed node or string: ['clean , cheap if you book 10 days in advance and comfortable .', 'only a 15 minute walk to the top of the town with many choices for breakfast and evening meals .', 'a very good base for exploring he local area , with ross on wye , hay on wye and brecon a short drive away .']",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-9-6d373c1e7856>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mtest\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'text_filtered_per_sentence'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mapply\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mast\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mliteral_eval\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mapply\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mlen\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/pandas/core/series.py\u001b[0m in \u001b[0;36mapply\u001b[0;34m(self, func, convert_dtype, args, **kwds)\u001b[0m\n\u001b[1;32m   4040\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   4041\u001b[0m                 \u001b[0mvalues\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mastype\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mobject\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mvalues\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 4042\u001b[0;31m                 \u001b[0mmapped\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mlib\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmap_infer\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mvalues\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mconvert\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mconvert_dtype\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   4043\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   4044\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mlen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmapped\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmapped\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m0\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mSeries\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/lib.pyx\u001b[0m in \u001b[0;36mpandas._libs.lib.map_infer\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/ast.py\u001b[0m in \u001b[0;36mliteral_eval\u001b[0;34m(node_or_string)\u001b[0m\n\u001b[1;32m     89\u001b[0m                     \u001b[0;32mreturn\u001b[0m \u001b[0mleft\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0mright\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     90\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0m_convert_signed_num\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 91\u001b[0;31m     \u001b[0;32mreturn\u001b[0m \u001b[0m_convert\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode_or_string\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     92\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     93\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/ast.py\u001b[0m in \u001b[0;36m_convert\u001b[0;34m(node)\u001b[0m\n\u001b[1;32m     88\u001b[0m                 \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     89\u001b[0m                     \u001b[0;32mreturn\u001b[0m \u001b[0mleft\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0mright\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 90\u001b[0;31m         \u001b[0;32mreturn\u001b[0m \u001b[0m_convert_signed_num\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     91\u001b[0m     \u001b[0;32mreturn\u001b[0m \u001b[0m_convert\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode_or_string\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     92\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/ast.py\u001b[0m in \u001b[0;36m_convert_signed_num\u001b[0;34m(node)\u001b[0m\n\u001b[1;32m     61\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     62\u001b[0m                 \u001b[0;32mreturn\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0moperand\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 63\u001b[0;31m         \u001b[0;32mreturn\u001b[0m \u001b[0m_convert_num\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     64\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0m_convert\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     65\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mConstant\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/ast.py\u001b[0m in \u001b[0;36m_convert_num\u001b[0;34m(node)\u001b[0m\n\u001b[1;32m     53\u001b[0m         \u001b[0;32melif\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mNum\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     54\u001b[0m             \u001b[0;32mreturn\u001b[0m \u001b[0mnode\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mn\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 55\u001b[0;31m         \u001b[0;32mraise\u001b[0m \u001b[0mValueError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'malformed node or string: '\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0mrepr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     56\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0m_convert_signed_num\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     57\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mUnaryOp\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0misinstance\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mnode\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mop\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m(\u001b[0m\u001b[0mUAdd\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mUSub\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mValueError\u001b[0m: malformed node or string: ['clean , cheap if you book 10 days in advance and comfortable .', 'only a 15 minute walk to the top of the town with many choices for breakfast and evening meals .', 'a very good base for exploring he local area , with ross on wye , hay on wye and brecon a short drive away .']"
+     ]
+    }
+   ],
+   "source": [
+    "test['text_filtered_per_sentence'].apply(ast.literal_eval).apply(len)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "start_time": "2020-03-31T00:27:11.924Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test['text_filtered_per_sentence'][3]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "start_time": "2020-03-31T00:27:12.081Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test['text'][3]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "start_time": "2020-03-31T00:27:12.337Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test['aspect_filtered_per_sentence']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "start_time": "2020-03-31T00:27:12.509Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test['text_filtered_per_relation'][0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "start_time": "2020-03-31T00:27:14.257Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test['text'][1]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "start_time": "2020-03-31T00:27:14.421Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test['aspect_filtered_per_relation']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-10T11:14:06.256963Z",
+     "start_time": "2020-03-10T11:14:06.251282Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0         ['15 minute walk  -(to)-> top', 'many choices ...\n",
+       "1         ['free shuttle  -(from)-> airport', 'great  -(...\n",
+       "2         ['lovely  -(amod)-> place', 'lovely  -(acomp-n...\n",
+       "3         ['very comfortable  -(acomp-nsubj)-> room', 'l...\n",
+       "4         ['good  -(amod)-> rate', 'clean  -(acomp-nsubj...\n",
+       "                                ...                        \n",
+       "257181    ['excellent  -(acomp-nsubj)-> breakfast', 'exc...\n",
+       "257182    ['excellent  -(amod)-> hotel', 'great  -(amod)...\n",
+       "257183    ['great  -(amod)-> place', 'next stay  -(in)->...\n",
+       "257184    ['nice  -(amod)-> lobby', 'nice  -(amod)-> sta...\n",
+       "257185    ['great  -(amod)-> place', 'large  -(amod)-> c...\n",
+       "Name: rel_filtered_per_relation, Length: 257186, dtype: object"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test['rel_filtered_per_relation']"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "heading_collapsed": true
+   },
+   "source": [
+    "### get rid of empy reviews"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-14T14:47:38.029712Z",
+     "start_time": "2020-03-14T14:47:37.946976Z"
+    },
+    "hidden": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0          9\n",
+       "1         18\n",
+       "2         18\n",
+       "3         21\n",
+       "4         15\n",
+       "          ..\n",
+       "257181    12\n",
+       "257182     9\n",
+       "257183    12\n",
+       "257184    15\n",
+       "257185    12\n",
+       "Name: aspect_filtered_per_sentence, Length: 257186, dtype: int64"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "test['aspect_filtered_per_sentence'].apply(len)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-14T14:48:33.309746Z",
+     "start_time": "2020-03-14T14:48:33.212432Z"
+    },
+    "hidden": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Series([], Name: text, dtype: object)"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\"\"\"There is no review with 0 mask\"\"\"\n",
+    "test['text'][test['aspect_filtered_per_sentence'].apply(len)<=1]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### To remove overlap in masks "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-14T14:50:52.023588Z",
+     "start_time": "2020-03-14T14:50:45.709794Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "#original aspect\n",
+    "original_aspect=test['text_filtered_per_sentence'].apply(ast.literal_eval).apply(set).apply(len)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-14T14:50:59.580487Z",
+     "start_time": "2020-03-14T14:50:53.896145Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "#original aspect\n",
+    "original_aspect2=test['text_filtered_per_sentence'].apply(ast.literal_eval).apply(len)\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-14T14:50:59.622361Z",
+     "start_time": "2020-03-14T14:50:59.583508Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "62"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "sum(original_aspect2!=original_aspect)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-14T14:51:36.665968Z",
+     "start_time": "2020-03-14T14:51:36.660319Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'[\\'this is a really nice hotel with great views of the arch .\\', \\'the guy who brought our luggage to the room was so nice , and helpful .\\', \"our room was kind of small , but served it \\'s purpose for the 2 night stay , and we had a wonderful view of the arch .\", \\'the bed was comfortable , the linens were clean , and the we had plenty of clean towels .\\', \\'hyatt st louis\\', \\'this is a really nice hotel with great views of the arch .\\', \\'the guy who brought our luggage to the room was so nice , and helpful .\\', \"our room was kind of small , but served it \\'s purpose for the 2 night stay , and we had a wonderful view of the arch .\", \\'the bed was comfortable , the linens were clean , and the we had plenty of clean towels .\\', \\'the shower had mold in the corners , and the tile grout needed cleaning .\\', \\'the bathroom vent also needs to be cleaned .\\']'"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "'''Example of one overlapped mask'''\n",
+    "test['text_filtered_per_sentence'][original_aspect2!=original_aspect].iloc[0]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<span style=\"color: red;\">'[\\'this is a really nice hotel with great views of the arch .\\', \\'the guy who brought our luggage to the room was so nice , and helpful .\\', \"our room was kind of small , but served it \\'s purpose for the 2 night stay , and we had a wonderful view of the arch .\", \\'the bed was comfortable , the linens were clean , and the we had plenty of clean towels .\\',</span>. \\'hyatt st louis\\', <span style=\"color:blue\">\\'this is a really nice hotel with great views of the arch .\\', \\'the guy who brought our luggage to the room was so nice , and helpful .\\', \"our room was kind of small , but served it \\'s purpose for the 2 night stay , and we had a wonderful view of the arch .\", \\'the bed was comfortable , the linens were clean , and the we had plenty of clean towels .\\',</span> \\'the shower had mold in the corners , and the tile grout needed cleaning .\\', \\'the bathroom vent also needs to be cleaned .\\']'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-07T20:06:32.632957Z",
+     "start_time": "2020-03-07T20:06:32.618027Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "'''62 overlapped mask''';"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Relation between original aspect and filtered aspect "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-07T16:18:13.318575Z",
+     "start_time": "2020-03-07T16:18:09.353119Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "#original aspect\n",
+    "original_aspect=test['aspect_filtered_per_sentence'].apply(ast.literal_eval).apply(set)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-07T16:17:22.039387Z",
+     "start_time": "2020-03-07T16:17:17.415020Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "#filtered aspect\n",
+    "filtered_aspect=test['aspect_filtered_per_relation'].apply(ast.literal_eval).apply(set)\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-07T16:20:42.499083Z",
+     "start_time": "2020-03-07T16:20:42.450156Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Percentage of equal coverage of aspects=0.34886813434634856\n"
+     ]
+    }
+   ],
+   "source": [
+    "equal_proportion=sum(filtered_aspect==original_aspect)/len(filtered_aspect )\n",
+    "print('Percentage of equal coverage of aspects={}'.format(equal_proportion))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-07T16:21:32.850022Z",
+     "start_time": "2020-03-07T16:21:32.709266Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "filtered cover more than original aspects=0.31661132410006765\n"
+     ]
+    }
+   ],
+   "source": [
+    "equal_proportion=sum(filtered_aspect.apply(len)>original_aspect.apply(len))/len(filtered_aspect )\n",
+    "print('filtered cover more than original aspects={}'.format(equal_proportion))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-07T16:21:54.551289Z",
+     "start_time": "2020-03-07T16:21:54.410334Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Original cover more than filtered aspects=0.23458508627996857\n"
+     ]
+    }
+   ],
+   "source": [
+    "equal_proportion=sum(filtered_aspect.apply(len)<original_aspect.apply(len))/len(filtered_aspect )\n",
+    "print('Original cover more than filtered aspects={}'.format(equal_proportion))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### to_json(filtered by relation)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-03-07T19:56:26.712755Z",
+     "start_time": "2020-03-07T19:56:15.574319Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "test_filtered=test.copy()\n",
+    "test_filtered['text_filtered_per_sentence']=test_filtered['text_filtered_per_sentence'].apply(ast.literal_eval).\\\n",
+    "apply(lambda x:\"\\\\\".join(x) )\n",
+    "\n",
+    "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tot=pd.concat([dev,test,train])\n",
+    "df=tot.sort_values('hotel_url')[['hotel_url','text_filtered_per_relation_grouped','rating']]\n",
+    "df.to_json('../review_filtered.json',orient='records')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## subword encoder"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-20T05:41:02.894754Z",
+     "start_time": "2020-04-20T05:41:02.890733Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "df=test"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-20T05:41:08.302830Z",
+     "start_time": "2020-04-20T05:41:04.836754Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import tensorflow.compat.v2 as tf\n",
+    "import tensorflow_datasets as tfds"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-04-20T05:45:13.223893Z",
+     "start_time": "2020-04-20T05:41:15.738651Z"
+    }
+   },
+   "outputs": [
+    {
+     "ename": "KeyboardInterrupt",
+     "evalue": "",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-5-feb8f44697f3>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;31m# Build\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      2\u001b[0m encoder = tfds.features.text.SubwordTextEncoder.build_from_corpus(\n\u001b[0;32m----> 3\u001b[0;31m     df['text'].to_list(), target_vocab_size=32000)\n\u001b[0m",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36mbuild_from_corpus\u001b[0;34m(cls, corpus_generator, target_vocab_size, max_subword_length, max_corpus_chars, reserved_tokens)\u001b[0m\n\u001b[1;32m    334\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    335\u001b[0m     \u001b[0;31m# Another option could be to do a binary search over *ranks* of the tokens.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 336\u001b[0;31m     \u001b[0;32mreturn\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    337\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    338\u001b[0m   \u001b[0;34m@\u001b[0m\u001b[0mclassmethod\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    320\u001b[0m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcandidate_min\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmax_token_count\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    321\u001b[0m       \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 322\u001b[0;31m         \u001b[0mnext_encoder\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0m_binary_search\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmin_token_count\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcandidate_min\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    323\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    324\u001b[0m       \u001b[0;31m# Return the one that's closest to the target_vocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_binary_search\u001b[0;34m(min_token_count, max_token_count)\u001b[0m\n\u001b[1;32m    305\u001b[0m           \u001b[0mreserved_tokens\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mreserved_tokens\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    306\u001b[0m           \u001b[0mnum_iterations\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;36m4\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 307\u001b[0;31m           max_subword_length=max_subword_length)\n\u001b[0m\u001b[1;32m    308\u001b[0m       \u001b[0mvocab_size\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mencoder\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mvocab_size\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    309\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m/opt/anaconda3/lib/python3.7/site-packages/tensorflow_datasets/core/features/text/subword_text_encoder.py\u001b[0m in \u001b[0;36m_build_from_token_counts\u001b[0;34m(cls, token_counts, min_token_count, reserved_tokens, num_iterations, max_subword_length)\u001b[0m\n\u001b[1;32m    357\u001b[0m       \u001b[0;31m# Group subword candidates by length and filter bad candidates\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    358\u001b[0m       \u001b[0mlen_to_subwords\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0mset\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mfor\u001b[0m \u001b[0m_\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mrange\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmax_subword_length\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 359\u001b[0;31m       \u001b[0;32mfor\u001b[0m \u001b[0msubword\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcount\u001b[0m \u001b[0;32min\u001b[0m \u001b[0msix\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0miteritems\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0msubword_counts\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    360\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mcount\u001b[0m \u001b[0;34m<\u001b[0m \u001b[0mmin_token_count\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    361\u001b[0m           \u001b[0;32mcontinue\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;31mKeyboardInterrupt\u001b[0m: "
+     ]
+    }
+   ],
+   "source": [
+    "# Build\n",
+    "encoder = tfds.features.text.SubwordTextEncoder.build_from_corpus(\n",
+    "    df['text'].to_list(), target_vocab_size=32000)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 10,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-02-26T08:24:29.817272Z",
+     "start_time": "2020-02-26T08:24:29.752727Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import pickle\n",
+    "with open('../processed/subwordenc_32000_secondpass.pkl', 'wb') as file:\n",
+    "    pickle.dump(encoder, file, protocol=pickle.HIGHEST_PROTOCOL)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-02-26T08:24:29.869464Z",
+     "start_time": "2020-02-26T08:24:29.824959Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[22022, 19355, 7888, 31880, 10213, 7054, 31880, 17395, 6183, 6904, 19355]"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "encoder.encode('hhhhhdsfhladfhklsahhh')"
+   ]
+  },
+  {
+   "cell_type": "code",
+=======
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.4"
+  },
+  "latex_envs": {
+   "LaTeX_envs_menu_present": true,
+   "autoclose": false,
+   "autocomplete": true,
+   "bibliofile": "biblio.bib",
+   "cite_by": "apalike",
+   "current_citInitial": 1,
+   "eqLabelWithNumbers": true,
+   "eqNumInitial": 1,
+   "hotkeys": {
+    "equation": "Ctrl-E",
+    "itemize": "Ctrl-I"
+   },
+   "labels_anchors": false,
+   "latex_user_defs": false,
+   "report_style_numbering": false,
+   "user_envs_cfg": false
+  },
+  "notify_time": "10"
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

@@ -1,0 +1,832 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 40,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T13:10:37.828543Z",
+     "start_time": "2020-05-21T13:10:37.788100Z"
+=======
+   "execution_count": 1,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-06-02T03:51:47.028516Z",
+     "start_time": "2020-06-02T03:51:45.944148Z"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+    }
+   },
+   "outputs": [],
+   "source": [
+<<<<<<< HEAD
+    "# importing the module \n",
+    "import json \n",
+    "  \n",
+    "# Opening JSON file \n",
+    "with open('./hotel_review-g28970-d84029-reviews-the_georgetown_inn-washington_dc_district_of_columbia.json') as json_file: \n",
+    "    data = json.load(json_file) "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T13:10:37.932026Z",
+     "start_time": "2020-05-21T13:10:37.918363Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Excellent city hotel. Close to Harbour. Great location.'"
+      ]
+     },
+     "execution_count": 41,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "data['summary']['text']"
+=======
+    "import os \n",
+    "import json\n",
+    "import pandas as pd\n",
+    "\n",
+    "#load original review data\n",
+    "path_to_json='./map+unmap/'\n",
+    "json_fns=[json_fn for json_fn in os.listdir(path_to_json) if json_fn.endswith('.json')] \n",
+    "#build dataframe structure\n",
+    "json_df=pd.DataFrame(columns=['hotel_url','short_summary',\"long_summary\"])\n",
+    "# per aspect remains to be done soon"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   ]
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 42,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T13:10:38.474840Z",
+     "start_time": "2020-05-21T13:10:38.463045Z"
+=======
+   "execution_count": 2,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-06-02T03:51:49.898578Z",
+     "start_time": "2020-06-02T03:51:49.881755Z"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+<<<<<<< HEAD
+      "text/plain": [
+       "'Good location, close to public transport. Great sightseeing, restaurants and shopping nearby. Average parking. Standard parking prices.Restaurant service is friendly and professional. Reception and housekeeping are average, but management is not great. Valet service is ok. Room service is average.Clean, spacious rooms, comfortable beds, and good views. Small but relatively clean bathrooms. Badly maintained rooms with subpar minibars and TVs. Shower was ok. Relatively new rooms.Breakfast is decent but expensive.Okay buildings and entrance area. Unspectacular architecture.Poorly reviewed fitness area.Wifi quality could be improved.'"
+      ]
+     },
+     "execution_count": 42,
+=======
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>hotel_url</th>\n",
+       "      <th>short_summary</th>\n",
+       "      <th>long_summary</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "Empty DataFrame\n",
+       "Columns: [hotel_url, short_summary, long_summary]\n",
+       "Index: []"
+      ]
+     },
+     "execution_count": 2,
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+<<<<<<< HEAD
+    "''.join([' '.join([xx['text'] for xx in x['summary_sentences']]) for x in data['category']])\n"
+=======
+    "json_df"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   ]
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 46,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T13:11:05.460395Z",
+     "start_time": "2020-05-21T13:11:05.453871Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "7"
+      ]
+     },
+     "execution_count": 46,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(data['category'])"
+=======
+   "execution_count": null,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-06-02T03:53:42.208373Z",
+     "start_time": "2020-06-02T03:51:55.934030Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "#executed in 14ms\n",
+    "for i,json_fn in enumerate(json_fns):\n",
+    "    with open(os.path.join(path_to_json,json_fn)) as json_file:\n",
+    "        json_dict=json.load(json_file)\n",
+    "        hotel_url=json_fn\n",
+    "        short_summary=json_dict[\"summary\"][\"text\"]\n",
+    "        long_summary=''.join([' '.join([xx['text'] for xx in x['summary_sentences']]) for x in json_dict['category']])\n",
+    "        json_df.loc[i]=[hotel_url,short_summary,long_summary]"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   ]
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 65,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T13:27:30.300162Z",
+     "start_time": "2020-05-21T13:27:30.294939Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[{'sentiment': 'pos',\n",
+       "  'text': 'Good location, close to public transport.',\n",
+       "  'category_id_list': ['14i', '14']},\n",
+       " {'sentiment': 'pos',\n",
+       "  'text': 'Great sightseeing, restaurants and shopping nearby.',\n",
+       "  'category_id_list': ['14d', '14c', '14e']},\n",
+       " {'sentiment': 'neu', 'text': 'Average parking.', 'category_id_list': ['14g']},\n",
+       " {'sentiment': 'neu',\n",
+       "  'text': 'Standard parking prices.',\n",
+       "  'category_id_list': ['b63a']}]"
+      ]
+     },
+     "execution_count": 65,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "data['category'][0]['summary_sentences']"
+=======
+   "execution_count": 4,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-06-02T03:54:20.142252Z",
+     "start_time": "2020-06-02T03:54:20.095954Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "for i,json_fn in enumerate(json_fns):\n",
+    "    if i<=3:\n",
+    "        with open(os.path.join(path_to_json,json_fn)) as json_file:\n",
+    "            json_dict=json.load(json_file)\n",
+    "            hotel_url=json_fn\n",
+    "            short_summary=json_dict[\"summary\"][\"text\"]\n",
+    "            long_summary=''.join([' '.join([xx['text'] for xx in x['summary_sentences']]) for x in json_dict['category']])\n",
+    "            json_df.loc[i]=[hotel_url,short_summary,long_summary]"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   ]
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 68,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T13:27:58.089837Z",
+     "start_time": "2020-05-21T13:27:58.082560Z"
+=======
+   "execution_count": 6,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-06-02T03:54:38.113518Z",
+     "start_time": "2020-06-02T03:54:38.094334Z"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+<<<<<<< HEAD
+       "dict_keys(['category_name', 'short_text', 'text', 'sentiment', 'count', 'score', 'category_id', 'relevance', 'summary_sentences', 'highlights', 'sub_category_list'])"
+      ]
+     },
+     "execution_count": 68,
+=======
+       "{'reviews_count': 111,\n",
+       " 'summary': {'score': '77',\n",
+       "  'reviews_distribution': [{'reviews_count': 19, 'stars': 1},\n",
+       "   {'reviews_count': 12, 'stars': 2},\n",
+       "   {'reviews_count': 14, 'stars': 3},\n",
+       "   {'reviews_count': 19, 'stars': 4},\n",
+       "   {'reviews_count': 49, 'stars': 5}],\n",
+       "  'text': 'Good Hotel. Great location.',\n",
+       "  'popularity': None},\n",
+       " 'badges': [],\n",
+       " 'category': [{'category_name': 'Breakfast',\n",
+       "   'short_text': 'Tasty breakfast',\n",
+       "   'text': 'Excellent breakfast.',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 6,\n",
+       "   'score': 100,\n",
+       "   'category_id': '131',\n",
+       "   'relevance': 1.1548137521081894,\n",
+       "   'summary_sentences': [{'sentiment': 'pos',\n",
+       "     'text': 'Tasty breakfast.',\n",
+       "     'category_id_list': ['131']}],\n",
+       "   'highlights': [{'text': 'Wonderful breakfast',\n",
+       "     'category_id_list': ['131'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Great breakfast',\n",
+       "     'category_id_list': ['131'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Good breakfast',\n",
+       "     'category_id_list': ['131'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': []},\n",
+       "  {'category_name': 'Value',\n",
+       "   'short_text': 'Best value for money',\n",
+       "   'text': 'Excellent value.',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 12,\n",
+       "   'score': 100,\n",
+       "   'category_id': '22a',\n",
+       "   'relevance': 1.0831702786519486,\n",
+       "   'summary_sentences': [{'sentiment': 'pos',\n",
+       "     'text': 'Best value for money.',\n",
+       "     'category_id_list': ['22a']}],\n",
+       "   'highlights': [{'text': 'Reasonable prices',\n",
+       "     'category_id_list': ['22a'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Free coffee', 'category_id_list': ['22a'], 'confidence': 100.0},\n",
+       "    {'text': 'Great price', 'category_id_list': ['22a'], 'confidence': 100.0}],\n",
+       "   'sub_category_list': []},\n",
+       "  {'category_name': 'Food',\n",
+       "   'short_text': 'Delicious food',\n",
+       "   'text': 'Food is delicious.',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 21,\n",
+       "   'score': 87,\n",
+       "   'category_id': '13',\n",
+       "   'relevance': 1.430708279991673,\n",
+       "   'summary_sentences': [{'sentiment': 'pos',\n",
+       "     'text': 'Delicious food.',\n",
+       "     'category_id_list': ['13']}],\n",
+       "   'highlights': [{'text': 'Quick lunch',\n",
+       "     'category_id_list': ['13b', '13', 'ef97'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Amazing flavor',\n",
+       "     'category_id_list': ['13b', '13'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Nice citrus',\n",
+       "     'category_id_list': ['13', '13n'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': []},\n",
+       "  {'category_name': 'Service',\n",
+       "   'short_text': 'Fantastic service',\n",
+       "   'text': 'Great service.',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 31,\n",
+       "   'score': 81,\n",
+       "   'category_id': '15',\n",
+       "   'relevance': 1.0,\n",
+       "   'summary_sentences': [{'sentiment': 'pos',\n",
+       "     'text': 'Friendly service, and excellent management.',\n",
+       "     'category_id_list': ['15', 'ddbc', '15g']}],\n",
+       "   'highlights': [{'text': 'Staff friendly',\n",
+       "     'category_id_list': ['ddbc', '15'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Owners were quick',\n",
+       "     'category_id_list': ['15', '15g'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Owner took care of it',\n",
+       "     'category_id_list': ['f8d2', '15', '15g'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': [{'category_name': 'Management',\n",
+       "     'short_text': 'Good management',\n",
+       "     'text': '<pos>Management was excellent</pos>, said <strong>100%</strong>.',\n",
+       "     'sentiment': 'pos',\n",
+       "     'count': 14,\n",
+       "     'score': 100,\n",
+       "     'category_id': '15g',\n",
+       "     'relevance': 2.483016002956888,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': 'Owners were quick',\n",
+       "       'category_id_list': ['15', '15g'],\n",
+       "       'confidence': 100.0},\n",
+       "      {'text': 'Owner took care of it',\n",
+       "       'category_id_list': ['f8d2', '15', '15g'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None},\n",
+       "    {'category_name': 'Service Friendliness',\n",
+       "     'short_text': 'Friendly service',\n",
+       "     'text': '<strong>92%</strong> found the <pos>staff to be very friendly</pos>.',\n",
+       "     'sentiment': 'pos',\n",
+       "     'count': 13,\n",
+       "     'score': 92,\n",
+       "     'category_id': 'ddbc',\n",
+       "     'relevance': 1.0,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': 'Staff friendly',\n",
+       "       'category_id_list': ['ddbc', '15'],\n",
+       "       'confidence': 100.0},\n",
+       "      {'text': 'Friendly staff',\n",
+       "       'category_id_list': ['ddbc', '15'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None}]},\n",
+       "  {'category_name': 'Cleanliness',\n",
+       "   'short_text': 'Clean',\n",
+       "   'text': 'Good cleanliness.',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 22,\n",
+       "   'score': 77,\n",
+       "   'category_id': '333',\n",
+       "   'relevance': 1.0944271778032897,\n",
+       "   'summary_sentences': [{'sentiment': 'pos',\n",
+       "     'text': 'Clean rooms.',\n",
+       "     'category_id_list': ['f63a', '333']}],\n",
+       "   'highlights': [{'text': 'Clean rooms',\n",
+       "     'category_id_list': ['f63a', '11', '333'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Clean room',\n",
+       "     'category_id_list': ['11', 'f63a', '333'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': [{'category_name': 'Room Cleanliness',\n",
+       "     'short_text': 'Clean rooms',\n",
+       "     'text': '<strong>76%</strong> said <pos>rooms were clean</pos>.',\n",
+       "     'sentiment': 'pos',\n",
+       "     'count': 16,\n",
+       "     'score': 76,\n",
+       "     'category_id': 'f63a',\n",
+       "     'relevance': 1.5244887096437878,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': 'Clean rooms',\n",
+       "       'category_id_list': ['f63a', '11', '333'],\n",
+       "       'confidence': 100.0},\n",
+       "      {'text': 'Clean room',\n",
+       "       'category_id_list': ['11', 'f63a', '333'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None}]},\n",
+       "  {'category_name': 'Room',\n",
+       "   'short_text': 'Great room',\n",
+       "   'text': 'Nice rooms.',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 32,\n",
+       "   'score': 75,\n",
+       "   'category_id': '11',\n",
+       "   'relevance': 1.0,\n",
+       "   'summary_sentences': [{'sentiment': 'pos',\n",
+       "     'text': 'Rooms are spotless with comfy beds.',\n",
+       "     'category_id_list': ['11', '11b', 'f63a']},\n",
+       "    {'sentiment': 'mixed',\n",
+       "     'text': 'Poor bathrooms and substandard room maintenance.',\n",
+       "     'category_id_list': ['e51a', '11a']}],\n",
+       "   'highlights': [{'text': 'New blankets',\n",
+       "     'category_id_list': ['11', 'ae0f', 'vmod', '11b', '111', '171'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': \"Good night's sleep\",\n",
+       "     'category_id_list': ['11'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Clean rooms',\n",
+       "     'category_id_list': ['f63a', '11', '333'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': [{'category_name': 'Room Cleanliness',\n",
+       "     'short_text': 'Clean rooms',\n",
+       "     'text': '<strong>76%</strong> said <pos>rooms were clean</pos>.',\n",
+       "     'sentiment': 'pos',\n",
+       "     'count': 16,\n",
+       "     'score': 76,\n",
+       "     'category_id': 'f63a',\n",
+       "     'relevance': 1.5244887096437878,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': 'Clean rooms',\n",
+       "       'category_id_list': ['f63a', '11', '333'],\n",
+       "       'confidence': 100.0},\n",
+       "      {'text': 'Clean room',\n",
+       "       'category_id_list': ['11', 'f63a', '333'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None},\n",
+       "    {'category_name': 'Beds',\n",
+       "     'short_text': 'Comfortable beds',\n",
+       "     'text': '<strong>83%</strong> said the <pos>beds were comfortable</pos>.',\n",
+       "     'sentiment': 'pos',\n",
+       "     'count': 10,\n",
+       "     'score': 83,\n",
+       "     'category_id': '11b',\n",
+       "     'relevance': 1.0,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': 'New blankets',\n",
+       "       'category_id_list': ['11', 'ae0f', 'vmod', '11b', '111', '171'],\n",
+       "       'confidence': 100.0},\n",
+       "      {'text': 'Bed was full of',\n",
+       "       'category_id_list': ['11', '111', '11b'],\n",
+       "       'confidence': 100.0},\n",
+       "      {'text': 'Comfortable beds',\n",
+       "       'category_id_list': ['11', '111', '11b'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None},\n",
+       "    {'category_name': 'Bathroom',\n",
+       "     'short_text': 'Bathroom is ok',\n",
+       "     'text': 'For only <strong>50%</strong>, the <neu>bathroom was ok</neu>.',\n",
+       "     'sentiment': 'neu',\n",
+       "     'count': 6,\n",
+       "     'score': 50,\n",
+       "     'category_id': '11a',\n",
+       "     'relevance': 1.0,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': 'Shower was hot',\n",
+       "       'category_id_list': ['11', '11m', '11a'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None},\n",
+       "    {'category_name': 'Room Maintenance',\n",
+       "     'short_text': 'Rooms need regular maintenance',\n",
+       "     'text': '<strong>83%</strong> thought they were <neg>poorly maintained</neg>.',\n",
+       "     'sentiment': 'neg',\n",
+       "     'count': 6,\n",
+       "     'score': 17,\n",
+       "     'category_id': 'e51a',\n",
+       "     'relevance': 1.0,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': \"Tv remote didn't work\",\n",
+       "       'category_id_list': ['11', 'e51a', '11h'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None}]},\n",
+       "  {'category_name': 'Location',\n",
+       "   'short_text': 'Great location',\n",
+       "   'text': 'Good location.',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 13,\n",
+       "   'score': 70,\n",
+       "   'category_id': '14',\n",
+       "   'relevance': 1.1255313833472171,\n",
+       "   'summary_sentences': [{'sentiment': 'pos',\n",
+       "     'text': 'Excellent location close to the beach.',\n",
+       "     'category_id_list': ['8d11', '14']}],\n",
+       "   'highlights': [{'text': 'Lots of food places',\n",
+       "     'category_id_list': ['14'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Station next door',\n",
+       "     'category_id_list': ['14j', '14'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Beach close by',\n",
+       "     'category_id_list': ['8d11', '12', '14'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': [{'category_name': 'Distance to Beach',\n",
+       "     'short_text': 'Beach nearby',\n",
+       "     'text': '<strong>100%</strong> <pos>appreciated the closeness to the beach</pos>.',\n",
+       "     'sentiment': 'pos',\n",
+       "     'count': 5,\n",
+       "     'score': 100,\n",
+       "     'category_id': '8d11',\n",
+       "     'relevance': 1.0,\n",
+       "     'summary_sentences': None,\n",
+       "     'highlights': [{'text': 'Beach close by',\n",
+       "       'category_id_list': ['8d11', '12', '14'],\n",
+       "       'confidence': 100.0}],\n",
+       "     'sub_category_list': None}]}],\n",
+       " 'good_to_know': [{'category_name': 'Management',\n",
+       "   'short_text': 'Good management',\n",
+       "   'text': 'Good management',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 14,\n",
+       "   'score': 100,\n",
+       "   'category_id': '15g',\n",
+       "   'relevance': 2.483016002956888,\n",
+       "   'summary_sentences': None,\n",
+       "   'highlights': [{'text': 'Owners were quick',\n",
+       "     'category_id_list': ['15', '15g'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Owner took care of it',\n",
+       "     'category_id_list': ['f8d2', '15', '15g'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': None},\n",
+       "  {'category_name': 'Room Cleanliness',\n",
+       "   'short_text': 'Clean rooms',\n",
+       "   'text': 'Clean rooms',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 16,\n",
+       "   'score': 76,\n",
+       "   'category_id': 'f63a',\n",
+       "   'relevance': 1.5244887096437878,\n",
+       "   'summary_sentences': None,\n",
+       "   'highlights': [{'text': 'Clean rooms',\n",
+       "     'category_id_list': ['f63a', '11', '333'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Clean room',\n",
+       "     'category_id_list': ['11', 'f63a', '333'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': None},\n",
+       "  {'category_name': 'Modern Vibe',\n",
+       "   'short_text': 'Hotel could use some updating',\n",
+       "   'text': 'Hotel could use some updating',\n",
+       "   'sentiment': 'neg',\n",
+       "   'count': 5,\n",
+       "   'score': 25,\n",
+       "   'category_id': 'vmod',\n",
+       "   'relevance': 1.3556880514016005,\n",
+       "   'summary_sentences': None,\n",
+       "   'highlights': [],\n",
+       "   'sub_category_list': None},\n",
+       "  {'category_name': 'Service Friendliness',\n",
+       "   'short_text': 'Friendly service',\n",
+       "   'text': 'Friendly service',\n",
+       "   'sentiment': 'pos',\n",
+       "   'count': 13,\n",
+       "   'score': 92,\n",
+       "   'category_id': 'ddbc',\n",
+       "   'relevance': 1.0,\n",
+       "   'summary_sentences': None,\n",
+       "   'highlights': [{'text': 'Staff friendly',\n",
+       "     'category_id_list': ['ddbc', '15'],\n",
+       "     'confidence': 100.0},\n",
+       "    {'text': 'Friendly staff',\n",
+       "     'category_id_list': ['ddbc', '15'],\n",
+       "     'confidence': 100.0}],\n",
+       "   'sub_category_list': None}],\n",
+       " 'hotel_type': []}"
+      ]
+     },
+     "execution_count": 6,
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+<<<<<<< HEAD
+    "data['category'][0].keys()"
+=======
+    "json_dict"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   ]
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T12:18:30.777915Z",
+     "start_time": "2020-05-21T12:18:30.761392Z"
+=======
+   "execution_count": 11,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-24T14:52:52.606022Z",
+     "start_time": "2020-05-24T14:52:52.571067Z"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+    }
+   },
+   "outputs": [],
+   "source": [
+<<<<<<< HEAD
+    "##############################"
+=======
+    "import time\n"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   ]
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 2,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T10:06:46.660637Z",
+     "start_time": "2020-05-21T10:06:46.652022Z"
+=======
+   "execution_count": 13,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-24T14:53:15.060665Z",
+     "start_time": "2020-05-24T14:53:10.050909Z"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+    }
+   },
+   "outputs": [],
+   "source": [
+<<<<<<< HEAD
+    "#import hotel data\n",
+    "import pandas as pd\n",
+    "unmapped_metadata=pd.read_csv('./unmapped_metadata.csv',index_col=0)\n",
+    "mapped_metadata=pd.read_csv('./mapped_metadata.csv',index_col=0)\n",
+    "hotel_metadata=pd.read_csv('./hotel_metadata.csv',index_col=0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "################################## to know if hotels in mapped/unmapped also in hotel dataset###############"
+=======
+    "time.sleep(5)"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+   ]
+  },
+  {
+   "cell_type": "code",
+<<<<<<< HEAD
+   "execution_count": 32,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T10:20:58.800523Z",
+     "start_time": "2020-05-21T10:20:58.268595Z"
+=======
+   "execution_count": 10,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-24T10:31:06.333257Z",
+     "start_time": "2020-05-24T10:31:05.059148Z"
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+    }
+   },
+   "outputs": [],
+   "source": [
+<<<<<<< HEAD
+    "hotel_set=set(hotel_metadata['hotel'])\n",
+    "mapped_set=set(mapped_metadata['hotel'])\n",
+    "unmapped_set=set(unmapped_metadata['hotel'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T10:21:39.539996Z",
+     "start_time": "2020-05-21T10:21:39.535366Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(False, False)"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#mapped/unmapped not included in hotel dataset\n",
+    "mapped_set.issubset(hotel_set),unmapped_set.issubset(hotel_set)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T10:22:13.505462Z",
+     "start_time": "2020-05-21T10:22:13.488473Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.2845070925786973"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 0.28 of mapped are in hotel dataset\n",
+    "sum([1 for hotel in mapped_set if hotel in hotel_set])/len(mapped_set)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {
+    "ExecuteTime": {
+     "end_time": "2020-05-21T10:22:27.875419Z",
+     "start_time": "2020-05-21T10:22:27.864968Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.32876515749443924"
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 0.33 of unmapped are in hotel dataset\n",
+    "sum([1 for hotel in unmapped_set if hotel in hotel_set])/len(unmapped_set)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+=======
+    "json_df.to_csv('./hotel_true_summs.csv')"
+   ]
+>>>>>>> 55718eaea39c817a6ee0680591fc3e18367eef88
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
