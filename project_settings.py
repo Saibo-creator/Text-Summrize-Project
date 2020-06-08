@@ -316,7 +316,7 @@ class DatasetConfig(object):
             self.vocab_size = 32000  # target vocab size when building subwordenc
 
             # Paths
-            self.dir_path = 'datasets/'+name+'/'
+            self.dir_path = 'datasets/'+name+'_dataset/'
             ######
             self.reviews_path = self.dir_path+'review.json'
             self.businesses_path = self.dir_path+'business.json'
@@ -339,7 +339,7 @@ class DatasetConfig(object):
             self.vocab_size = 32000  # target vocab size when building subwordenc
 
             # Paths
-            self.dir_path = 'datasets/'+name+'/'
+            self.dir_path = 'datasets/'+name+'_dataset/'
             ######
             self.reviews_path = self.dir_path+'review.json'
             self.businesses_path = self.dir_path+'business.json'
@@ -362,7 +362,7 @@ class DatasetConfig(object):
             self.vocab_size = 32000  # target vocab size when building subwordenc
 
             # Paths
-            self.dir_path = 'datasets/'+name+'/'
+            self.dir_path = 'datasets/'+name+'_dataset/'
             ######
             self.reviews_path = self.dir_path+'review.json'
             self.businesses_path = self.dir_path+'business.json'
@@ -385,7 +385,7 @@ class DatasetConfig(object):
             self.vocab_size = 32000  # target vocab size when building subwordenc
 
             # Paths
-            self.dir_path = 'datasets/'+name+'/'
+            self.dir_path = 'datasets/'+name+'_dataset/'
             ######
             self.reviews_path = self.dir_path+'review.json'
             self.businesses_path = self.dir_path+'business.json'
@@ -408,7 +408,7 @@ class DatasetConfig(object):
             self.vocab_size = 32000  # target vocab size when building subwordenc
 
             # Paths
-            self.dir_path = 'datasets/'+name+'/'
+            self.dir_path = 'datasets/'+name+'_dataset/'
             ######
             self.reviews_path = self.dir_path+'review.json'
             self.businesses_path = self.dir_path+'business.json'
