@@ -55,15 +55,15 @@ class SummDatasetFactory(object):
             return Hotel_With_Summ_Dataset()
         elif name == 'mask_with_summ':
             return Mask_With_Summ_Dataset()
-        elif name == 'mask_asp_0_with_summ_dataset':
+        elif name == 'mask_asp_0_with_summ':
             return Mask_Asp_0_With_Summ_Dataset()
-        elif name == 'mask_asp_1_with_summ_dataset':
+        elif name == 'mask_asp_1_with_summ':
             return Mask_Asp_1_With_Summ_Dataset()
-        elif name == 'mask_asp_2_with_summ_dataset':
+        elif name == 'mask_asp_2_with_summ':
             return Mask_Asp_2_With_Summ_Dataset()
-        elif name == 'mask_asp_3_with_summ_dataset':
+        elif name == 'mask_asp_3_with_summ':
             return Mask_Asp_3_With_Summ_Dataset()
-        elif name == 'mask_asp_4_with_summ_dataset':
+        elif name == 'mask_asp_4_with_summ':
             return Mask_Asp_4_With_Summ_Dataset()
 
 
