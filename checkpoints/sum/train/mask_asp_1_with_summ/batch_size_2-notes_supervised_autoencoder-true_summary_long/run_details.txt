@@ -1,0 +1,3 @@
+Command:
+train_sum.py --dataset=mask_asp_1_with_summ --skip_clf=1 --batch_size=2 --note=supervised_autoencoder --true_summ=long --mode=train --g_summ_loss=True --lr=1e-5
+Start time: June09_07-55-01
