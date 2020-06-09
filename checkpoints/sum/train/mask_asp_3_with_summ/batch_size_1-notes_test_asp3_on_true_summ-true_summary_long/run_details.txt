@@ -1,0 +1,3 @@
+Command:
+train_sum.py --dataset=mask_asp_3_with_summ --mode=train --true_summ=long --g_summ_loss=True --skip_clf=true --notes=test_asp3_on_true_summ --batch_size=1 --lr=1e-5
+Start time: June09_05-58-07
