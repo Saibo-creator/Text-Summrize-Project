@@ -163,7 +163,7 @@ class Summarizer(object):
             cycle_tgt_ids = None
             if self.hp.concat_docs:#False
                 if self.hp.true_summary:
-                    docs_ids, _, labels,gold_summaries_ids = self.dataset.prepare_batch(texts, ratings, g_summ_loss=self.hp.gold_summ_loss, gold_summary_batch=metadata['short_summary'], doc_append_id=EDOC_ID)
+                    docs_ids, _, labels,gold_summaries_ids = self.dataset.prepare_batch(texts, ratings, g_summ_loss=self.hp.gold_summ_loss, gold_summary_batch=metadata[self.hp.true_summary], doc_append_id=EDOC_ID)
                 else:
                     docs_ids, _, labels, gold_summaries_ids = self.dataset.prepare_batch(texts, ratings, doc_append_id=EDOC_ID)
                 # docs_ids: [batch_size, max_len]
@@ -174,7 +174,7 @@ class Summarizer(object):
             else:
                 docs_ids = self.prepare_individual_revs(texts, append_edoc=True)
                 if self.hp.true_summary:
-                    _, _, labels,gold_summaries_ids = self.dataset.prepare_batch(texts, ratings, g_summ_loss=self.hp.gold_summ_loss, gold_summary_batch=metadata['short_summary'], doc_append_id=EDOC_ID)
+                    _, _, labels,gold_summaries_ids = self.dataset.prepare_batch(texts, ratings, g_summ_loss=self.hp.gold_summ_loss, gold_summary_batch=metadata[self.hp.true_summary], doc_append_id=EDOC_ID)
                 else:
                     _, _, labels, gold_summaries_ids = self.dataset.prepare_batch(texts, ratings, doc_append_id=EDOC_ID)
                 # print(docs_ids.shape) torch.Size([2, 3, 177])

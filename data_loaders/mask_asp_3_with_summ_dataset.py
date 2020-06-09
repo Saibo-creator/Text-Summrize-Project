@@ -357,7 +357,7 @@ class Mask_Asp_3_With_Summ_Dataset(SummReviewDataset):
 
         print('Filtering reviews longer than: {}'.format(review_max_len))
         item_to_reviews = defaultdict(list)
-        
+
         for r in self.reviews[0]:
             if len(self.subwordenc.encode(r['text'])) < review_max_len:
                 item_to_reviews[r['hotel_url']].append(r)
