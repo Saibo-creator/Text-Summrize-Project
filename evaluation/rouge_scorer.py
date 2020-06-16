@@ -105,6 +105,28 @@ def _create_ngrams(tokens, n):
     n: Number of tokens to use, e.g. 2 for bigrams.
   Returns:
     A dictionary mapping each bigram to the number of occurrences.
+
+  Example:
+    tokens=['I', 'love', 'you','do', 'you', 'love','me' ,'too']
+    In [8]: _create_ngrams(tokens,2)                                                                                                       
+    Out[8]: 
+    Counter({('I', 'love'): 1,
+             ('love', 'you'): 1,
+             ('you', 'do'): 1,
+             ('do', 'you'): 1,
+             ('you', 'love'): 1,
+             ('love', 'me'): 1,
+             ('me', 'too'): 1})
+
+    In [10]: _create_ngrams(tokens,1)                                                                                                      
+    Out[10]: 
+    Counter({('I',): 1,
+             ('love',): 2,
+             ('you',): 2,
+             ('do',): 1,
+             ('me',): 1,
+             ('too',): 1})
+  
   """
 
   ngrams = collections.Counter()
@@ -157,7 +179,7 @@ def _score_ngrams(target_ngrams, prediction_ngrams):
 
   intersection_ngrams_count = 0
   for ngram in six.iterkeys(target_ngrams):
-    intersection_ngrams_count += min(target_ngrams[ngram],
+    intersection_ngrams_count += min(target_ngrams[ngram],#min here is the modified version , cf http://www.nltk.org/api/nltk.translate.html#nltk.translate.bleu_score.modified_precision
                                      prediction_ngrams[ngram])
   target_ngrams_count = sum(target_ngrams.values())
   prediction_ngrams_count = sum(prediction_ngrams.values())
